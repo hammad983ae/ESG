@@ -1,3 +1,15 @@
+/**
+ * ESG Property Assessment Platform
+ * 
+ * Copyright (c) 2025 ESG Property Assessment Platform
+ * Licensed under MIT License - see LICENSE file for details
+ * 
+ * Main application component providing routing and core providers
+ * 
+ * @author ESG Property Assessment Platform
+ * @version 1.0.0
+ */
+
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";

@@ -1,3 +1,25 @@
+/**
+ * ESG Property Assessment Platform - Valuation Analysis Module
+ * 
+ * Copyright (c) 2025 ESG Property Assessment Platform
+ * Licensed under MIT License - see LICENSE file for details
+ * 
+ * Comprehensive property valuation analysis including:
+ * - All Risks Yield (ARY) calculations
+ * - ESG-adjusted ARY with sustainability factors
+ * - Capitalization rate sensitivity analysis
+ * - Net income approach valuations
+ * - Comparable sales analysis with ESG weighting
+ * - Direct comparison and summation approaches
+ * - Advanced weighted attribute analysis
+ * 
+ * Integrates with automated CPI updates and market data APIs
+ * for professional real estate valuation workflows.
+ * 
+ * @author ESG Property Assessment Platform
+ * @version 1.0.0
+ */
+
 import { useState } from "react";
 import { ArrowLeft, Target, TrendingUp, Leaf, Calculator, Settings, Building2, Sliders } from "lucide-react";
 import { Link } from "react-router-dom";

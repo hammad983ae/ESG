@@ -1,3 +1,24 @@
+/**
+ * ESG Property Assessment Platform - Main Dashboard
+ * 
+ * Copyright (c) 2025 ESG Property Assessment Platform
+ * Licensed under MIT License - see LICENSE file for details
+ * 
+ * Professional sustainability and risk evaluation platform for real estate properties.
+ * Provides basic ESG assessment and advanced automated calculations with comprehensive 
+ * risk analysis capabilities.
+ * 
+ * Features:
+ * - Environmental, Social, and Governance scoring
+ * - Property risk rating and assessment
+ * - Climate risk evaluation with customizable thresholds
+ * - Financial integration with SEIFA socioeconomic scoring
+ * - Export tools for CSV, JSON, and Excel integration
+ * 
+ * @author ESG Property Assessment Platform
+ * @version 1.0.0
+ */
+
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { PropertyAssessmentForm, PropertyData } from "@/components/PropertyAssessmentForm";
