@@ -40,52 +40,61 @@ export function ESGVariableControlPanel() {
   const [netIncome, setNetIncome] = useState(50000);
   const [newFactorName, setNewFactorName] = useState('');
 
-  // ESG factors with extended properties
+  // ESG factors with extended properties - exact specifications
   const [esgFactors, setESGFactors] = useState<ESGFactor[]>([
     {
-      id: 'ecological',
-      name: 'Ecological Sustainability',
+      id: 'energy_efficiency',
+      name: 'Energy Efficiency (Environmental)',
       active: true,
-      weight: 0.25,
-      score: 75,
-      direction: -1, // Good sustainability reduces cap rate (risk)
+      weight: 0.04,
+      score: 70,
+      direction: -1, // Good energy efficiency reduces cap rate (risk)
       sensitivity: 0.8
     },
     {
-      id: 'structural',
-      name: 'Structural Condition',
+      id: 'carbon_footprint',
+      name: 'Carbon Footprint / Emissions (Environmental)',
       active: true,
-      weight: 0.30,
-      score: 80,
-      direction: -1, // Good condition reduces cap rate
-      sensitivity: 0.9
-    },
-    {
-      id: 'fitout',
-      name: 'Fitout Quality',
-      active: true,
-      weight: 0.20,
-      score: 70,
-      direction: -1, // Good fitout reduces cap rate
+      weight: 0.03,
+      score: 55,
+      direction: -1, // Lower emissions reduce cap rate
       sensitivity: 0.7
     },
     {
-      id: 'compliance',
-      name: 'Regulations & Compliance',
+      id: 'physical_risk',
+      name: 'Physical Risk (Environmental / Physical Condition)',
       active: true,
-      weight: 0.15,
-      score: 85,
+      weight: 0.03,
+      score: 60,
+      direction: -1, // Better physical condition reduces cap rate
+      sensitivity: 0.9
+    },
+    {
+      id: 'fitout_quality',
+      name: 'Fitout Quality & Age (Operational / Asset)',
+      active: true,
+      weight: 0.035,
+      score: 65,
+      direction: -1, // Better fitout reduces cap rate
+      sensitivity: 0.8
+    },
+    {
+      id: 'regulations_compliance',
+      name: 'Regulations & Compliance (Legal / Governance)',
+      active: true,
+      weight: 0.03,
+      score: 80,
       direction: -1, // Good compliance reduces cap rate
       sensitivity: 0.6
     },
     {
-      id: 'productivity',
-      name: 'Staff Productivity',
-      active: false,
-      weight: 0.10,
-      score: 65,
+      id: 'staff_productivity',
+      name: 'Staff Productivity & Occupant Experience (Social / Operational)',
+      active: true,
+      weight: 0.025,
+      score: 75,
       direction: -1, // Higher productivity reduces cap rate
-      sensitivity: 0.5
+      sensitivity: 0.7
     }
   ]);
 
