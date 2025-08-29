@@ -19,7 +19,6 @@ import { ESGComparableSalesForm } from "@/components/ESGComparableSalesForm";
 import { ESGComparableSalesResultsDisplay } from "@/components/ESGComparableSalesResults";
 import { ESGFactorsWeightingPanel } from "@/components/ESGFactorsWeightingPanel";
 import { ESGVariableControlPanel } from "@/components/ESGVariableControlPanel";
-import { ESGCapRateImpactCalculator } from "@/components/ESGCapRateImpactCalculator";
 import { SimpleCapNetIncomeForm } from "@/components/SimpleCapNetIncomeForm";
 import { SimpleCapNetIncomeResultsDisplay } from "@/components/SimpleCapNetIncomeResults";
 import { ARYInputs, ARYResults, calculateAllRisksYield } from "@/utils/aryCalculations";
@@ -215,7 +214,7 @@ export default function ValuationAnalysis() {
 
         {/* Main Content with Tabs */}
         <Tabs defaultValue="ary" className="w-full">
-          <TabsList className="grid w-full grid-cols-10">
+          <TabsList className="grid w-full grid-cols-9">
             <TabsTrigger value="ary" className="flex items-center gap-2">
               <Target className="w-4 h-4" />
               All Risks Yield
@@ -251,10 +250,6 @@ export default function ValuationAnalysis() {
             <TabsTrigger value="esgvariablecontrol" className="flex items-center gap-2">
               <Settings className="w-4 h-4" />
               ESG Variable Control
-            </TabsTrigger>
-            <TabsTrigger value="esgcaprateimpact" className="flex items-center gap-2">
-              <Calculator className="w-4 h-4" />
-              ESG Cap Rate Impact
             </TabsTrigger>
           </TabsList>
 
@@ -507,19 +502,6 @@ export default function ValuationAnalysis() {
               </div>
             </div>
             <ESGVariableControlPanel />
-          </TabsContent>
-
-          {/* ESG Cap Rate Impact Tab */}
-          <TabsContent value="esgcaprateimpact" className="mt-6">
-            <div className="flex items-center justify-between mb-6">
-              <div>
-                <h2 className="text-2xl font-semibold">ESG Cap Rate Impact Calculator</h2>
-                <p className="text-muted-foreground">
-                  Interactive analysis of how ESG factors influence capitalization rates with real-time visual feedback
-                </p>
-              </div>
-            </div>
-            <ESGCapRateImpactCalculator />
           </TabsContent>
         </Tabs>
       </div>
