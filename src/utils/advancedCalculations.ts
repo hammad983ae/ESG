@@ -199,6 +199,19 @@ export interface CapitalizationNetIncomeInputs {
   relettingCosts?: number;
 }
 
+export interface ESGAdjustedCapitalizationInputs {
+  netRent: number;
+  nrogs?: number; // Non-Recoverable Outgoings
+  capitalizationRateOptimistic: number;
+  capitalizationRateRealistic?: number;
+  capitalizationRatePessimistic: number;
+  lettingUpAllowance?: number;
+  otherCapitalAdjustments?: number;
+  relettingCosts?: number;
+  useEsgAdjustment: boolean;
+  esgAdjustmentFactor?: number;
+}
+
 export interface CapitalizationNetIncomeResults {
   noi: number; // Net Operating Income
   capitalAdjustments: number;
@@ -227,7 +240,7 @@ export interface CapitalizationNetIncomeResults {
   };
 }
 
-export function calculateCapitalisationRateSensitivity(inputs: CapitalizationNetIncomeInputs): CapitalizationNetIncomeResults {
+export function calculateCapitalisationRateSensitivity(inputs: CapitalizationNetIncomeInputs | ESGAdjustedCapitalizationInputs): CapitalizationNetIncomeResults {
   // Validate inputs
   if (inputs.netRent <= 0) {
     throw new Error("Net rent must be positive");
@@ -239,6 +252,26 @@ export function calculateCapitalisationRateSensitivity(inputs: CapitalizationNet
   
   if (inputs.capitalizationRateRealistic !== undefined && inputs.capitalizationRateRealistic <= 0) {
     throw new Error("Realistic capitalization rate must be positive if provided");
+  }
+
+  // Apply ESG adjustment if enabled
+  let adjustedOptimistic = inputs.capitalizationRateOptimistic;
+  let adjustedRealistic = inputs.capitalizationRateRealistic;
+  let adjustedPessimistic = inputs.capitalizationRatePessimistic;
+
+  if ('useEsgAdjustment' in inputs && inputs.useEsgAdjustment) {
+    const adjustment = inputs.esgAdjustmentFactor || 0;
+    adjustedOptimistic += adjustment;
+    if (adjustedRealistic) adjustedRealistic += adjustment;
+    adjustedPessimistic += adjustment;
+    
+    // Validate adjusted rates are still positive
+    if (adjustedOptimistic <= 0 || adjustedPessimistic <= 0) {
+      throw new Error("ESG-adjusted capitalization rates must remain positive");
+    }
+    if (adjustedRealistic !== undefined && adjustedRealistic <= 0) {
+      throw new Error("ESG-adjusted realistic capitalization rate must remain positive");
+    }
   }
 
   // Calculate Net Operating Income (NOI)
@@ -255,12 +288,12 @@ export function calculateCapitalisationRateSensitivity(inputs: CapitalizationNet
   const relettingCosts = inputs.relettingCosts || 0;
   const capitalAdjustments = lettingUpAllowance + otherCapitalAdjustments + relettingCosts;
 
-  // Calculate market values for each scenario
-  const optimisticMarketValue = noi / inputs.capitalizationRateOptimistic;
-  const realisticMarketValue = inputs.capitalizationRateRealistic 
-    ? noi / inputs.capitalizationRateRealistic 
+  // Calculate market values for each scenario using adjusted rates
+  const optimisticMarketValue = noi / adjustedOptimistic;
+  const realisticMarketValue = adjustedRealistic 
+    ? noi / adjustedRealistic 
     : null;
-  const pessimisticMarketValue = noi / inputs.capitalizationRatePessimistic;
+  const pessimisticMarketValue = noi / adjustedPessimistic;
 
   // Apply capital adjustments
   const optimisticAdjusted = optimisticMarketValue - capitalAdjustments;

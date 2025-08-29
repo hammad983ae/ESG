@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { ArrowLeft, Target, TrendingUp, Leaf, Calculator } from "lucide-react";
+import { ArrowLeft, Target, TrendingUp, Leaf, Calculator, Settings } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -13,6 +13,8 @@ import { CapitalizationSensitivityForm } from "@/components/CapitalizationSensit
 import { CapitalizationSensitivityResultsDisplay } from "@/components/CapitalizationSensitivityResults";
 import { CapitalizationNetIncomeForm } from "@/components/CapitalizationNetIncomeForm";
 import { CapitalizationNetIncomeResultsDisplay } from "@/components/CapitalizationNetIncomeResults";
+import { ESGAdjustedCapitalizationForm } from "@/components/ESGAdjustedCapitalizationForm";
+import { ESGAdjustedCapitalizationResultsDisplay } from "@/components/ESGAdjustedCapitalizationResults";
 import { ARYInputs, ARYResults, calculateAllRisksYield } from "@/utils/aryCalculations";
 import { 
   ESGInputs, 
@@ -25,6 +27,7 @@ import {
 import { 
   CapitalizationNetIncomeInputs, 
   CapitalizationNetIncomeResults,
+  ESGAdjustedCapitalizationInputs,
   calculateCapitalisationRateSensitivity
 } from "@/utils/advancedCalculations";
 
@@ -44,6 +47,10 @@ export default function ValuationAnalysis() {
   // Capitalization Net Income States
   const [netIncomeInputs, setNetIncomeInputs] = useState<CapitalizationNetIncomeInputs | null>(null);
   const [netIncomeResults, setNetIncomeResults] = useState<CapitalizationNetIncomeResults | null>(null);
+  
+  // ESG-Adjusted Capitalization States
+  const [esgCapInputs, setEsgCapInputs] = useState<ESGAdjustedCapitalizationInputs | null>(null);
+  const [esgCapResults, setEsgCapResults] = useState<CapitalizationNetIncomeResults | null>(null);
 
   const handleARYSubmit = (inputs: ARYInputs) => {
     try {
@@ -89,6 +96,17 @@ export default function ValuationAnalysis() {
     }
   };
 
+  const handleESGCapitalizationSubmit = (inputs: ESGAdjustedCapitalizationInputs) => {
+    try {
+      const calculatedResults = calculateCapitalisationRateSensitivity(inputs);
+      setEsgCapInputs(inputs);
+      setEsgCapResults(calculatedResults);
+      toast.success("ESG-adjusted capitalization analysis completed!");
+    } catch (error) {
+      toast.error(`ESG capitalization analysis error: ${error instanceof Error ? error.message : 'Unknown error'}`);
+    }
+  };
+
   const handleReset = (tab: string) => {
     switch (tab) {
       case 'ary':
@@ -106,6 +124,10 @@ export default function ValuationAnalysis() {
       case 'netincome':
         setNetIncomeInputs(null);
         setNetIncomeResults(null);
+        break;
+      case 'esgcapitalization':
+        setEsgCapInputs(null);
+        setEsgCapResults(null);
         break;
     }
   };
@@ -136,7 +158,7 @@ export default function ValuationAnalysis() {
 
         {/* Main Content with Tabs */}
         <Tabs defaultValue="ary" className="w-full">
-          <TabsList className="grid w-full grid-cols-4">
+          <TabsList className="grid w-full grid-cols-5">
             <TabsTrigger value="ary" className="flex items-center gap-2">
               <Target className="w-4 h-4" />
               All Risks Yield
@@ -152,6 +174,10 @@ export default function ValuationAnalysis() {
             <TabsTrigger value="netincome" className="flex items-center gap-2">
               <TrendingUp className="w-4 h-4" />
               Net Income Approach
+            </TabsTrigger>
+            <TabsTrigger value="esgcapitalization" className="flex items-center gap-2">
+              <Settings className="w-4 h-4" />
+              ESG Cap Analysis
             </TabsTrigger>
           </TabsList>
 
@@ -276,6 +302,44 @@ export default function ValuationAnalysis() {
               </div>
             ) : (
               <CapitalizationNetIncomeResultsDisplay results={netIncomeResults} inputs={netIncomeInputs!} />
+            )}
+          </TabsContent>
+
+          {/* ESG-Adjusted Capitalization Analysis Tab */}
+          <TabsContent value="esgcapitalization" className="mt-6">
+            <div className="flex items-center justify-between mb-6">
+              <div>
+                <h2 className="text-2xl font-semibold">ESG-Adjusted Capitalization Analysis</h2>
+                <p className="text-muted-foreground">
+                  Enhanced capitalization sensitivity analysis with optional ESG risk factor adjustments
+                </p>
+              </div>
+              {esgCapResults && (
+                <Button onClick={() => handleReset('esgcapitalization')} variant="outline">
+                  New Analysis
+                </Button>
+              )}
+            </div>
+
+            {!esgCapResults ? (
+              <div className="max-w-4xl mx-auto">
+                <Card className="mb-6">
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-2">
+                      <Leaf className="w-5 h-5" />
+                      ESG-Enhanced Capitalization Analysis
+                    </CardTitle>
+                    <CardDescription>
+                      This analysis extends the traditional capitalization approach by allowing you to apply ESG risk adjustments 
+                      to the capitalization rates. ESG factors can either increase or decrease required returns based on 
+                      environmental, social, and governance considerations.
+                    </CardDescription>
+                  </CardHeader>
+                </Card>
+                <ESGAdjustedCapitalizationForm onSubmit={handleESGCapitalizationSubmit} />
+              </div>
+            ) : (
+              <ESGAdjustedCapitalizationResultsDisplay results={esgCapResults} inputs={esgCapInputs!} />
             )}
           </TabsContent>
         </Tabs>
