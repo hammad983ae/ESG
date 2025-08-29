@@ -8,15 +8,18 @@ import { Badge } from "@/components/ui/badge";
 import { Slider } from "@/components/ui/slider";
 import { Progress } from "@/components/ui/progress";
 import { Separator } from "@/components/ui/separator";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Calculator, TrendingUp, AlertTriangle, BarChart3, Settings2 } from "lucide-react";
 
-interface ESGFactor {
+interface RiskFactor {
   name: string;
-  weight: number;
+  maxRiskScore: number;
+  maxRiskPremium: number;
+  assignedRiskScore: number;
+  riskPremium: number;
+  calculationPercentage: number;
   active: boolean;
-  maxWeight: number;
   category: 'environmental' | 'social' | 'governance';
-  description: string;
 }
 
 export function ESGCapRateImpactCalculator() {
@@ -26,98 +29,209 @@ export function ESGCapRateImpactCalculator() {
   const [marketValue, setMarketValue] = useState(0);
   const [marketValueRounded, setMarketValueRounded] = useState(0);
 
-  // ESG factors influencing cap rate adjustments
-  const [esgFactors, setESGFactors] = useState<ESGFactor[]>([
+  // Risk factors matching the All Risks Yield table structure
+  const [riskFactors, setRiskFactors] = useState<RiskFactor[]>([
     { 
-      name: 'Ecological Sustainability', 
-      weight: 0.02, 
+      name: 'Architecture/Type of Construction', 
+      maxRiskScore: 10, 
+      maxRiskPremium: 0.25, 
+      assignedRiskScore: 5.2, 
+      riskPremium: 0.13, 
+      calculationPercentage: 0.13, 
       active: true, 
-      maxWeight: 0.05,
-      category: 'environmental',
-      description: 'Energy efficiency, carbon footprint, green certifications'
+      category: 'governance' 
+    },
+    { 
+      name: 'Fitout', 
+      maxRiskScore: 10, 
+      maxRiskPremium: 0.2, 
+      assignedRiskScore: 4.5, 
+      riskPremium: 0.09, 
+      calculationPercentage: 0.09, 
+      active: true, 
+      category: 'governance' 
     },
     { 
       name: 'Structural Condition', 
-      weight: 0.03, 
+      maxRiskScore: 10, 
+      maxRiskPremium: 0.35, 
+      assignedRiskScore: 5.5, 
+      riskPremium: 0.19, 
+      calculationPercentage: 0.19, 
       active: true, 
-      maxWeight: 0.06,
-      category: 'governance',
-      description: 'Building maintenance, structural integrity, compliance'
-    },
-    { 
-      name: 'Architecture/Construction Type', 
-      weight: 0.025, 
-      active: false, 
-      maxWeight: 0.04,
-      category: 'governance',
-      description: 'Design quality, construction materials, functionality'
+      category: 'governance' 
     },
     { 
       name: 'Plot Situation', 
-      weight: 0.015, 
-      active: false, 
-      maxWeight: 0.03,
-      category: 'social',
-      description: 'Location amenities, accessibility, neighborhood quality'
+      maxRiskScore: 10, 
+      maxRiskPremium: 0.25, 
+      assignedRiskScore: 5, 
+      riskPremium: 0.13, 
+      calculationPercentage: 0.13, 
+      active: true, 
+      category: 'social' 
     },
     { 
-      name: 'Property Quality', 
-      weight: 0.02, 
+      name: 'Ecological Sustainability', 
+      maxRiskScore: 10, 
+      maxRiskPremium: 0.5, 
+      assignedRiskScore: 7.1, 
+      riskPremium: 0.35, 
+      calculationPercentage: 0.35, 
+      active: true, 
+      category: 'environmental' 
+    },
+    { 
+      name: 'Profitability of building concept', 
+      maxRiskScore: 10, 
+      maxRiskPremium: 0.25, 
+      assignedRiskScore: 4.9, 
+      riskPremium: 0.12, 
+      calculationPercentage: 0.12, 
       active: false, 
-      maxWeight: 0.04,
-      category: 'governance',
-      description: 'Overall property condition, tenant satisfaction, management'
+      category: 'governance' 
+    },
+    { 
+      name: 'Quality of property cashflow', 
+      maxRiskScore: 10, 
+      maxRiskPremium: 0.5, 
+      assignedRiskScore: 5.5, 
+      riskPremium: 0.28, 
+      calculationPercentage: 0.28, 
+      active: false, 
+      category: 'governance' 
+    },
+    { 
+      name: 'Tenant and Occupier Situation', 
+      maxRiskScore: 10, 
+      maxRiskPremium: 0.5, 
+      assignedRiskScore: 5.5, 
+      riskPremium: 0.28, 
+      calculationPercentage: 0.28, 
+      active: false, 
+      category: 'social' 
+    },
+    { 
+      name: 'Rental Growth Potential/Value Growth Potential', 
+      maxRiskScore: 10, 
+      maxRiskPremium: 0.3, 
+      assignedRiskScore: 3.5, 
+      riskPremium: 0.11, 
+      calculationPercentage: 0.11, 
+      active: false, 
+      category: 'governance' 
+    },
+    { 
+      name: 'Letting Prospects', 
+      maxRiskScore: 10, 
+      maxRiskPremium: 0.25, 
+      assignedRiskScore: 5, 
+      riskPremium: 0.13, 
+      calculationPercentage: 0.13, 
+      active: false, 
+      category: 'social' 
+    },
+    { 
+      name: 'Vacancy/Letting Situation', 
+      maxRiskScore: 10, 
+      maxRiskPremium: 0.25, 
+      assignedRiskScore: 1, 
+      riskPremium: 0.03, 
+      calculationPercentage: 0.03, 
+      active: false, 
+      category: 'social' 
+    },
+    { 
+      name: 'Recoverable and Non-Recoverable Operating Expenses', 
+      maxRiskScore: 10, 
+      maxRiskPremium: 0.2, 
+      assignedRiskScore: 3, 
+      riskPremium: 0.06, 
+      calculationPercentage: 0.06, 
+      active: false, 
+      category: 'governance' 
+    },
+    { 
+      name: 'Usability by third parties and/or Alternative Use', 
+      maxRiskScore: 10, 
+      maxRiskPremium: 0.2, 
+      assignedRiskScore: 2, 
+      riskPremium: 0.04, 
+      calculationPercentage: 0.04, 
+      active: false, 
+      category: 'governance' 
+    },
+    { 
+      name: 'Exceptional Circumstances', 
+      maxRiskScore: 10, 
+      maxRiskPremium: 1, 
+      assignedRiskScore: 0, 
+      riskPremium: 0, 
+      calculationPercentage: 0, 
+      active: false, 
+      category: 'governance' 
     }
   ]);
 
-  // Toggle ESG factor active status
-  const toggleESGFactor = (index: number) => {
-    const updated = [...esgFactors];
+  // Toggle risk factor active status
+  const toggleRiskFactor = (index: number) => {
+    const updated = [...riskFactors];
     updated[index].active = !updated[index].active;
-    setESGFactors(updated);
+    setRiskFactors(updated);
   };
 
-  // Handle ESG weight adjustments
-  const handleESGChange = (index: number, value: number) => {
-    const updated = [...esgFactors];
-    updated[index].weight = value;
-    setESGFactors(updated);
+  // Handle assigned risk score adjustments
+  const handleAssignedScoreChange = (index: number, value: number) => {
+    const updated = [...riskFactors];
+    updated[index].assignedRiskScore = value;
+    // Calculate risk premium as percentage of max premium based on assigned score
+    updated[index].riskPremium = (value / updated[index].maxRiskScore) * updated[index].maxRiskPremium;
+    updated[index].calculationPercentage = updated[index].riskPremium;
+    setRiskFactors(updated);
   };
 
   // Calculate adjusted cap rate and market values in real-time
   useEffect(() => {
-    let totalImpact = 0;
-    esgFactors.forEach((factor) => {
-      if (factor.active) {
-        totalImpact += factor.weight;
-      }
-    });
-    
-    // Impact multiplier - can be positive or negative based on ESG performance
-    const adjustedCapRate = capRate + (totalImpact * 0.5);
+    const totalRiskPremium = getTotalRiskPremium();
+    const adjustedCapRate = capRate + totalRiskPremium;
     
     if (netIncome && adjustedCapRate > 0) {
       const marketVal = netIncome / (adjustedCapRate / 100);
       setMarketValue(marketVal);
       setMarketValueRounded(Math.round(marketVal));
     }
-  }, [esgFactors, capRate, netIncome]);
+  }, [riskFactors, capRate, netIncome]);
 
-  const getAdjustedCapRate = () => {
-    const totalImpact = esgFactors
+  const getTotalRiskPremium = () => {
+    return riskFactors
       .filter(factor => factor.active)
-      .reduce((total, factor) => total + factor.weight, 0);
-    return capRate + (totalImpact * 0.5);
+      .reduce((total, factor) => total + factor.calculationPercentage, 0);
   };
 
-  const getTotalESGImpact = () => {
-    return esgFactors
+  const getAdjustedCapRate = () => {
+    return capRate + getTotalRiskPremium();
+  };
+
+  const getTotalMaxRiskScore = () => {
+    return riskFactors.reduce((total, factor) => total + factor.maxRiskScore, 0);
+  };
+
+  const getTotalMaxRiskPremium = () => {
+    return riskFactors.reduce((total, factor) => total + factor.maxRiskPremium, 0);
+  };
+
+  const getTotalAssignedRiskScore = () => {
+    return riskFactors.reduce((total, factor) => total + (factor.active ? factor.assignedRiskScore : 0), 0);
+  };
+
+  const getTotalCalculationPercentage = () => {
+    return riskFactors
       .filter(factor => factor.active)
-      .reduce((total, factor) => total + factor.weight, 0);
+      .reduce((total, factor) => total + factor.calculationPercentage, 0);
   };
 
   const getCategoryFactors = (category: string) => {
-    return esgFactors.filter(factor => factor.category === category && factor.active);
+    return riskFactors.filter(factor => factor.category === category && factor.active);
   };
 
   const getImpactLevel = (impact: number) => {
@@ -133,10 +247,10 @@ export function ESGCapRateImpactCalculator() {
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <Calculator className="w-5 h-5" />
-            ESG Cap Rate Impact Calculator
+            All Risks Yield Composition and Calculation
           </CardTitle>
           <CardDescription>
-            Analyze how Environmental, Social, and Governance factors influence capitalization rates and property valuation with real-time adjustments and visual feedback
+            Interactive risk assessment tool for property valuation using weighted ESG and operational factors to calculate adjusted capitalization rates
           </CardDescription>
         </CardHeader>
       </Card>
@@ -191,11 +305,16 @@ export function ESGCapRateImpactCalculator() {
               </div>
               
               <div className="flex justify-between items-center p-3 bg-primary/10 rounded-lg">
-                <span className="font-medium">Adjusted Cap Rate</span>
-                <span className="font-bold text-primary">{getAdjustedCapRate().toFixed(3)}%</span>
+                <span className="font-medium">Total Risk Premium</span>
+                <span className="font-bold text-primary">{getTotalRiskPremium().toFixed(2)}%</span>
               </div>
               
               <div className="flex justify-between items-center p-3 bg-primary/20 rounded-lg">
+                <span className="font-medium">All Risks Yield</span>
+                <span className="font-bold text-primary">{getAdjustedCapRate().toFixed(2)}%</span>
+              </div>
+              
+              <div className="flex justify-between items-center p-3 bg-accent/20 rounded-lg">
                 <span className="font-bold">Market Value</span>
                 <span className="font-bold text-lg">${marketValue.toLocaleString()}</span>
               </div>
@@ -208,26 +327,36 @@ export function ESGCapRateImpactCalculator() {
           </CardContent>
         </Card>
 
-        {/* ESG Impact Summary */}
+        {/* Risk Summary */}
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <BarChart3 className="w-4 h-4" />
-              ESG Impact Summary
+              Risk Assessment Summary
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
-            <div>
-              <div className="flex justify-between items-center mb-2">
-                <span className="text-sm font-medium">Total ESG Impact</span>
-                <Badge variant={getTotalESGImpact() > 0 ? "destructive" : "secondary"}>
-                  {getTotalESGImpact() > 0 ? '+' : ''}{getTotalESGImpact().toFixed(3)}
-                </Badge>
+            <div className="grid grid-cols-2 gap-4 text-sm">
+              <div className="space-y-2">
+                <div className="flex justify-between">
+                  <span>Total Max Risk Score:</span>
+                  <span className="font-medium">{getTotalMaxRiskScore()}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span>Total Max Risk Premium:</span>
+                  <span className="font-medium">{getTotalMaxRiskPremium().toFixed(2)}%</span>
+                </div>
               </div>
-              <Progress 
-                value={Math.abs(getTotalESGImpact()) * 1000} 
-                className="h-2" 
-              />
+              <div className="space-y-2">
+                <div className="flex justify-between">
+                  <span>Total Assigned Score:</span>
+                  <span className="font-medium">{getTotalAssignedRiskScore().toFixed(1)}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span>Total Risk Premium:</span>
+                  <span className="font-bold text-primary">{getTotalCalculationPercentage().toFixed(2)}%</span>
+                </div>
+              </div>
             </div>
             
             <div className="space-y-2">
@@ -251,80 +380,85 @@ export function ESGCapRateImpactCalculator() {
         </Card>
       </div>
 
-      {/* ESG Factors Adjustment Panel */}
+      {/* All Risks Yield Composition Table */}
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <AlertTriangle className="w-5 h-5" />
-            ESG Factors Influence on Cap Rate
+            Composition and Calculation of the All Risks Yield
           </CardTitle>
           <CardDescription>
-            Adjust individual ESG factor weights to see their real-time impact on capitalization rates. 
-            Positive weights increase cap rate (higher risk), negative weights decrease cap rate (lower risk).
+            Adjust individual risk scores to see their real-time impact on risk premiums and the final All Risks Yield calculation
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <div className="space-y-6">
-            {esgFactors.map((factor, index) => (
-              <div key={factor.name} className="p-4 border rounded-lg space-y-4">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-3">
-                    <Switch
-                      checked={factor.active}
-                      onCheckedChange={() => toggleESGFactor(index)}
-                    />
-                    <div>
-                      <span className="font-medium">{factor.name}</span>
-                      <Badge variant="outline" className="ml-2 text-xs">
-                        {factor.category}
-                      </Badge>
-                    </div>
-                    {factor.active && (
-                      <Badge variant="secondary">Active</Badge>
-                    )}
-                  </div>
-                  <div className="text-right">
-                    <div className="text-sm font-medium">
-                      Impact: {factor.active ? factor.weight.toFixed(3) : '0.000'}
-                    </div>
-                    <div className="text-xs text-muted-foreground">
-                      {getImpactLevel(factor.weight).level} Risk
-                    </div>
-                  </div>
-                </div>
-                
-                <p className="text-sm text-muted-foreground">
-                  {factor.description}
-                </p>
-                
-                {factor.active && (
-                  <div className="space-y-2">
-                    <div className="flex items-center justify-between">
-                      <Label className="text-sm">Weight Adjustment</Label>
-                      <span className="text-sm font-mono">
-                        {factor.weight.toFixed(3)}
-                      </span>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <span className="text-xs text-muted-foreground">-{factor.maxWeight}</span>
-                      <Slider
-                        value={[factor.weight]}
-                        onValueChange={(values) => handleESGChange(index, values[0])}
-                        max={factor.maxWeight}
-                        min={-factor.maxWeight}
-                        step={0.001}
-                        className="flex-1"
+          <div className="overflow-x-auto">
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead className="w-[300px]">Property</TableHead>
+                  <TableHead className="text-center">Max Risk Score</TableHead>
+                  <TableHead className="text-center">Max Risk Premium %</TableHead>
+                  <TableHead className="text-center">Assigned Risk Score</TableHead>
+                  <TableHead className="text-center">Risk Premium %</TableHead>
+                  <TableHead className="text-center">Calculation %</TableHead>
+                  <TableHead className="text-center">Active</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {riskFactors.map((factor, index) => (
+                  <TableRow key={factor.name} className={factor.active ? "bg-primary/5" : "bg-muted/30"}>
+                    <TableCell className="font-medium">
+                      <div className="flex items-center gap-2">
+                        <span>{factor.name}</span>
+                        <Badge variant="outline" className="text-xs">
+                          {factor.category}
+                        </Badge>
+                      </div>
+                    </TableCell>
+                    <TableCell className="text-center">{factor.maxRiskScore}</TableCell>
+                    <TableCell className="text-center">{factor.maxRiskPremium.toFixed(2)}</TableCell>
+                    <TableCell className="text-center">
+                      <div className="flex items-center justify-center gap-2">
+                        <Slider
+                          value={[factor.assignedRiskScore]}
+                          onValueChange={(values) => handleAssignedScoreChange(index, values[0])}
+                          max={factor.maxRiskScore}
+                          min={0}
+                          step={0.1}
+                          className="w-20"
+                          disabled={!factor.active}
+                        />
+                        <span className="text-xs font-mono w-8">
+                          {factor.assignedRiskScore.toFixed(1)}
+                        </span>
+                      </div>
+                    </TableCell>
+                    <TableCell className="text-center font-medium">
+                      {factor.active ? factor.riskPremium.toFixed(2) : '0.00'}
+                    </TableCell>
+                    <TableCell className="text-center font-bold">
+                      {factor.active ? factor.calculationPercentage.toFixed(2) : '0.00'}
+                    </TableCell>
+                    <TableCell className="text-center">
+                      <Switch
+                        checked={factor.active}
+                        onCheckedChange={() => toggleRiskFactor(index)}
                       />
-                      <span className="text-xs text-muted-foreground">+{factor.maxWeight}</span>
-                    </div>
-                    <div className="flex justify-between text-xs text-muted-foreground">
-                      <span>Reduces Cap Rate (Lower Risk)</span>
-                      <span>Increases Cap Rate (Higher Risk)</span>
-                    </div>
-                  </div>
-                )}
-              </div>
-            ))}
+                    </TableCell>
+                  </TableRow>
+                ))}
+                <TableRow className="bg-primary/20 font-bold">
+                  <TableCell className="font-bold">Total</TableCell>
+                  <TableCell className="text-center">{getTotalMaxRiskScore()}</TableCell>
+                  <TableCell className="text-center">{getTotalMaxRiskPremium().toFixed(1)}</TableCell>
+                  <TableCell className="text-center">{getTotalAssignedRiskScore().toFixed(1)}</TableCell>
+                  <TableCell className="text-center">{getTotalRiskPremium().toFixed(2)}</TableCell>
+                  <TableCell className="text-center">{getTotalCalculationPercentage().toFixed(2)}</TableCell>
+                  <TableCell></TableCell>
+                </TableRow>
+              </TableBody>
+            </Table>
           </div>
         </CardContent>
       </Card>
@@ -334,36 +468,46 @@ export function ESGCapRateImpactCalculator() {
         <CardHeader>
           <CardTitle>Visual Impact Analysis</CardTitle>
           <CardDescription>
-            Real-time visualization of how ESG adjustments affect your property valuation
+            Real-time visualization of how risk adjustments affect your All Risks Yield and property valuation
           </CardDescription>
         </CardHeader>
         <CardContent>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="space-y-4">
-              <h4 className="font-medium">Cap Rate Comparison</h4>
+              <h4 className="font-medium">All Risks Yield Breakdown</h4>
               <div className="space-y-2">
                 <div className="flex items-center justify-between p-2 bg-muted/30 rounded">
-                  <span>Base Rate</span>
+                  <span>Base Cap Rate</span>
                   <div className="flex items-center gap-2">
                     <div className="w-24 h-2 bg-muted rounded"></div>
                     <span className="text-sm">{capRate.toFixed(2)}%</span>
                   </div>
                 </div>
+                <div className="flex items-center justify-between p-2 bg-destructive/10 rounded">
+                  <span>Risk Premium</span>
+                  <div className="flex items-center gap-2">
+                    <div 
+                      className="h-2 bg-destructive rounded"
+                      style={{ width: `${Math.min(100, (getTotalRiskPremium() / capRate) * 96)}px` }}
+                    ></div>
+                    <span className="text-sm font-bold">+{getTotalRiskPremium().toFixed(2)}%</span>
+                  </div>
+                </div>
                 <div className="flex items-center justify-between p-2 bg-primary/10 rounded">
-                  <span>ESG Adjusted</span>
+                  <span>All Risks Yield</span>
                   <div className="flex items-center gap-2">
                     <div 
                       className="h-2 bg-primary rounded"
                       style={{ width: `${Math.min(100, (getAdjustedCapRate() / capRate) * 96)}px` }}
                     ></div>
-                    <span className="text-sm font-bold">{getAdjustedCapRate().toFixed(3)}%</span>
+                    <span className="text-sm font-bold">{getAdjustedCapRate().toFixed(2)}%</span>
                   </div>
                 </div>
               </div>
             </div>
             
             <div className="space-y-4">
-              <h4 className="font-medium">Value Impact</h4>
+              <h4 className="font-medium">Property Valuation</h4>
               <div className="text-center space-y-2">
                 <div className="text-2xl font-bold text-primary">
                   ${marketValue.toLocaleString()}
@@ -371,12 +515,12 @@ export function ESGCapRateImpactCalculator() {
                 <div className="text-sm text-muted-foreground">
                   Final Market Value
                 </div>
-                {getTotalESGImpact() !== 0 && (
-                  <Badge 
-                    variant={getTotalESGImpact() > 0 ? "destructive" : "secondary"}
-                    className="text-xs"
-                  >
-                    {getTotalESGImpact() > 0 ? 'Increased' : 'Decreased'} by ESG factors
+                <div className="text-xs text-muted-foreground">
+                  (NOI: ${netIncome.toLocaleString()} ÷ ARY: {getAdjustedCapRate().toFixed(2)}%)
+                </div>
+                {getTotalRiskPremium() > 0 && (
+                  <Badge variant="destructive" className="text-xs">
+                    Risk premium increases yield by {getTotalRiskPremium().toFixed(2)}%
                   </Badge>
                 )}
               </div>
