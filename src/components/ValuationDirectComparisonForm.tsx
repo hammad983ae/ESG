@@ -267,278 +267,288 @@ export function ValuationDirectComparisonForm({ onSubmit }: ValuationDirectCompa
   const valuation = calculateValuation();
 
   return (
-    <div className="space-y-6">
-      {/* Asset Type Selection */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <TrendingUp className="w-5 h-5" />
-            Property Type & Search Parameters
-          </CardTitle>
-          <CardDescription>
-            Select asset type and configure search parameters for comparable sales
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-            <div className="space-y-2">
-              <Label>Asset Type</Label>
-              <Select value={selectedAssetType} onValueChange={setSelectedAssetType}>
-                <SelectTrigger>
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  {ASSET_TYPES.map(type => (
-                    <SelectItem key={type.value} value={type.value}>{type.label}</SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-            
-            {selectedAssetType === 'custom' && (
-              <div className="space-y-2">
-                <Label>Custom Asset Type</Label>
-                <Input
-                  value={customAssetType}
-                  onChange={(e) => setCustomAssetType(e.target.value)}
-                  placeholder="Enter custom asset type"
-                />
-              </div>
-            )}
-          </div>
-          
-          <Button onClick={handleFetchComparables} disabled={isLoading} className="w-full">
-            <Search className="w-4 h-4 mr-2" />
-            {isLoading ? 'Fetching Comparables...' : 'Fetch Comparable Sales'}
-          </Button>
-        </CardContent>
-      </Card>
-
-      {/* Subject Property Details */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <MapPin className="w-5 h-5" />
-            Subject Property Details
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div className="space-y-2">
-              <Label>Property Name</Label>
-              <Input
-                value={subjectProperty.name}
-                onChange={(e) => setSubjectProperty(prev => ({ ...prev, name: e.target.value }))}
-                placeholder="Enter property name"
-              />
-            </div>
-            
-            <div className="space-y-2">
-              <Label>Location</Label>
-              <Input
-                value={subjectProperty.location}
-                onChange={(e) => setSubjectProperty(prev => ({ ...prev, location: e.target.value }))}
-                placeholder="Enter location"
-              />
-            </div>
-            
-            <div className="space-y-2">
-              <Label>Size (sqm)</Label>
-              <Input
-                type="number"
-                value={subjectProperty.size}
-                onChange={(e) => setSubjectProperty(prev => ({ ...prev, size: Number(e.target.value) }))}
-                placeholder="0"
-              />
-            </div>
-          </div>
-        </CardContent>
-      </Card>
-
-      {/* Comparable Sales */}
-      {comparables.length > 0 && (
+    <Tabs defaultValue="setup" className="w-full">
+      <TabsList className="grid w-full grid-cols-2">
+        <TabsTrigger value="setup">Property Setup & Search</TabsTrigger>
+        <TabsTrigger value="analysis">Comparable Analysis & Results</TabsTrigger>
+      </TabsList>
+      
+      <TabsContent value="setup" className="space-y-6">
+        {/* Asset Type Selection */}
         <Card>
           <CardHeader>
-            <CardTitle className="flex items-center justify-between">
-              <span className="flex items-center gap-2">
-                <Calendar className="w-5 h-5" />
-                Comparable Sales Evidence
-              </span>
-              <Button onClick={addCustomComparable} size="sm" variant="outline">
-                <Plus className="w-4 h-4 mr-2" />
-                Add Custom Comparable
-              </Button>
+            <CardTitle className="flex items-center gap-2">
+              <TrendingUp className="w-5 h-5" />
+              Property Type & Search Parameters
             </CardTitle>
             <CardDescription>
-              Review and adjust comparable sales data with adjustment factors
+              Select asset type and configure search parameters for comparable sales
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <div className="space-y-4">
-              {comparables.map((comparable) => (
-                <Card key={comparable.id} className="relative">
-                  <CardContent className="pt-6">
-                    <Button
-                      onClick={() => removeComparable(comparable.id)}
-                      variant="outline"
-                      size="sm"
-                      className="absolute top-2 right-2"
-                    >
-                      <Trash2 className="w-4 h-4" />
-                    </Button>
-                    
-                    <Tabs defaultValue="details" className="w-full">
-                      <TabsList className="grid w-full grid-cols-2">
-                        <TabsTrigger value="details">Property Details</TabsTrigger>
-                        <TabsTrigger value="adjustments">Adjustments</TabsTrigger>
-                      </TabsList>
-                      
-                      <TabsContent value="details" className="mt-4">
-                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-                          <div className="space-y-2">
-                            <Label>Property Name</Label>
-                            <Input
-                              value={comparable.property}
-                              onChange={(e) => updateComparable(comparable.id, 'property', e.target.value)}
-                              placeholder="Property name"
-                            />
-                          </div>
-                          
-                          <div className="space-y-2">
-                            <Label>Location</Label>
-                            <Input
-                              value={comparable.location}
-                              onChange={(e) => updateComparable(comparable.id, 'location', e.target.value)}
-                              placeholder="Location"
-                            />
-                          </div>
-                          
-                          <div className="space-y-2">
-                            <Label>Sale Date</Label>
-                            <Input
-                              type="date"
-                              value={comparable.saleDate}
-                              onChange={(e) => updateComparable(comparable.id, 'saleDate', e.target.value)}
-                            />
-                          </div>
-                          
-                          <div className="space-y-2">
-                            <Label>Sale Price ($)</Label>
-                            <Input
-                              type="number"
-                              value={comparable.price}
-                              onChange={(e) => updateComparable(comparable.id, 'price', Number(e.target.value))}
-                              placeholder="0"
-                            />
-                          </div>
-                          
-                          <div className="space-y-2">
-                            <Label>Size (sqm)</Label>
-                            <Input
-                              type="number"
-                              value={comparable.size}
-                              onChange={(e) => updateComparable(comparable.id, 'size', Number(e.target.value))}
-                              placeholder="0"
-                            />
-                          </div>
-                          
-                          <div className="space-y-2">
-                            <Label>Price per sqm</Label>
-                            <div className="p-2 bg-muted rounded border text-sm">
-                              ${comparable.pricePerSqm.toFixed(0)}
-                            </div>
-                          </div>
-                          
-                          <div className="space-y-2">
-                            <Label>Adjusted Price</Label>
-                            <div className="p-2 bg-primary/10 rounded border text-sm font-medium">
-                              ${comparable.adjustedPrice.toLocaleString()}
-                            </div>
-                          </div>
-                        </div>
-                      </TabsContent>
-                      
-                      <TabsContent value="adjustments" className="mt-4">
-                        <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
-                          {Object.entries(comparable.adjustmentFactors).map(([factor, value]) => (
-                            <div key={factor} className="space-y-2">
-                              <Label className="capitalize">{factor}</Label>
-                              <Input
-                                type="number"
-                                step="0.01"
-                                min="0"
-                                max="2"
-                                value={value}
-                                onChange={(e) => updateComparable(comparable.id, `adjustmentFactors.${factor}`, Number(e.target.value))}
-                              />
-                              <Badge variant={value > 1 ? "default" : value < 1 ? "destructive" : "secondary"} className="text-xs">
-                                {value > 1 ? '+' : ''}{((value - 1) * 100).toFixed(1)}%
-                              </Badge>
-                            </div>
-                          ))}
-                        </div>
-                      </TabsContent>
-                    </Tabs>
-                  </CardContent>
-                </Card>
-              ))}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+              <div className="space-y-2">
+                <Label>Asset Type</Label>
+                <Select value={selectedAssetType} onValueChange={setSelectedAssetType}>
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {ASSET_TYPES.map(type => (
+                      <SelectItem key={type.value} value={type.value}>{type.label}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+              
+              {selectedAssetType === 'custom' && (
+                <div className="space-y-2">
+                  <Label>Custom Asset Type</Label>
+                  <Input
+                    value={customAssetType}
+                    onChange={(e) => setCustomAssetType(e.target.value)}
+                    placeholder="Enter custom asset type"
+                  />
+                </div>
+              )}
             </div>
+            
+            <Button onClick={handleFetchComparables} disabled={isLoading} className="w-full">
+              <Search className="w-4 h-4 mr-2" />
+              {isLoading ? 'Fetching Comparables...' : 'Fetch Comparable Sales'}
+            </Button>
           </CardContent>
         </Card>
-      )}
 
-      {/* Valuation Results */}
-      {valuation && (
+        {/* Subject Property Details */}
         <Card>
           <CardHeader>
-            <CardTitle>Valuation Results</CardTitle>
-            <CardDescription>
-              Direct comparison approach valuation based on {valuation.comparablesCount} comparable sales
-            </CardDescription>
+            <CardTitle className="flex items-center gap-2">
+              <MapPin className="w-5 h-5" />
+              Subject Property Details
+            </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="space-y-2">
-                <Label>Average Price per sqm</Label>
-                <div className="text-xl font-bold">
-                  ${valuation.averagePricePerSqm.toFixed(0)}
-                </div>
+                <Label>Property Name</Label>
+                <Input
+                  value={subjectProperty.name}
+                  onChange={(e) => setSubjectProperty(prev => ({ ...prev, name: e.target.value }))}
+                  placeholder="Enter property name"
+                />
               </div>
               
               <div className="space-y-2">
-                <Label>Estimated Value</Label>
-                <div className="text-2xl font-bold text-primary">
-                  ${valuation.estimatedValue.toLocaleString()}
-                </div>
+                <Label>Location</Label>
+                <Input
+                  value={subjectProperty.location}
+                  onChange={(e) => setSubjectProperty(prev => ({ ...prev, location: e.target.value }))}
+                  placeholder="Enter location"
+                />
               </div>
               
               <div className="space-y-2">
-                <Label>Valuation Range</Label>
-                <div className="text-sm">
-                  <div>${valuation.valueRange.low.toLocaleString()} - ${valuation.valueRange.high.toLocaleString()}</div>
-                </div>
-              </div>
-              
-              <div className="space-y-2">
-                <Label>Confidence Level</Label>
-                <Badge variant={valuation.comparablesCount >= 3 ? "default" : "secondary"}>
-                  {valuation.comparablesCount >= 3 ? "High" : "Medium"}
-                </Badge>
+                <Label>Size (sqm)</Label>
+                <Input
+                  type="number"
+                  value={subjectProperty.size}
+                  onChange={(e) => setSubjectProperty(prev => ({ ...prev, size: Number(e.target.value) }))}
+                  placeholder="0"
+                />
               </div>
             </div>
           </CardContent>
         </Card>
-      )}
+      </TabsContent>
 
-      <Button 
-        onClick={handleSubmit} 
-        className="w-full" 
-        size="lg"
-        disabled={comparables.length === 0 || !subjectProperty.size}
-      >
-        <TrendingUp className="w-4 h-4 mr-2" />
-        Complete Direct Comparison Valuation
-      </Button>
-    </div>
+      <TabsContent value="analysis" className="space-y-6">
+
+        {/* Comparable Sales */}
+        {comparables.length > 0 && (
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center justify-between">
+                <span className="flex items-center gap-2">
+                  <Calendar className="w-5 h-5" />
+                  Comparable Sales Evidence
+                </span>
+                <Button onClick={addCustomComparable} size="sm" variant="outline">
+                  <Plus className="w-4 h-4 mr-2" />
+                  Add Custom Comparable
+                </Button>
+              </CardTitle>
+              <CardDescription>
+                Review and adjust comparable sales data with adjustment factors
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-4">
+                {comparables.map((comparable) => (
+                  <Card key={comparable.id} className="relative">
+                    <CardContent className="pt-6">
+                      <Button
+                        onClick={() => removeComparable(comparable.id)}
+                        variant="outline"
+                        size="sm"
+                        className="absolute top-2 right-2"
+                      >
+                        <Trash2 className="w-4 h-4" />
+                      </Button>
+                      
+                      <Tabs defaultValue="details" className="w-full">
+                        <TabsList className="grid w-full grid-cols-2">
+                          <TabsTrigger value="details">Property Details</TabsTrigger>
+                          <TabsTrigger value="adjustments">Adjustments</TabsTrigger>
+                        </TabsList>
+                        
+                        <TabsContent value="details" className="mt-4">
+                          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                            <div className="space-y-2">
+                              <Label>Property Name</Label>
+                              <Input
+                                value={comparable.property}
+                                onChange={(e) => updateComparable(comparable.id, 'property', e.target.value)}
+                                placeholder="Property name"
+                              />
+                            </div>
+                            
+                            <div className="space-y-2">
+                              <Label>Location</Label>
+                              <Input
+                                value={comparable.location}
+                                onChange={(e) => updateComparable(comparable.id, 'location', e.target.value)}
+                                placeholder="Location"
+                              />
+                            </div>
+                            
+                            <div className="space-y-2">
+                              <Label>Sale Date</Label>
+                              <Input
+                                type="date"
+                                value={comparable.saleDate}
+                                onChange={(e) => updateComparable(comparable.id, 'saleDate', e.target.value)}
+                              />
+                            </div>
+                            
+                            <div className="space-y-2">
+                              <Label>Sale Price ($)</Label>
+                              <Input
+                                type="number"
+                                value={comparable.price}
+                                onChange={(e) => updateComparable(comparable.id, 'price', Number(e.target.value))}
+                                placeholder="0"
+                              />
+                            </div>
+                            
+                            <div className="space-y-2">
+                              <Label>Size (sqm)</Label>
+                              <Input
+                                type="number"
+                                value={comparable.size}
+                                onChange={(e) => updateComparable(comparable.id, 'size', Number(e.target.value))}
+                                placeholder="0"
+                              />
+                            </div>
+                            
+                            <div className="space-y-2">
+                              <Label>Price per sqm</Label>
+                              <div className="p-2 bg-muted rounded border text-sm">
+                                ${comparable.pricePerSqm.toFixed(0)}
+                              </div>
+                            </div>
+                            
+                            <div className="space-y-2">
+                              <Label>Adjusted Price</Label>
+                              <div className="p-2 bg-primary/10 rounded border text-sm font-medium">
+                                ${comparable.adjustedPrice.toLocaleString()}
+                              </div>
+                            </div>
+                          </div>
+                        </TabsContent>
+                        
+                        <TabsContent value="adjustments" className="mt-4">
+                          <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
+                            {Object.entries(comparable.adjustmentFactors).map(([factor, value]) => (
+                              <div key={factor} className="space-y-2">
+                                <Label className="capitalize">{factor}</Label>
+                                <Input
+                                  type="number"
+                                  step="0.01"
+                                  min="0"
+                                  max="2"
+                                  value={value}
+                                  onChange={(e) => updateComparable(comparable.id, `adjustmentFactors.${factor}`, Number(e.target.value))}
+                                />
+                                <Badge variant={value > 1 ? "default" : value < 1 ? "destructive" : "secondary"} className="text-xs">
+                                  {value > 1 ? '+' : ''}{((value - 1) * 100).toFixed(1)}%
+                                </Badge>
+                              </div>
+                            ))}
+                          </div>
+                        </TabsContent>
+                      </Tabs>
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
+            </CardContent>
+          </Card>
+        )}
+
+        {/* Valuation Results */}
+        {valuation && (
+          <Card>
+            <CardHeader>
+              <CardTitle>Valuation Results</CardTitle>
+              <CardDescription>
+                Direct comparison approach valuation based on {valuation.comparablesCount} comparable sales
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                <div className="space-y-2">
+                  <Label>Average Price per sqm</Label>
+                  <div className="text-xl font-bold">
+                    ${valuation.averagePricePerSqm.toFixed(0)}
+                  </div>
+                </div>
+                
+                <div className="space-y-2">
+                  <Label>Estimated Value</Label>
+                  <div className="text-2xl font-bold text-primary">
+                    ${valuation.estimatedValue.toLocaleString()}
+                  </div>
+                </div>
+                
+                <div className="space-y-2">
+                  <Label>Valuation Range</Label>
+                  <div className="text-sm">
+                    <div>${valuation.valueRange.low.toLocaleString()} - ${valuation.valueRange.high.toLocaleString()}</div>
+                  </div>
+                </div>
+                
+                <div className="space-y-2">
+                  <Label>Confidence Level</Label>
+                  <Badge variant={valuation.comparablesCount >= 3 ? "default" : "secondary"}>
+                    {valuation.comparablesCount >= 3 ? "High" : "Medium"}
+                  </Badge>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        )}
+
+        <Button 
+          onClick={handleSubmit} 
+          className="w-full" 
+          size="lg"
+          disabled={comparables.length === 0 || !subjectProperty.size}
+        >
+          <TrendingUp className="w-4 h-4 mr-2" />
+          Complete Direct Comparison Valuation
+        </Button>
+      </TabsContent>
+    </Tabs>
   );
 }
