@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { ArrowLeft, Target, TrendingUp, Leaf, Calculator, Settings, Building2 } from "lucide-react";
+import { ArrowLeft, Target, TrendingUp, Leaf, Calculator, Settings, Building2, Sliders } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -17,6 +17,7 @@ import { ESGAdjustedCapitalizationForm } from "@/components/ESGAdjustedCapitaliz
 import { ESGAdjustedCapitalizationResultsDisplay } from "@/components/ESGAdjustedCapitalizationResults";
 import { ESGComparableSalesForm } from "@/components/ESGComparableSalesForm";
 import { ESGComparableSalesResultsDisplay } from "@/components/ESGComparableSalesResults";
+import { ESGFactorsWeightingPanel } from "@/components/ESGFactorsWeightingPanel";
 import { ARYInputs, ARYResults, calculateAllRisksYield } from "@/utils/aryCalculations";
 import { 
   ESGInputs, 
@@ -184,7 +185,7 @@ export default function ValuationAnalysis() {
 
         {/* Main Content with Tabs */}
         <Tabs defaultValue="ary" className="w-full">
-          <TabsList className="grid w-full grid-cols-6">
+          <TabsList className="grid w-full grid-cols-7">
             <TabsTrigger value="ary" className="flex items-center gap-2">
               <Target className="w-4 h-4" />
               All Risks Yield
@@ -208,6 +209,10 @@ export default function ValuationAnalysis() {
             <TabsTrigger value="esgcomparablesales" className="flex items-center gap-2">
               <Building2 className="w-4 h-4" />
               ESG Comparable Sales
+            </TabsTrigger>
+            <TabsTrigger value="esgweighting" className="flex items-center gap-2">
+              <Sliders className="w-4 h-4" />
+              ESG Factors Weighting
             </TabsTrigger>
           </TabsList>
 
@@ -409,6 +414,19 @@ export default function ValuationAnalysis() {
             ) : (
               <ESGComparableSalesResultsDisplay results={esgSalesResults} inputs={esgSalesInputs!} />
             )}
+          </TabsContent>
+
+          {/* ESG Factors Weighting Tab */}
+          <TabsContent value="esgweighting" className="mt-6">
+            <div className="flex items-center justify-between mb-6">
+              <div>
+                <h2 className="text-2xl font-semibold">ESG Factors Weighting</h2>
+                <p className="text-muted-foreground">
+                  Compare and adjust ESG variables with real-time risk score calculation
+                </p>
+              </div>
+            </div>
+            <ESGFactorsWeightingPanel />
           </TabsContent>
         </Tabs>
       </div>
