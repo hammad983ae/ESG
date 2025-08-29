@@ -11,6 +11,8 @@ import { ESGCalculationForm } from "@/components/ESGCalculationForm";
 import { ESGResultsDisplay } from "@/components/ESGResults";
 import { CapitalizationSensitivityForm } from "@/components/CapitalizationSensitivityForm";
 import { CapitalizationSensitivityResultsDisplay } from "@/components/CapitalizationSensitivityResults";
+import { CapitalizationNetIncomeForm } from "@/components/CapitalizationNetIncomeForm";
+import { CapitalizationNetIncomeResultsDisplay } from "@/components/CapitalizationNetIncomeResults";
 import { ARYInputs, ARYResults, calculateAllRisksYield } from "@/utils/aryCalculations";
 import { 
   ESGInputs, 
@@ -20,6 +22,11 @@ import {
   calculateESGAdjustedARY,
   calculateCapitalizationRateSensitivity
 } from "@/utils/esgCalculations";
+import { 
+  CapitalizationNetIncomeInputs, 
+  CapitalizationNetIncomeResults,
+  calculateCapitalisationRateSensitivity
+} from "@/utils/advancedCalculations";
 
 export default function ValuationAnalysis() {
   // ARY States
@@ -33,6 +40,10 @@ export default function ValuationAnalysis() {
   // Capitalization Sensitivity States
   const [capInputs, setCapInputs] = useState<CapitalizationSensitivityInputs | null>(null);
   const [capResults, setCapResults] = useState<CapitalizationSensitivityResults | null>(null);
+  
+  // Capitalization Net Income States
+  const [netIncomeInputs, setNetIncomeInputs] = useState<CapitalizationNetIncomeInputs | null>(null);
+  const [netIncomeResults, setNetIncomeResults] = useState<CapitalizationNetIncomeResults | null>(null);
 
   const handleARYSubmit = (inputs: ARYInputs) => {
     try {
@@ -67,6 +78,17 @@ export default function ValuationAnalysis() {
     }
   };
 
+  const handleNetIncomeSubmit = (inputs: CapitalizationNetIncomeInputs) => {
+    try {
+      const calculatedResults = calculateCapitalisationRateSensitivity(inputs);
+      setNetIncomeInputs(inputs);
+      setNetIncomeResults(calculatedResults);
+      toast.success("Net income capitalization analysis completed!");
+    } catch (error) {
+      toast.error(`Net income analysis error: ${error instanceof Error ? error.message : 'Unknown error'}`);
+    }
+  };
+
   const handleReset = (tab: string) => {
     switch (tab) {
       case 'ary':
@@ -80,6 +102,10 @@ export default function ValuationAnalysis() {
       case 'capitalization':
         setCapInputs(null);
         setCapResults(null);
+        break;
+      case 'netincome':
+        setNetIncomeInputs(null);
+        setNetIncomeResults(null);
         break;
     }
   };
@@ -110,7 +136,7 @@ export default function ValuationAnalysis() {
 
         {/* Main Content with Tabs */}
         <Tabs defaultValue="ary" className="w-full">
-          <TabsList className="grid w-full grid-cols-3">
+          <TabsList className="grid w-full grid-cols-4">
             <TabsTrigger value="ary" className="flex items-center gap-2">
               <Target className="w-4 h-4" />
               All Risks Yield
@@ -122,6 +148,10 @@ export default function ValuationAnalysis() {
             <TabsTrigger value="capitalization" className="flex items-center gap-2">
               <Calculator className="w-4 h-4" />
               Cap Rate Sensitivity
+            </TabsTrigger>
+            <TabsTrigger value="netincome" className="flex items-center gap-2">
+              <TrendingUp className="w-4 h-4" />
+              Net Income Approach
             </TabsTrigger>
           </TabsList>
 
@@ -209,6 +239,43 @@ export default function ValuationAnalysis() {
               </div>
             ) : (
               <CapitalizationSensitivityResultsDisplay results={capResults} inputs={capInputs!} />
+            )}
+          </TabsContent>
+
+          {/* Capitalization of Net Income Approach Tab */}
+          <TabsContent value="netincome" className="mt-6">
+            <div className="flex items-center justify-between mb-6">
+              <div>
+                <h2 className="text-2xl font-semibold">Capitalization of Net Income Approach</h2>
+                <p className="text-muted-foreground">
+                  Comprehensive property valuation using income capitalization with scenario analysis
+                </p>
+              </div>
+              {netIncomeResults && (
+                <Button onClick={() => handleReset('netincome')} variant="outline">
+                  New Analysis
+                </Button>
+              )}
+            </div>
+
+            {!netIncomeResults ? (
+              <div className="max-w-4xl mx-auto">
+                <Card className="mb-6">
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-2">
+                      <TrendingUp className="w-5 h-5" />
+                      About Net Income Capitalization
+                    </CardTitle>
+                    <CardDescription>
+                      This approach values property by capitalizing its net operating income using various capitalization rates. 
+                      It provides sensitivity analysis across optimistic, realistic, and pessimistic market scenarios.
+                    </CardDescription>
+                  </CardHeader>
+                </Card>
+                <CapitalizationNetIncomeForm onSubmit={handleNetIncomeSubmit} />
+              </div>
+            ) : (
+              <CapitalizationNetIncomeResultsDisplay results={netIncomeResults} inputs={netIncomeInputs!} />
             )}
           </TabsContent>
         </Tabs>

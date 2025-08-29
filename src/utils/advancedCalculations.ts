@@ -186,6 +186,121 @@ function getRiskLevel(riskRating: number): 'Low' | 'Moderate' | 'High' {
   return 'High';
 }
 
+// ============= CAPITALIZATION OF NET INCOME APPROACH =============
+
+export interface CapitalizationNetIncomeInputs {
+  netRent: number;
+  nrogs?: number; // Non-Recoverable Outgoings
+  capitalizationRateOptimistic: number;
+  capitalizationRateRealistic?: number;
+  capitalizationRatePessimistic: number;
+  lettingUpAllowance?: number;
+  otherCapitalAdjustments?: number;
+  relettingCosts?: number;
+}
+
+export interface CapitalizationNetIncomeResults {
+  noi: number; // Net Operating Income
+  capitalAdjustments: number;
+  optimisticMarketValue: number | null;
+  realisticMarketValue: number | null;
+  pessimisticMarketValue: number | null;
+  optimisticMarketValueRounded: number | null;
+  realisticMarketValueRounded: number | null;
+  pessimisticMarketValueRounded: number | null;
+  calculations: {
+    optimistic: {
+      beforeAdjustments: number | null;
+      adjustments: number;
+      afterAdjustments: number | null;
+    };
+    realistic: {
+      beforeAdjustments: number | null;
+      adjustments: number;
+      afterAdjustments: number | null;
+    };
+    pessimistic: {
+      beforeAdjustments: number | null;
+      adjustments: number;
+      afterAdjustments: number | null;
+    };
+  };
+}
+
+export function calculateCapitalisationRateSensitivity(inputs: CapitalizationNetIncomeInputs): CapitalizationNetIncomeResults {
+  // Validate inputs
+  if (inputs.netRent <= 0) {
+    throw new Error("Net rent must be positive");
+  }
+  
+  if (inputs.capitalizationRateOptimistic <= 0 || inputs.capitalizationRatePessimistic <= 0) {
+    throw new Error("Capitalization rates must be positive");
+  }
+  
+  if (inputs.capitalizationRateRealistic !== undefined && inputs.capitalizationRateRealistic <= 0) {
+    throw new Error("Realistic capitalization rate must be positive if provided");
+  }
+
+  // Calculate Net Operating Income (NOI)
+  const nrogs = inputs.nrogs || 0;
+  const noi = inputs.netRent - nrogs;
+  
+  if (noi <= 0) {
+    throw new Error("Net Operating Income must be positive (Net Rent must exceed NROGS)");
+  }
+
+  // Calculate capital adjustments
+  const lettingUpAllowance = inputs.lettingUpAllowance || 0;
+  const otherCapitalAdjustments = inputs.otherCapitalAdjustments || 0;
+  const relettingCosts = inputs.relettingCosts || 0;
+  const capitalAdjustments = lettingUpAllowance + otherCapitalAdjustments + relettingCosts;
+
+  // Calculate market values for each scenario
+  const optimisticMarketValue = noi / inputs.capitalizationRateOptimistic;
+  const realisticMarketValue = inputs.capitalizationRateRealistic 
+    ? noi / inputs.capitalizationRateRealistic 
+    : null;
+  const pessimisticMarketValue = noi / inputs.capitalizationRatePessimistic;
+
+  // Apply capital adjustments
+  const optimisticAdjusted = optimisticMarketValue - capitalAdjustments;
+  const realisticAdjusted = realisticMarketValue ? realisticMarketValue - capitalAdjustments : null;
+  const pessimisticAdjusted = pessimisticMarketValue - capitalAdjustments;
+
+  // Round to nearest $1,000
+  const roundToThousand = (value: number | null): number | null => {
+    return value ? Math.round(value / 1000) * 1000 : null;
+  };
+
+  return {
+    noi,
+    capitalAdjustments,
+    optimisticMarketValue,
+    realisticMarketValue,
+    pessimisticMarketValue,
+    optimisticMarketValueRounded: roundToThousand(optimisticAdjusted),
+    realisticMarketValueRounded: roundToThousand(realisticAdjusted),
+    pessimisticMarketValueRounded: roundToThousand(pessimisticAdjusted),
+    calculations: {
+      optimistic: {
+        beforeAdjustments: optimisticMarketValue,
+        adjustments: capitalAdjustments,
+        afterAdjustments: optimisticAdjusted
+      },
+      realistic: {
+        beforeAdjustments: realisticMarketValue,
+        adjustments: capitalAdjustments,  
+        afterAdjustments: realisticAdjusted
+      },
+      pessimistic: {
+        beforeAdjustments: pessimisticMarketValue,
+        adjustments: capitalAdjustments,
+        afterAdjustments: pessimisticAdjusted
+      }
+    }
+  };
+}
+
 // Export Excel formulas for advanced calculations
 export function exportAdvancedExcelFormulas() {
   return {
@@ -197,6 +312,12 @@ export function exportAdvancedExcelFormulas() {
     climateRiskLevel: 'IF(Climate_Risk > Threshold*1.5, "High", IF(Climate_Risk > Threshold, "Medium", "Low"))',
     financialRiskScore: 'Property_Age_Risk + Vacancy_Rate_Risk + Debt_Ratio_Risk + Maintenance_Risk + Market_Volatility*0.1',
     overallRiskRating: 'MIN(5, MAX(1, ROUND((Climate_Weight * Climate_Risk_Normalized + Financial_Weight * Financial_Risk_Normalized + ESG_Weight * ESG_Risk_Normalized) * 4 + 1, 0)))',
-    normalization: 'Normalized_Factor = (Actual_Score - Min_Score) / (Max_Score - Min_Score)'
+    normalization: 'Normalized_Factor = (Actual_Score - Min_Score) / (Max_Score - Min_Score)',
+    // Capitalization formulas
+    noi: 'Net_Rent - NROGS',
+    capitalAdjustments: 'Letting_Up_Allowance + Other_Capital_Adjustments + Reletting_Costs',
+    marketValue: 'NOI / Capitalization_Rate',
+    adjustedMarketValue: 'Market_Value - Capital_Adjustments',
+    roundedValue: 'ROUND(Adjusted_Market_Value / 1000, 0) * 1000'
   };
 }
