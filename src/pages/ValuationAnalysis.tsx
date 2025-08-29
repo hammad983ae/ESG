@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { ArrowLeft, Target, TrendingUp, Leaf, Calculator, Settings } from "lucide-react";
+import { ArrowLeft, Target, TrendingUp, Leaf, Calculator, Settings, Building2 } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -15,6 +15,8 @@ import { CapitalizationNetIncomeForm } from "@/components/CapitalizationNetIncom
 import { CapitalizationNetIncomeResultsDisplay } from "@/components/CapitalizationNetIncomeResults";
 import { ESGAdjustedCapitalizationForm } from "@/components/ESGAdjustedCapitalizationForm";
 import { ESGAdjustedCapitalizationResultsDisplay } from "@/components/ESGAdjustedCapitalizationResults";
+import { ESGComparableSalesForm } from "@/components/ESGComparableSalesForm";
+import { ESGComparableSalesResultsDisplay } from "@/components/ESGComparableSalesResults";
 import { ARYInputs, ARYResults, calculateAllRisksYield } from "@/utils/aryCalculations";
 import { 
   ESGInputs, 
@@ -30,6 +32,11 @@ import {
   ESGAdjustedCapitalizationInputs,
   calculateCapitalisationRateSensitivity
 } from "@/utils/advancedCalculations";
+import {
+  ESGWeightedSalesInputs,
+  ESGWeightedSalesResults,
+  calculateESGWeightedComparableSales
+} from "@/utils/comparableSalesCalculations";
 
 export default function ValuationAnalysis() {
   // ARY States
@@ -51,6 +58,10 @@ export default function ValuationAnalysis() {
   // ESG-Adjusted Capitalization States
   const [esgCapInputs, setEsgCapInputs] = useState<ESGAdjustedCapitalizationInputs | null>(null);
   const [esgCapResults, setEsgCapResults] = useState<CapitalizationNetIncomeResults | null>(null);
+  
+  // ESG Comparable Sales States
+  const [esgSalesInputs, setEsgSalesInputs] = useState<ESGWeightedSalesInputs | null>(null);
+  const [esgSalesResults, setEsgSalesResults] = useState<ESGWeightedSalesResults | null>(null);
 
   const handleARYSubmit = (inputs: ARYInputs) => {
     try {
@@ -107,6 +118,17 @@ export default function ValuationAnalysis() {
     }
   };
 
+  const handleESGComparableSalesSubmit = (inputs: ESGWeightedSalesInputs) => {
+    try {
+      const calculatedResults = calculateESGWeightedComparableSales(inputs);
+      setEsgSalesInputs(inputs);
+      setEsgSalesResults(calculatedResults);
+      toast.success("ESG comparable sales analysis completed!");
+    } catch (error) {
+      toast.error(`ESG comparable sales analysis error: ${error instanceof Error ? error.message : 'Unknown error'}`);
+    }
+  };
+
   const handleReset = (tab: string) => {
     switch (tab) {
       case 'ary':
@@ -128,6 +150,10 @@ export default function ValuationAnalysis() {
       case 'esgcapitalization':
         setEsgCapInputs(null);
         setEsgCapResults(null);
+        break;
+      case 'esgcomparablesales':
+        setEsgSalesInputs(null);
+        setEsgSalesResults(null);
         break;
     }
   };
@@ -158,7 +184,7 @@ export default function ValuationAnalysis() {
 
         {/* Main Content with Tabs */}
         <Tabs defaultValue="ary" className="w-full">
-          <TabsList className="grid w-full grid-cols-5">
+          <TabsList className="grid w-full grid-cols-6">
             <TabsTrigger value="ary" className="flex items-center gap-2">
               <Target className="w-4 h-4" />
               All Risks Yield
@@ -178,6 +204,10 @@ export default function ValuationAnalysis() {
             <TabsTrigger value="esgcapitalization" className="flex items-center gap-2">
               <Settings className="w-4 h-4" />
               ESG Cap Analysis
+            </TabsTrigger>
+            <TabsTrigger value="esgcomparablesales" className="flex items-center gap-2">
+              <Building2 className="w-4 h-4" />
+              ESG Comparable Sales
             </TabsTrigger>
           </TabsList>
 
@@ -340,6 +370,44 @@ export default function ValuationAnalysis() {
               </div>
             ) : (
               <ESGAdjustedCapitalizationResultsDisplay results={esgCapResults} inputs={esgCapInputs!} />
+            )}
+          </TabsContent>
+
+          {/* ESG Comparable Sales Analysis Tab */}
+          <TabsContent value="esgcomparablesales" className="mt-6">
+            <div className="flex items-center justify-between mb-6">
+              <div>
+                <h2 className="text-2xl font-semibold">ESG-Weighted Comparable Sales Assessment</h2>
+                <p className="text-muted-foreground">
+                  Enhanced sales comparison approach incorporating ESG factors and sustainability-weighted adjustments
+                </p>
+              </div>
+              {esgSalesResults && (
+                <Button onClick={() => handleReset('esgcomparablesales')} variant="outline">
+                  New Analysis
+                </Button>
+              )}
+            </div>
+
+            {!esgSalesResults ? (
+              <div className="max-w-6xl mx-auto">
+                <Card className="mb-6">
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-2">
+                      <Building2 className="w-5 h-5" />
+                      ESG-Enhanced Sales Comparison Analysis
+                    </CardTitle>
+                    <CardDescription>
+                      This advanced valuation method extends traditional sales comparison by quantitatively incorporating 
+                      Environmental, Social, and Governance (ESG) factors. Properties with stronger sustainability profiles 
+                      receive higher weighting in the analysis, reflecting market premiums for ESG-compliant assets.
+                    </CardDescription>
+                  </CardHeader>
+                </Card>
+                <ESGComparableSalesForm onSubmit={handleESGComparableSalesSubmit} />
+              </div>
+            ) : (
+              <ESGComparableSalesResultsDisplay results={esgSalesResults} inputs={esgSalesInputs!} />
             )}
           </TabsContent>
         </Tabs>
