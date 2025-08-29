@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Link } from "react-router-dom";
 import { PropertyAssessmentForm, PropertyData } from "@/components/PropertyAssessmentForm";
 import { ESGDashboard } from "@/components/ESGDashboard";
 import { ExportTools } from "@/components/ExportTools"; 
@@ -9,7 +10,7 @@ import { calculateAdvancedRiskAssessment, AdvancedCalculationResults } from "@/u
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Building, Calculator, BarChart3, ArrowLeft, Target } from "lucide-react";
+import { Building, Calculator, BarChart3, ArrowLeft, Target, TrendingUp } from "lucide-react";
 
 const Index = () => {
   const [currentStep, setCurrentStep] = useState<'form' | 'results'>('form');
@@ -54,10 +55,18 @@ const Index = () => {
                   ESG Property Assessment Platform
                 </h1>
               </div>
-              <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
+              <p className="text-xl text-muted-foreground max-w-3xl mx-auto mb-6">
                 Professional sustainability and risk evaluation platform for real estate properties. 
                 Choose between basic ESG assessment or advanced automated calculations with comprehensive risk analysis.
               </p>
+              <div className="flex justify-center">
+                <Link to="/valuation">
+                  <Button variant="outline" size="lg" className="flex items-center gap-2">
+                    <TrendingUp className="w-5 h-5" />
+                    Valuation Analysis
+                  </Button>
+                </Link>
+              </div>
             </div>
 
             {/* Assessment Type Tabs */}
