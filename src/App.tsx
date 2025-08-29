@@ -1,12 +1,12 @@
 /**
- * ESG Property Assessment Platform
+ * Delorenzo Property Group - ESG Property Assessment Platform
  * 
- * Copyright (c) 2025 ESG Property Assessment Platform
+ * Copyright (c) 2025 Delorenzo Property Group
  * Licensed under MIT License - see LICENSE file for details
  * 
  * Main application component providing routing and core providers
  * 
- * @author ESG Property Assessment Platform
+ * @author Delorenzo Property Group
  * @version 1.0.0
  */
 
