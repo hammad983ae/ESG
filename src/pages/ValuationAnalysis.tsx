@@ -18,6 +18,9 @@ import { ESGAdjustedCapitalizationResultsDisplay } from "@/components/ESGAdjuste
 import { ESGComparableSalesForm } from "@/components/ESGComparableSalesForm";
 import { ESGComparableSalesResultsDisplay } from "@/components/ESGComparableSalesResults";
 import { ESGFactorsWeightingPanel } from "@/components/ESGFactorsWeightingPanel";
+import { ESGVariableControlPanel } from "@/components/ESGVariableControlPanel";
+import { SimpleCapNetIncomeForm } from "@/components/SimpleCapNetIncomeForm";
+import { SimpleCapNetIncomeResultsDisplay } from "@/components/SimpleCapNetIncomeResults";
 import { ARYInputs, ARYResults, calculateAllRisksYield } from "@/utils/aryCalculations";
 import { 
   ESGInputs, 
@@ -63,6 +66,10 @@ export default function ValuationAnalysis() {
   // ESG Comparable Sales States
   const [esgSalesInputs, setEsgSalesInputs] = useState<ESGWeightedSalesInputs | null>(null);
   const [esgSalesResults, setEsgSalesResults] = useState<ESGWeightedSalesResults | null>(null);
+  
+  // Cap Net Income States
+  const [capNetIncomeInputs, setCapNetIncomeInputs] = useState<any>(null);
+  const [capNetIncomeResults, setCapNetIncomeResults] = useState<any>(null);
 
   const handleARYSubmit = (inputs: ARYInputs) => {
     try {
@@ -156,6 +163,28 @@ export default function ValuationAnalysis() {
         setEsgSalesInputs(null);
         setEsgSalesResults(null);
         break;
+      case 'capnetincome':
+        setCapNetIncomeInputs(null);
+        setCapNetIncomeResults(null);
+        break;
+    }
+  };
+
+  const handleCapNetIncomeSubmit = (inputs: any) => {
+    try {
+      // Calculate market value using basic cap rate approach
+      const marketValue = inputs.noi / (inputs.capitalizationRate / 100);
+      const results = {
+        marketValue,
+        marketValueRounded: Math.round(marketValue),
+        adjustedRiskPremium: inputs.riskPremium,
+        adjustedCapRate: inputs.capitalizationRate,
+      };
+      setCapNetIncomeInputs(inputs);
+      setCapNetIncomeResults(results);
+      toast.success("Capitalisation of Net Income analysis completed!");
+    } catch (error) {
+      toast.error(`Analysis error: ${error instanceof Error ? error.message : 'Unknown error'}`);
     }
   };
 
@@ -185,7 +214,7 @@ export default function ValuationAnalysis() {
 
         {/* Main Content with Tabs */}
         <Tabs defaultValue="ary" className="w-full">
-          <TabsList className="grid w-full grid-cols-7">
+          <TabsList className="grid w-full grid-cols-9">
             <TabsTrigger value="ary" className="flex items-center gap-2">
               <Target className="w-4 h-4" />
               All Risks Yield
@@ -213,6 +242,14 @@ export default function ValuationAnalysis() {
             <TabsTrigger value="esgweighting" className="flex items-center gap-2">
               <Sliders className="w-4 h-4" />
               ESG Factors Weighting
+            </TabsTrigger>
+            <TabsTrigger value="capnetincome" className="flex items-center gap-2">
+              <Calculator className="w-4 h-4" />
+              Cap Net Income
+            </TabsTrigger>
+            <TabsTrigger value="esgvariablecontrol" className="flex items-center gap-2">
+              <Settings className="w-4 h-4" />
+              ESG Variable Control
             </TabsTrigger>
           </TabsList>
 
@@ -427,6 +464,44 @@ export default function ValuationAnalysis() {
               </div>
             </div>
             <ESGFactorsWeightingPanel />
+          </TabsContent>
+
+          {/* Cap Net Income Tab */}
+          <TabsContent value="capnetincome" className="mt-6">
+            <div className="flex items-center justify-between mb-6">
+              <div>
+                <h2 className="text-2xl font-semibold">Capitalisation of Net Income Approach</h2>
+                <p className="text-muted-foreground">
+                  Calculate market value by dividing net income (NOI) by the Capitalisation Rate with risk premium adjustments
+                </p>
+              </div>
+              {capNetIncomeResults && (
+                <Button onClick={() => handleReset('capnetincome')} variant="outline">
+                  New Analysis
+                </Button>
+              )}
+            </div>
+
+            {!capNetIncomeResults ? (
+              <div className="max-w-4xl mx-auto">
+                <SimpleCapNetIncomeForm onSubmit={handleCapNetIncomeSubmit} />
+              </div>
+            ) : (
+              <SimpleCapNetIncomeResultsDisplay results={capNetIncomeResults} inputs={capNetIncomeInputs!} />
+            )}
+          </TabsContent>
+
+          {/* ESG Variable Control Tab */}
+          <TabsContent value="esgvariablecontrol" className="mt-6">
+            <div className="flex items-center justify-between mb-6">
+              <div>
+                <h2 className="text-2xl font-semibold">ESG Variable Control</h2>
+                <p className="text-muted-foreground">
+                  Adjust ESG variables with real-time impact on risk premium and capitalisation rates
+                </p>
+              </div>
+            </div>
+            <ESGVariableControlPanel />
           </TabsContent>
         </Tabs>
       </div>
