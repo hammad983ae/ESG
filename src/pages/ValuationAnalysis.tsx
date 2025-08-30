@@ -276,52 +276,52 @@ export default function ValuationAnalysis() {
 
         {/* Main Content with Tabs */}
         <Tabs defaultValue="ary" className="w-full">
-          <TabsList className="grid w-full grid-cols-12">
-            <TabsTrigger value="ary" className="flex items-center gap-2">
+          <TabsList className="grid w-full grid-cols-3 gap-2 h-auto p-2">
+            <TabsTrigger value="ary" className="flex items-center gap-2 p-3">
               <Target className="w-4 h-4" />
               All Risks Yield
             </TabsTrigger>
-            <TabsTrigger value="esg" className="flex items-center gap-2">
+            <TabsTrigger value="esg" className="flex items-center gap-2 p-3">
               <Leaf className="w-4 h-4" />
               ESG-Adjusted ARY
             </TabsTrigger>
-            <TabsTrigger value="capitalization" className="flex items-center gap-2">
+            <TabsTrigger value="capitalization" className="flex items-center gap-2 p-3">
               <Calculator className="w-4 h-4" />
               Cap Rate Sensitivity
             </TabsTrigger>
-            <TabsTrigger value="netincome" className="flex items-center gap-2">
+            <TabsTrigger value="netincome" className="flex items-center gap-2 p-3">
               <TrendingUp className="w-4 h-4" />
               Net Income Approach
             </TabsTrigger>
-            <TabsTrigger value="esgcapitalization" className="flex items-center gap-2">
+            <TabsTrigger value="esgcapitalization" className="flex items-center gap-2 p-3">
               <Settings className="w-4 h-4" />
               ESG Cap Analysis
             </TabsTrigger>
-            <TabsTrigger value="esgcomparablesales" className="flex items-center gap-2">
+            <TabsTrigger value="esgcomparablesales" className="flex items-center gap-2 p-3">
               <Building2 className="w-4 h-4" />
               ESG Comparable Sales
             </TabsTrigger>
-            <TabsTrigger value="esgweighting" className="flex items-center gap-2">
+            <TabsTrigger value="esgweighting" className="flex items-center gap-2 p-3">
               <Sliders className="w-4 h-4" />
               ESG Factors Weighting
             </TabsTrigger>
-            <TabsTrigger value="capnetincome" className="flex items-center gap-2">
+            <TabsTrigger value="capnetincome" className="flex items-center gap-2 p-3">
               <Calculator className="w-4 h-4" />
               Cap Net Income
             </TabsTrigger>
-            <TabsTrigger value="esgvariablecontrol" className="flex items-center gap-2">
+            <TabsTrigger value="esgvariablecontrol" className="flex items-center gap-2 p-3">
               <Settings className="w-4 h-4" />
               ESG Variable Control
             </TabsTrigger>
-            <TabsTrigger value="esgcaprateimpact" className="flex items-center gap-2">
+            <TabsTrigger value="esgcaprateimpact" className="flex items-center gap-2 p-3">
               <Calculator className="w-4 h-4" />
               ESG Cap Rate Impact
             </TabsTrigger>
-            <TabsTrigger value="summation" className="flex items-center gap-2">
+            <TabsTrigger value="summation" className="flex items-center gap-2 p-3">
               <Building2 className="w-4 h-4" />
               Summation Approach
             </TabsTrigger>
-            <TabsTrigger value="directcomparison" className="flex items-center gap-2">
+            <TabsTrigger value="directcomparison" className="flex items-center gap-2 p-3">
               <TrendingUp className="w-4 h-4" />
               Direct Comparison
             </TabsTrigger>
