@@ -31,7 +31,7 @@ export default function Security() {
             Security & Certificates
           </h1>
           <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-            Delorenzo Property Group Pty Ltd - Compliance, Certifications & Intellectual Property Protection
+            Delorenzo Property Group Pty Ltd - Property Assessment Platform Compliance, Certifications & Intellectual Property Protection
           </p>
         </div>
 
@@ -118,7 +118,11 @@ export default function Security() {
                   </div>
                   <div className="flex items-center gap-2">
                     <CheckCircle className="w-4 h-4 text-green-600" />
-                    <span>Proprietary valuation algorithms and methodologies</span>
+                    <span>Proprietary property valuation algorithms and ESG assessment methodologies</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <CheckCircle className="w-4 h-4 text-green-600" />
+                    <span>All Risks Yield (ARY) calculation systems</span>
                   </div>
                 </div>
               </div>
