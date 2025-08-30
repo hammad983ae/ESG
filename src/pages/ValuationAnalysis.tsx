@@ -268,7 +268,7 @@ export default function ValuationAnalysis() {
                 Valuation Analysis
               </h1>
               <p className="text-muted-foreground">
-                Comprehensive property valuation with ARY, ESG, and capitalization rate analysis
+                World's first comprehensive property valuation with ARY, ESG, and capitalization rate analysis
               </p>
             </div>
           </div>

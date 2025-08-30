@@ -70,6 +70,9 @@ const Index = () => {
           <div className="space-y-8">
             {/* Header */}
             <div className="text-center">
+              <div className="inline-flex items-center px-4 py-2 bg-primary/10 text-primary rounded-full text-sm font-medium mb-6">
+                🌍 First in the World ESG Property Assessment Platform
+              </div>
               <div className="flex items-center justify-center gap-3 mb-6">
                 <Building className="h-12 w-12 text-primary" />
                 <h1 className="text-4xl font-bold bg-gradient-to-r from-primary to-success bg-clip-text text-transparent">
@@ -77,6 +80,7 @@ const Index = () => {
                 </h1>
               </div>
               <p className="text-xl text-muted-foreground max-w-3xl mx-auto mb-6">
+                The world's first comprehensive ESG-integrated property valuation system.
                 Professional sustainability and risk evaluation platform for real estate properties. 
                 Choose between basic ESG assessment or advanced automated calculations with comprehensive risk analysis.
               </p>
