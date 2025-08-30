@@ -26,6 +26,7 @@ import { ESGDashboard } from "@/components/ESGDashboard";
 import { ExportTools } from "@/components/ExportTools"; 
 import { AdvancedCalculationsForm, AdvancedPropertyData } from "@/components/AdvancedCalculationsForm";
 import { AdvancedDashboard } from "@/components/AdvancedDashboard";
+import SpecializedAVMSection from "@/components/SpecializedAVMSection";
 import { calculateESGScores, ESGScores } from "@/utils/esgCalculations";
 import { calculateAdvancedRiskAssessment, AdvancedCalculationResults } from "@/utils/advancedCalculations";
 import { Button } from "@/components/ui/button";
@@ -217,6 +218,11 @@ const Index = () => {
                 <AdvancedCalculationsForm onSubmit={handleAdvancedFormSubmit} />
               </TabsContent>
             </Tabs>
+
+            {/* Specialized AVM Section */}
+            <div className="mt-12 pt-8 border-t border-border/50">
+              <SpecializedAVMSection />
+            </div>
           </div>
         ) : (
           <div className="space-y-6">
