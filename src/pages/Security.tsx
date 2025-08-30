@@ -6,7 +6,7 @@
  * 
  * Displays ISO certificates, trademarks, licensing, and IP verification
  * 
- * @author Delorenzo Property Group
+ * @author Delorenzo Property Group Pty Ltd
  * @version 1.0.0
  */
 

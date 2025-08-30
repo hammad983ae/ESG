@@ -1,7 +1,7 @@
 /**
  * Delorenzo Property Group - ESG Property Assessment Platform - Main Dashboard
  * 
- * Copyright (c) 2025 Delorenzo Property Group
+ * Copyright (c) 2025 Delorenzo Property Group Pty Ltd
  * Licensed under MIT License - see LICENSE file for details
  * 
  * Professional sustainability and risk evaluation platform for real estate properties.
@@ -15,7 +15,7 @@
  * - Financial integration with SEIFA socioeconomic scoring
  * - Export tools for CSV, JSON, and Excel integration
  * 
- * @author Delorenzo Property Group
+ * @author Delorenzo Property Group Pty Ltd
  * @version 1.0.0
  */
 
