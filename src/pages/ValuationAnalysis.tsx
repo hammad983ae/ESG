@@ -1,7 +1,7 @@
 /**
- * Delorenzo Property Group - ESG Property Assessment Platform - Valuation Analysis Module
+ * ESG Property Assessment Platform - Valuation Analysis Module
  * 
- * Copyright (c) 2025 Delorenzo Property Group
+ * Copyright (c) 2025 ESG Property Assessment Platform
  * Licensed under MIT License - see LICENSE file for details
  * 
  * Comprehensive property valuation analysis including:
@@ -16,7 +16,7 @@
  * Integrates with automated CPI updates and market data APIs
  * for professional real estate valuation workflows.
  * 
- * @author Delorenzo Property Group
+ * @author ESG Property Assessment Platform
  * @version 1.0.0
  */
 

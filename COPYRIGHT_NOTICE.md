@@ -1,8 +1,8 @@
 # Copyright Notice
 
-## Delorenzo Property Group - ESG Property Assessment Platform
+## ESG Property Assessment Platform
 
-**Copyright (c) 2025 Delorenzo Property Group**
+**Copyright (c) 2025 ESG Property Assessment Platform**
 
 This software and all associated intellectual property, including but not limited to:
 
@@ -19,18 +19,17 @@ are protected by copyright and subject to the terms of the MIT License with addi
 
 ### Commercial Use Notice
 
-Commercial use of the proprietary valuation methodologies, ESG assessment algorithms, and interface designs requires written permission from Delorenzo Property Group.
+Commercial use of the proprietary valuation methodologies, ESG assessment algorithms, and interface designs requires written permission from the copyright holder.
 
 ### Attribution Requirements
 
-All derivative works must maintain proper attribution to Delorenzo Property Group and its contributors.
+All derivative works must maintain proper attribution to the ESG Property Assessment Platform and its contributors.
 
 ### Contact Information
 
 For commercial licensing inquiries or permission requests, please contact:
-Delorenzo Property Group
-[Contact information to be provided]
+[Insert contact information]
 
 ---
 
-**Trade Secrets Notice**: The ESG assessment algorithms, weighted attribute analysis methods, and property valuation formulas contained within this software are considered proprietary business methods and trade secrets of Delorenzo Property Group.
+**Trade Secrets Notice**: The ESG assessment algorithms, weighted attribute analysis methods, and property valuation formulas contained within this software are considered proprietary business methods and trade secrets.
