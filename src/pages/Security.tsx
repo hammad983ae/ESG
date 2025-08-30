@@ -221,10 +221,10 @@ export default function Security() {
               <div className="p-4 bg-primary/5 rounded-lg">
                 <h3 className="font-semibold mb-2">Delorenzo Property Group Pty Ltd</h3>
                 <div className="space-y-1 text-sm">
-                  <div>ABN: [Australian Business Number]</div>
-                  <div>Email: compliance@delorenzo.com.au</div>
-                  <div>Phone: +61 [Contact Number]</div>
-                  <div>Address: [Business Address]</div>
+                  <div>ABN: 80 644 568 678</div>
+                  <div>Email: info@delorenzopropertygroup.com</div>
+                  <div>Website: www.delorenzopropertygroup.com.au</div>
+                  <div>Phone: +61 417 693 838</div>
                 </div>
               </div>
             </CardContent>
