@@ -1,31 +1,8 @@
-/**
- * ESG Property Assessment Platform - Valuation Analysis Module
- * 
- * Copyright (c) 2025 ESG Property Assessment Platform
- * Licensed under MIT License - see LICENSE file for details
- * 
- * Comprehensive property valuation analysis including:
- * - All Risks Yield (ARY) calculations
- * - ESG-adjusted ARY with sustainability factors
- * - Capitalization rate sensitivity analysis
- * - Net income approach valuations
- * - Comparable sales analysis with ESG weighting
- * - Direct comparison and summation approaches
- * - Advanced weighted attribute analysis
- * 
- * Integrates with automated CPI updates and market data APIs
- * for professional real estate valuation workflows.
- * 
- * @author ESG Property Assessment Platform
- * @version 1.0.0
- */
-
 import { useState } from "react";
 import { ArrowLeft, Target, TrendingUp, Leaf, Calculator, Settings, Building2, Sliders } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { toast } from "sonner";
 import { ARYCalculationForm } from "@/components/ARYCalculationForm";
@@ -45,8 +22,6 @@ import { ESGVariableControlPanel } from "@/components/ESGVariableControlPanel";
 import { ESGCapRateImpactCalculator } from "@/components/ESGCapRateImpactCalculator";
 import { SimpleCapNetIncomeForm } from "@/components/SimpleCapNetIncomeForm";
 import { SimpleCapNetIncomeResultsDisplay } from "@/components/SimpleCapNetIncomeResults";
-import { ValuationSummationForm } from "@/components/ValuationSummationForm";
-import { ValuationDirectComparisonForm } from "@/components/ValuationDirectComparisonForm";
 import { ARYInputs, ARYResults, calculateAllRisksYield } from "@/utils/aryCalculations";
 import { 
   ESGInputs, 
@@ -96,14 +71,6 @@ export default function ValuationAnalysis() {
   // Cap Net Income States
   const [capNetIncomeInputs, setCapNetIncomeInputs] = useState<any>(null);
   const [capNetIncomeResults, setCapNetIncomeResults] = useState<any>(null);
-  
-  // Summation Approach States
-  const [summationInputs, setSummationInputs] = useState<any>(null);
-  const [summationResults, setSummationResults] = useState<any>(null);
-  
-  // Direct Comparison States
-  const [directCompInputs, setDirectCompInputs] = useState<any>(null);
-  const [directCompResults, setDirectCompResults] = useState<any>(null);
 
   const handleARYSubmit = (inputs: ARYInputs) => {
     try {
@@ -201,14 +168,6 @@ export default function ValuationAnalysis() {
         setCapNetIncomeInputs(null);
         setCapNetIncomeResults(null);
         break;
-      case 'summation':
-        setSummationInputs(null);
-        setSummationResults(null);
-        break;
-      case 'directcomparison':
-        setDirectCompInputs(null);
-        setDirectCompResults(null);
-        break;
     }
   };
 
@@ -227,26 +186,6 @@ export default function ValuationAnalysis() {
       toast.success("Capitalisation of Net Income analysis completed!");
     } catch (error) {
       toast.error(`Analysis error: ${error instanceof Error ? error.message : 'Unknown error'}`);
-    }
-  };
-
-  const handleSummationSubmit = (inputs: any) => {
-    try {
-      setSummationInputs(inputs);
-      setSummationResults(inputs);
-      toast.success("Summation valuation analysis completed!");
-    } catch (error) {
-      toast.error(`Summation analysis error: ${error instanceof Error ? error.message : 'Unknown error'}`);
-    }
-  };
-
-  const handleDirectComparisonSubmit = (inputs: any) => {
-    try {
-      setDirectCompInputs(inputs);
-      setDirectCompResults(inputs);
-      toast.success("Direct comparison valuation completed!");
-    } catch (error) {
-      toast.error(`Direct comparison analysis error: ${error instanceof Error ? error.message : 'Unknown error'}`);
     }
   };
 
@@ -276,7 +215,7 @@ export default function ValuationAnalysis() {
 
         {/* Main Content with Tabs */}
         <Tabs defaultValue="ary" className="w-full">
-          <TabsList className="grid w-full grid-cols-12">
+          <TabsList className="grid w-full grid-cols-10">
             <TabsTrigger value="ary" className="flex items-center gap-2">
               <Target className="w-4 h-4" />
               All Risks Yield
@@ -316,14 +255,6 @@ export default function ValuationAnalysis() {
             <TabsTrigger value="esgcaprateimpact" className="flex items-center gap-2">
               <Calculator className="w-4 h-4" />
               ESG Cap Rate Impact
-            </TabsTrigger>
-            <TabsTrigger value="summation" className="flex items-center gap-2">
-              <Building2 className="w-4 h-4" />
-              Summation Approach
-            </TabsTrigger>
-            <TabsTrigger value="directcomparison" className="flex items-center gap-2">
-              <TrendingUp className="w-4 h-4" />
-              Direct Comparison
             </TabsTrigger>
           </TabsList>
 
@@ -589,208 +520,6 @@ export default function ValuationAnalysis() {
               </div>
             </div>
             <ESGCapRateImpactCalculator />
-          </TabsContent>
-
-          {/* Summation Approach Tab */}
-          <TabsContent value="summation" className="mt-6">
-            <div className="flex items-center justify-between mb-6">
-              <div>
-                <h2 className="text-2xl font-semibold">Valuation Summation Approach</h2>
-                <p className="text-muted-foreground">
-                  Automated summation valuation with sustainability factor adjustments for individual asset types
-                </p>
-              </div>
-              {summationResults && (
-                <Button onClick={() => handleReset('summation')} variant="outline">
-                  New Analysis
-                </Button>
-              )}
-            </div>
-
-            {!summationResults ? (
-              <div className="max-w-6xl mx-auto">
-                <Card className="mb-6">
-                  <CardHeader>
-                    <CardTitle className="flex items-center gap-2">
-                      <Building2 className="w-5 h-5" />
-                      About Summation Approach
-                    </CardTitle>
-                    <CardDescription>
-                      The summation approach values property by adding up individual asset values, each adjusted for sustainability factors. 
-                      This method is particularly useful for mixed-use properties or portfolios with diverse asset types.
-                    </CardDescription>
-                  </CardHeader>
-                </Card>
-                <ValuationSummationForm onSubmit={handleSummationSubmit} />
-              </div>
-            ) : (
-              <Card>
-                <CardHeader>
-                  <CardTitle>Summation Valuation Results</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
-                    <div className="space-y-2">
-                      <Label>Total Base Value</Label>
-                      <div className="text-2xl font-bold">
-                        ${summationResults.totalBaseValue?.toLocaleString()}
-                      </div>
-                    </div>
-                    <div className="space-y-2">
-                      <Label>Total Adjusted Value</Label>
-                      <div className="text-2xl font-bold text-primary">
-                        ${summationResults.totalAdjustedValue?.toLocaleString()}
-                      </div>
-                    </div>
-                    <div className="space-y-2">
-                      <Label>Overall Sustainability Score</Label>
-                      <div className="text-xl font-semibold">
-                        {summationResults.overallSustainabilityScore}/100
-                      </div>
-                    </div>
-                    <div className="space-y-2">
-                      <Label>Average Adjustment Factor</Label>
-                      <div className="text-xl font-semibold">
-                        {summationResults.averageAdjustmentFactor?.toFixed(2)}x
-                      </div>
-                    </div>
-                  </div>
-                  <div className="space-y-4">
-                    <h3 className="text-lg font-semibold">Asset Breakdown</h3>
-                    {summationResults.assets?.map((asset: any, index: number) => (
-                      <Card key={asset.id} className="p-4">
-                        <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
-                          <div>
-                            <Label className="text-sm text-muted-foreground">Asset</Label>
-                            <div className="font-medium">{asset.name || `${asset.type} Asset`}</div>
-                          </div>
-                          <div>
-                            <Label className="text-sm text-muted-foreground">Base Value</Label>
-                            <div>${asset.baseValue?.toLocaleString()}</div>
-                          </div>
-                          <div>
-                            <Label className="text-sm text-muted-foreground">Sustainability Score</Label>
-                            <div>{asset.sustainabilityScore}/100</div>
-                          </div>
-                          <div>
-                            <Label className="text-sm text-muted-foreground">Adjustment</Label>
-                            <div>{asset.adjustmentFactor?.toFixed(2)}x</div>
-                          </div>
-                          <div>
-                            <Label className="text-sm text-muted-foreground">Adjusted Value</Label>
-                            <div className="font-semibold">${asset.adjustedValue?.toLocaleString()}</div>
-                          </div>
-                        </div>
-                      </Card>
-                    ))}
-                  </div>
-                </CardContent>
-              </Card>
-            )}
-          </TabsContent>
-
-          {/* Direct Comparison Approach Tab */}
-          <TabsContent value="directcomparison" className="mt-6">
-            <div className="flex items-center justify-between mb-6">
-              <div>
-                <h2 className="text-2xl font-semibold">Valuation Direct Comparison Approach</h2>
-                <p className="text-muted-foreground">
-                  Automated comparable sales analysis with flexible asset type selection and adjustment factors
-                </p>
-              </div>
-              {directCompResults && (
-                <Button onClick={() => handleReset('directcomparison')} variant="outline">
-                  New Analysis
-                </Button>
-              )}
-            </div>
-
-            {!directCompResults ? (
-              <div className="max-w-6xl mx-auto">
-                <Card className="mb-6">
-                  <CardHeader>
-                    <CardTitle className="flex items-center gap-2">
-                      <TrendingUp className="w-5 h-5" />
-                      About Direct Comparison Approach
-                    </CardTitle>
-                    <CardDescription>
-                      The direct comparison approach determines property value by analyzing recent sales of similar properties, 
-                      with adjustments made for differences in location, condition, size, timing, and sustainability factors.
-                    </CardDescription>
-                  </CardHeader>
-                </Card>
-                <ValuationDirectComparisonForm onSubmit={handleDirectComparisonSubmit} />
-              </div>
-            ) : (
-              <Card>
-                <CardHeader>
-                  <CardTitle>Direct Comparison Valuation Results</CardTitle>
-                  <CardDescription>
-                    Based on {directCompResults.valuation?.comparablesCount} comparable sales
-                  </CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
-                    <div className="space-y-2">
-                      <Label>Subject Property</Label>
-                      <div className="font-semibold">{directCompResults.subjectProperty?.name}</div>
-                      <div className="text-sm text-muted-foreground">{directCompResults.subjectProperty?.location}</div>
-                    </div>
-                    <div className="space-y-2">
-                      <Label>Average Price per sqm</Label>
-                      <div className="text-xl font-bold">
-                        ${directCompResults.valuation?.averagePricePerSqm?.toFixed(0)}
-                      </div>
-                    </div>
-                    <div className="space-y-2">
-                      <Label>Estimated Value</Label>
-                      <div className="text-2xl font-bold text-primary">
-                        ${directCompResults.valuation?.estimatedValue?.toLocaleString()}
-                      </div>
-                    </div>
-                    <div className="space-y-2">
-                      <Label>Value Range</Label>
-                      <div className="text-sm">
-                        ${directCompResults.valuation?.valueRange?.low?.toLocaleString()} - ${directCompResults.valuation?.valueRange?.high?.toLocaleString()}
-                      </div>
-                    </div>
-                  </div>
-                  <div className="space-y-4">
-                    <h3 className="text-lg font-semibold">Comparable Sales</h3>
-                    {directCompResults.comparables?.map((comp: any, index: number) => (
-                      <Card key={comp.id} className="p-4">
-                        <div className="grid grid-cols-1 md:grid-cols-6 gap-4">
-                          <div>
-                            <Label className="text-sm text-muted-foreground">Property</Label>
-                            <div className="font-medium">{comp.property}</div>
-                          </div>
-                          <div>
-                            <Label className="text-sm text-muted-foreground">Location</Label>
-                            <div>{comp.location}</div>
-                          </div>
-                          <div>
-                            <Label className="text-sm text-muted-foreground">Sale Date</Label>
-                            <div>{comp.saleDate}</div>
-                          </div>
-                          <div>
-                            <Label className="text-sm text-muted-foreground">Sale Price</Label>
-                            <div>${comp.price?.toLocaleString()}</div>
-                          </div>
-                          <div>
-                            <Label className="text-sm text-muted-foreground">Price per sqm</Label>
-                            <div>${comp.pricePerSqm?.toFixed(0)}</div>
-                          </div>
-                          <div>
-                            <Label className="text-sm text-muted-foreground">Adjusted Price</Label>
-                            <div className="font-semibold">${comp.adjustedPrice?.toLocaleString()}</div>
-                          </div>
-                        </div>
-                      </Card>
-                    ))}
-                  </div>
-                </CardContent>
-              </Card>
-            )}
           </TabsContent>
         </Tabs>
       </div>
