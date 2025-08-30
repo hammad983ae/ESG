@@ -1,3 +1,24 @@
+/**
+ * Delorenzo Property Group Pty Ltd - ESG Property Assessment Platform - Main Dashboard
+ * 
+ * Copyright (c) 2025 Delorenzo Property Group Pty Ltd
+ * Licensed under MIT License - see LICENSE file for details
+ * 
+ * Professional sustainability and risk evaluation platform for real estate properties.
+ * Provides basic ESG assessment and advanced automated calculations with comprehensive 
+ * risk analysis capabilities.
+ * 
+ * Features:
+ * - Environmental, Social, and Governance scoring
+ * - Property risk rating and assessment
+ * - Climate risk evaluation with customizable thresholds
+ * - Financial integration with SEIFA socioeconomic scoring
+ * - Export tools for CSV, JSON, and Excel integration
+ * 
+ * @author Delorenzo Property Group Pty Ltd
+ * @version 1.0.0
+ */
+
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { PropertyAssessmentForm, PropertyData } from "@/components/PropertyAssessmentForm";
@@ -10,7 +31,7 @@ import { calculateAdvancedRiskAssessment, AdvancedCalculationResults } from "@/u
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Building, Calculator, BarChart3, ArrowLeft, Target, TrendingUp } from "lucide-react";
+import { Building, Calculator, BarChart3, ArrowLeft, Target, TrendingUp, Shield } from "lucide-react";
 
 const Index = () => {
   const [currentStep, setCurrentStep] = useState<'form' | 'results'>('form');
@@ -59,11 +80,17 @@ const Index = () => {
                 Professional sustainability and risk evaluation platform for real estate properties. 
                 Choose between basic ESG assessment or advanced automated calculations with comprehensive risk analysis.
               </p>
-              <div className="flex justify-center">
+              <div className="flex justify-center gap-4">
                 <Link to="/valuation">
                   <Button variant="outline" size="lg" className="flex items-center gap-2">
                     <TrendingUp className="w-5 h-5" />
                     Valuation Analysis
+                  </Button>
+                </Link>
+                <Link to="/security">
+                  <Button variant="outline" size="lg" className="flex items-center gap-2">
+                    <Shield className="w-5 h-5" />
+                    Security & Certificates
                   </Button>
                 </Link>
               </div>
