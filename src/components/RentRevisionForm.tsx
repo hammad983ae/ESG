@@ -339,6 +339,12 @@ export const RentRevisionForm: React.FC<RentRevisionFormProps> = ({ onSubmit }) 
               />
             </div>
             <div className="space-y-2">
+              <Label htmlFor="face-rent-total">Face Rent Total</Label>
+              <div className="p-3 bg-muted/50 rounded-md text-lg font-semibold">
+                {formatCurrency(inputs.face_rent * inputs.lettable_area)}
+              </div>
+            </div>
+            <div className="space-y-2">
               <Label htmlFor="effective-rent">Effective Rent ({currentConfig?.unit || 'per unit'})</Label>
               <Input
                 id="effective-rent"
@@ -347,6 +353,12 @@ export const RentRevisionForm: React.FC<RentRevisionFormProps> = ({ onSubmit }) 
                 onChange={(e) => handleInputChange('effective_rent', parseFloat(e.target.value) || 0)}
                 placeholder="0"
               />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="effective-rent-total">Effective Rent Total</Label>
+              <div className="p-3 bg-muted/50 rounded-md text-lg font-semibold">
+                {formatCurrency(inputs.effective_rent * inputs.lettable_area)}
+              </div>
             </div>
             <div className="space-y-2">
               <Label htmlFor="gross-rent">Gross Rent ({currentConfig?.unit || 'per unit'})</Label>
@@ -359,6 +371,12 @@ export const RentRevisionForm: React.FC<RentRevisionFormProps> = ({ onSubmit }) 
               />
             </div>
             <div className="space-y-2">
+              <Label htmlFor="gross-rent-total">Gross Rent Total</Label>
+              <div className="p-3 bg-muted/50 rounded-md text-lg font-semibold">
+                {formatCurrency(inputs.gross_rent * inputs.lettable_area)}
+              </div>
+            </div>
+            <div className="space-y-2">
               <Label htmlFor="net-rent">Net Rent ({currentConfig?.unit || 'per unit'})</Label>
               <Input
                 id="net-rent"
@@ -367,6 +385,12 @@ export const RentRevisionForm: React.FC<RentRevisionFormProps> = ({ onSubmit }) 
                 onChange={(e) => handleInputChange('net_rent', parseFloat(e.target.value) || 0)}
                 placeholder="0"
               />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="net-rent-total">Net Rent Total</Label>
+              <div className="p-3 bg-muted/50 rounded-md text-lg font-semibold">
+                {formatCurrency(inputs.net_rent * inputs.lettable_area)}
+              </div>
             </div>
             <div className="space-y-2">
               <Label htmlFor="incentives">Incentives ({currentConfig?.unit || 'per unit'})</Label>
@@ -379,6 +403,12 @@ export const RentRevisionForm: React.FC<RentRevisionFormProps> = ({ onSubmit }) 
               />
             </div>
             <div className="space-y-2">
+              <Label htmlFor="incentives-total">Incentives Total</Label>
+              <div className="p-3 bg-muted/50 rounded-md text-lg font-semibold">
+                {formatCurrency(inputs.incentives * inputs.lettable_area)}
+              </div>
+            </div>
+            <div className="space-y-2">
               <Label htmlFor="outgoings">Outgoings ({currentConfig?.unit || 'per unit'})</Label>
               <Input
                 id="outgoings"
@@ -387,6 +417,12 @@ export const RentRevisionForm: React.FC<RentRevisionFormProps> = ({ onSubmit }) 
                 onChange={(e) => handleInputChange('outgoings', parseFloat(e.target.value) || 0)}
                 placeholder="0"
               />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="outgoings-total">Outgoings Total</Label>
+              <div className="p-3 bg-muted/50 rounded-md text-lg font-semibold">
+                {formatCurrency(inputs.outgoings * inputs.lettable_area)}
+              </div>
             </div>
             <div className="space-y-2">
               <Label htmlFor="land-tax">Land Tax ({currentConfig?.unit || 'per unit'})</Label>
@@ -399,6 +435,12 @@ export const RentRevisionForm: React.FC<RentRevisionFormProps> = ({ onSubmit }) 
               />
             </div>
             <div className="space-y-2">
+              <Label htmlFor="land-tax-total">Land Tax Total</Label>
+              <div className="p-3 bg-muted/50 rounded-md text-lg font-semibold">
+                {formatCurrency(inputs.land_tax * inputs.lettable_area)}
+              </div>
+            </div>
+            <div className="space-y-2">
               <Label htmlFor="outgoings-per-sqm">Outgoings per sqm</Label>
               <Input
                 id="outgoings-per-sqm"
@@ -408,6 +450,12 @@ export const RentRevisionForm: React.FC<RentRevisionFormProps> = ({ onSubmit }) 
                 onChange={(e) => handleInputChange('outgoings_per_sqm', parseFloat(e.target.value) || 0)}
                 placeholder="0"
               />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="outgoings-per-sqm-total">Outgoings per sqm Total</Label>
+              <div className="p-3 bg-muted/50 rounded-md text-lg font-semibold">
+                {formatCurrency(inputs.outgoings_per_sqm * inputs.lettable_area)}
+              </div>
             </div>
           </div>
 
@@ -560,6 +608,12 @@ export const RentRevisionForm: React.FC<RentRevisionFormProps> = ({ onSubmit }) 
                 onChange={(e) => handleInputChange('proposed_rent', parseFloat(e.target.value) || 0)}
                 placeholder="Enter proposed rent"
               />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="proposed-rent-total">Proposed Rent Total</Label>
+              <div className="p-3 bg-muted/50 rounded-md text-lg font-semibold">
+                {formatCurrency(inputs.proposed_rent * inputs.lettable_area)}
+              </div>
             </div>
             <div className="space-y-2">
               <Label htmlFor="cpi-fixed-adjustments">CPI or Fixed Adjustments (%)</Label>
