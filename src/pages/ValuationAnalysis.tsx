@@ -21,7 +21,7 @@
  */
 
 import { useState } from "react";
-import { ArrowLeft, Target, TrendingUp, Leaf, Calculator, Settings, Building2, Sliders } from "lucide-react";
+import { ArrowLeft, Target, TrendingUp, Leaf, Calculator, Settings, Building2, Sliders, Baby } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -53,6 +53,8 @@ import { SummationApproachForm } from "@/components/SummationApproachForm";
 import { SummationApproachResults } from "@/components/SummationApproachResults";
 import { HospitalityValuationForm } from "@/components/HospitalityValuationForm";
 import { HospitalityValuationResults } from "@/components/HospitalityValuationResults";
+import { ChildcareValuationForm } from "@/components/ChildcareValuationForm";
+import { ChildcareValuationResults } from "@/components/ChildcareValuationResults";
 import { ARYInputs, ARYResults, calculateAllRisksYield } from "@/utils/aryCalculations";
 import { 
   ESGInputs, 
@@ -89,6 +91,11 @@ import {
   HospitalityResults,
   calculateHospitalityValuation
 } from "@/utils/hospitalityCalculations";
+import {
+  ChildcareInputs,
+  ChildcareResults,
+  calculateChildcareValuation
+} from "@/utils/childcareCalculations";
 
 export default function ValuationAnalysis() {
   // ARY States
@@ -135,6 +142,10 @@ export default function ValuationAnalysis() {
   // Hospitality Valuation States
   const [hospitalityInputs, setHospitalityInputs] = useState<HospitalityInputs | null>(null);
   const [hospitalityResults, setHospitalityResults] = useState<HospitalityResults | null>(null);
+
+  // Childcare Valuation States
+  const [childcareInputs, setChildcareInputs] = useState<ChildcareInputs | null>(null);
+  const [childcareResults, setChildcareResults] = useState<ChildcareResults | null>(null);
 
   const handleARYSubmit = (inputs: ARYInputs) => {
     try {
@@ -249,6 +260,10 @@ export default function ValuationAnalysis() {
         setHospitalityInputs(null);
         setHospitalityResults(null);
         break;
+      case 'childcare':
+        setChildcareInputs(null);
+        setChildcareResults(null);
+        break;
     }
   };
 
@@ -313,6 +328,17 @@ export default function ValuationAnalysis() {
       toast.success("Hospitality valuation completed successfully!");
     } catch (error) {
       toast.error(`Hospitality valuation error: ${error instanceof Error ? error.message : 'Unknown error'}`);
+    }
+  };
+
+  const handleChildcareValuationSubmit = (inputs: ChildcareInputs) => {
+    try {
+      const calculatedResults = calculateChildcareValuation(inputs);
+      setChildcareInputs(inputs);
+      setChildcareResults(calculatedResults);
+      toast.success("Childcare valuation completed successfully!");
+    } catch (error) {
+      toast.error(`Childcare valuation error: ${error instanceof Error ? error.message : 'Unknown error'}`);
     }
   };
 
@@ -398,6 +424,10 @@ export default function ValuationAnalysis() {
             <TabsTrigger value="hospitality" className="flex items-center gap-2 p-3">
               <Building2 className="w-4 h-4" />
               Hospitality & Commercial
+            </TabsTrigger>
+            <TabsTrigger value="childcare" className="flex items-center gap-2 p-3">
+              <Baby className="w-4 h-4" />
+              Childcare Facilities
             </TabsTrigger>
           </TabsList>
 
@@ -876,6 +906,44 @@ export default function ValuationAnalysis() {
               </div>
             ) : (
               <HospitalityValuationResults results={hospitalityResults} />
+            )}
+          </TabsContent>
+
+          {/* Childcare Facilities Valuation Tab */}
+          <TabsContent value="childcare" className="mt-6">
+            <div className="flex items-center justify-between mb-6">
+              <div>
+                <h2 className="text-2xl font-semibold">Childcare Facilities Valuation</h2>
+                <p className="text-muted-foreground">
+                  Specialized valuation approaches for childcare properties including LCD, comparison, and rent-based methods
+                </p>
+              </div>
+              {childcareResults && (
+                <Button onClick={() => handleReset('childcare')} variant="outline">
+                  New Analysis
+                </Button>
+              )}
+            </div>
+
+            {!childcareResults ? (
+              <div className="max-w-6xl mx-auto">
+                <Card className="mb-6">
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-2">
+                      <Baby className="w-5 h-5" />
+                      Childcare Property Valuation Methods
+                    </CardTitle>
+                    <CardDescription>
+                      This analysis includes specialized approaches for childcare facilities: Land, Construction & Development (LCD), 
+                      Direct Comparison using comparable sales, and Rent-based valuations. ESG factors can be applied to reflect 
+                      sustainability premiums for green childcare facilities.
+                    </CardDescription>
+                  </CardHeader>
+                </Card>
+                <ChildcareValuationForm onSubmit={handleChildcareValuationSubmit} />
+              </div>
+            ) : (
+              <ChildcareValuationResults results={childcareResults} />
             )}
           </TabsContent>
         </Tabs>
