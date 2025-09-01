@@ -49,6 +49,8 @@ import { ValuationSummationForm } from "@/components/ValuationSummationForm";
 import { ValuationDirectComparisonForm } from "@/components/ValuationDirectComparisonForm";
 import { HypotheticalDevelopmentForm } from "@/components/HypotheticalDevelopmentForm";
 import { HypotheticalDevelopmentResults } from "@/components/HypotheticalDevelopmentResults";
+import { SummationApproachForm } from "@/components/SummationApproachForm";
+import { SummationApproachResults } from "@/components/SummationApproachResults";
 import { ARYInputs, ARYResults, calculateAllRisksYield } from "@/utils/aryCalculations";
 import { 
   ESGInputs, 
@@ -75,6 +77,11 @@ import {
   performConventionalValuation,
   performESDValuation
 } from "@/utils/hypotheticalDevelopmentCalculations";
+import {
+  SummationInputs,
+  SummationResults,
+  calculateSummationValue
+} from "@/utils/summationCalculations";
 
 export default function ValuationAnalysis() {
   // ARY States
@@ -106,8 +113,8 @@ export default function ValuationAnalysis() {
   const [capNetIncomeResults, setCapNetIncomeResults] = useState<any>(null);
   
   // Summation Approach States
-  const [summationInputs, setSummationInputs] = useState<any>(null);
-  const [summationResults, setSummationResults] = useState<any>(null);
+  const [summationInputs, setSummationInputs] = useState<SummationInputs | null>(null);
+  const [summationResults, setSummationResults] = useState<SummationResults | null>(null);
   
   // Direct Comparison States
   const [directCompInputs, setDirectCompInputs] = useState<any>(null);
@@ -248,10 +255,11 @@ export default function ValuationAnalysis() {
     }
   };
 
-  const handleSummationSubmit = (inputs: any) => {
+  const handleSummationSubmit = (inputs: SummationInputs) => {
     try {
+      const calculatedResults = calculateSummationValue(inputs.components, inputs.esg_factor);
       setSummationInputs(inputs);
-      setSummationResults(inputs);
+      setSummationResults(calculatedResults);
       toast.success("Summation valuation analysis completed!");
     } catch (error) {
       toast.error(`Summation analysis error: ${error instanceof Error ? error.message : 'Unknown error'}`);
@@ -640,76 +648,19 @@ export default function ValuationAnalysis() {
                       About Summation Approach
                     </CardTitle>
                     <CardDescription>
-                      The summation approach values property by adding up individual asset values, each adjusted for sustainability factors. 
-                      This method is particularly useful for mixed-use properties or portfolios with diverse asset types.
+                      The summation approach calculates property value by adding the individual values of all property 
+                      components (land, buildings, improvements, etc.) based on their respective areas and rates. 
+                      An ESG factor can be applied to adjust the final value based on sustainability considerations.
                     </CardDescription>
                   </CardHeader>
                 </Card>
-                <ValuationSummationForm onSubmit={handleSummationSubmit} />
+                <SummationApproachForm onSubmit={handleSummationSubmit} />
               </div>
             ) : (
-              <Card>
-                <CardHeader>
-                  <CardTitle>Summation Valuation Results</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
-                    <div className="space-y-2">
-                      <Label>Total Base Value</Label>
-                      <div className="text-2xl font-bold">
-                        ${summationResults.totalBaseValue?.toLocaleString()}
-                      </div>
-                    </div>
-                    <div className="space-y-2">
-                      <Label>Total Adjusted Value</Label>
-                      <div className="text-2xl font-bold text-primary">
-                        ${summationResults.totalAdjustedValue?.toLocaleString()}
-                      </div>
-                    </div>
-                    <div className="space-y-2">
-                      <Label>Overall Sustainability Score</Label>
-                      <div className="text-xl font-semibold">
-                        {summationResults.overallSustainabilityScore}/100
-                      </div>
-                    </div>
-                    <div className="space-y-2">
-                      <Label>Average Adjustment Factor</Label>
-                      <div className="text-xl font-semibold">
-                        {summationResults.averageAdjustmentFactor?.toFixed(2)}x
-                      </div>
-                    </div>
-                  </div>
-                  <div className="space-y-4">
-                    <h3 className="text-lg font-semibold">Asset Breakdown</h3>
-                    {summationResults.assets?.map((asset: any, index: number) => (
-                      <Card key={asset.id} className="p-4">
-                        <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
-                          <div>
-                            <Label className="text-sm text-muted-foreground">Asset</Label>
-                            <div className="font-medium">{asset.name || `${asset.type} Asset`}</div>
-                          </div>
-                          <div>
-                            <Label className="text-sm text-muted-foreground">Base Value</Label>
-                            <div>${asset.baseValue?.toLocaleString()}</div>
-                          </div>
-                          <div>
-                            <Label className="text-sm text-muted-foreground">Sustainability Score</Label>
-                            <div>{asset.sustainabilityScore}/100</div>
-                          </div>
-                          <div>
-                            <Label className="text-sm text-muted-foreground">Adjustment</Label>
-                            <div>{asset.adjustmentFactor?.toFixed(2)}x</div>
-                          </div>
-                          <div>
-                            <Label className="text-sm text-muted-foreground">Adjusted Value</Label>
-                            <div className="font-semibold">${asset.adjustedValue?.toLocaleString()}</div>
-                          </div>
-                        </div>
-                      </Card>
-                    ))}
-                  </div>
-                </CardContent>
-              </Card>
+              <SummationApproachResults 
+                results={summationResults} 
+                onNewCalculation={() => handleReset('summation')} 
+              />
             )}
           </TabsContent>
 
