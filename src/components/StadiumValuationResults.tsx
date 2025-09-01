@@ -26,7 +26,8 @@ import {
   Shield,
   Target,
   BarChart3,
-  FileText
+  FileText,
+  Settings
 } from "lucide-react";
 import { StadiumResults } from "@/utils/stadiumCalculations";
 
@@ -39,9 +40,11 @@ export const StadiumValuationResults: React.FC<StadiumValuationResultsProps> = (
   const formatPercentage = (value: number) => `${(value * 100).toFixed(1)}%`;
 
   const totalRevenue = results.total_ticket_sales + results.total_sponsorships + results.total_broadcasting + 
-                      results.total_concessions + results.total_luxury_suites + results.total_other_revenue;
+                      results.total_concessions + results.total_luxury_suites + results.total_custom_revenue;
   const totalExpenses = results.total_maintenance + results.total_staffing + results.total_security + 
-                       results.total_utilities + results.total_upkeep + results.total_other_expenses;
+                       results.total_utilities + results.total_upkeep + results.total_custom_expenses;
+  const totalCapital = results.total_major_repairs + results.total_structural_maintenance + results.total_letting_up_allowances + 
+                      results.total_capital_improvements + results.total_custom_capital;
 
   const revenueBreakdown = [
     { name: "Ticket Sales", value: results.total_ticket_sales, color: "bg-blue-500" },
@@ -49,7 +52,11 @@ export const StadiumValuationResults: React.FC<StadiumValuationResultsProps> = (
     { name: "Broadcasting", value: results.total_broadcasting, color: "bg-purple-500" },
     { name: "Concessions", value: results.total_concessions, color: "bg-orange-500" },
     { name: "Luxury Suites", value: results.total_luxury_suites, color: "bg-red-500" },
-    { name: "Other Revenue", value: results.total_other_revenue, color: "bg-cyan-500" }
+    ...results.custom_revenue_breakdown.map((item, index) => ({
+      name: item.label,
+      value: item.total,
+      color: `bg-cyan-${500 + (index * 100)}`
+    }))
   ];
 
   const expenseBreakdown = [
@@ -58,7 +65,23 @@ export const StadiumValuationResults: React.FC<StadiumValuationResultsProps> = (
     { name: "Security", value: results.total_security, color: "bg-gray-400" },
     { name: "Utilities", value: results.total_utilities, color: "bg-gray-300" },
     { name: "Upkeep", value: results.total_upkeep, color: "bg-gray-200" },
-    { name: "Other Expenses", value: results.total_other_expenses, color: "bg-gray-100" }
+    ...results.custom_expense_breakdown.map((item, index) => ({
+      name: item.label,
+      value: item.total,
+      color: `bg-gray-${100 + (index * 50)}`
+    }))
+  ];
+
+  const capitalBreakdown = [
+    { name: "Major Repairs", value: results.total_major_repairs, color: "bg-amber-600" },
+    { name: "Structural Maintenance", value: results.total_structural_maintenance, color: "bg-amber-500" },
+    { name: "Letting Up Allowances", value: results.total_letting_up_allowances, color: "bg-amber-400" },
+    { name: "Capital Improvements", value: results.total_capital_improvements, color: "bg-amber-300" },
+    ...results.custom_capital_breakdown.map((item, index) => ({
+      name: item.label,
+      value: item.total,
+      color: `bg-amber-${200 + (index * 50)}`
+    }))
   ];
 
   return (
@@ -168,6 +191,38 @@ export const StadiumValuationResults: React.FC<StadiumValuationResultsProps> = (
         </CardContent>
       </Card>
 
+      {/* Capital Adjustments Analysis */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <Settings className="h-5 w-5" />
+            Capital Adjustments Analysis
+          </CardTitle>
+          <CardDescription>
+            Total capital expenditure: {formatCurrency(totalCapital)} over {results.forecast_years} years
+          </CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          {capitalBreakdown.map((item, index) => (
+            <div key={index} className="space-y-2">
+              <div className="flex justify-between items-center">
+                <span className="font-medium">{item.name}</span>
+                <div className="text-right">
+                  <div className="font-semibold">{formatCurrency(item.value)}</div>
+                  <div className="text-sm text-muted-foreground">
+                    {((item.value / totalCapital) * 100).toFixed(1)}%
+                  </div>
+                </div>
+              </div>
+              <Progress 
+                value={(item.value / totalCapital) * 100} 
+                className="h-2"
+              />
+            </div>
+          ))}
+        </CardContent>
+      </Card>
+
       {/* Cash Flow Summary */}
       <Card>
         <CardHeader>
@@ -178,7 +233,7 @@ export const StadiumValuationResults: React.FC<StadiumValuationResultsProps> = (
         </CardHeader>
         <CardContent>
           <div className="space-y-4">
-            <div className="grid grid-cols-3 gap-4 text-center">
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
               <div className="p-4 bg-green-50 rounded-lg border border-green-200">
                 <div className="text-2xl font-bold text-green-600">
                   {formatCurrency(totalRevenue)}
@@ -189,11 +244,17 @@ export const StadiumValuationResults: React.FC<StadiumValuationResultsProps> = (
                 <div className="text-2xl font-bold text-red-600">
                   {formatCurrency(totalExpenses)}
                 </div>
-                <div className="text-sm text-red-700">Total Expenses</div>
+                <div className="text-sm text-red-700">Operating Expenses</div>
+              </div>
+              <div className="p-4 bg-amber-50 rounded-lg border border-amber-200">
+                <div className="text-2xl font-bold text-amber-600">
+                  {formatCurrency(totalCapital)}
+                </div>
+                <div className="text-sm text-amber-700">Capital Adjustments</div>
               </div>
               <div className="p-4 bg-blue-50 rounded-lg border border-blue-200">
                 <div className="text-2xl font-bold text-blue-600">
-                  {formatCurrency(totalRevenue - totalExpenses)}
+                  {formatCurrency(totalRevenue - totalExpenses - totalCapital)}
                 </div>
                 <div className="text-sm text-blue-700">Net Cash Flow</div>
               </div>
@@ -290,9 +351,9 @@ export const StadiumValuationResults: React.FC<StadiumValuationResultsProps> = (
               <ul className="text-sm text-muted-foreground space-y-1">
                 <li>• Total Stadium Valuation: {formatCurrency(results.total_stadium_value)}</li>
                 <li>• Land Value: {formatCurrency(results.land_value)}</li>
-                <li>• Operating Cash Flow (Total): {formatCurrency(totalRevenue - totalExpenses)}</li>
+                <li>• Operating Cash Flow (Total): {formatCurrency(totalRevenue - totalExpenses - totalCapital)}</li>
                 <li>• Revenue per Seat: {formatCurrency(totalRevenue / results.capacity)}</li>
-                <li>• Operating Margin: {formatPercentage((totalRevenue - totalExpenses) / totalRevenue)}</li>
+                <li>• Operating Margin: {formatPercentage((totalRevenue - totalExpenses - totalCapital) / totalRevenue)}</li>
                 <li>• Present Value Factor: {results.forecast_years} years @ 8% discount</li>
               </ul>
             </div>
@@ -304,7 +365,7 @@ export const StadiumValuationResults: React.FC<StadiumValuationResultsProps> = (
                 <li>• Forecast Period: {results.forecast_years} years</li>
                 <li>• Average Annual Revenue: {formatCurrency(totalRevenue / results.forecast_years)}</li>
                 <li>• Average Annual Expenses: {formatCurrency(totalExpenses / results.forecast_years)}</li>
-                <li>• Average Annual Cash Flow: {formatCurrency((totalRevenue - totalExpenses) / results.forecast_years)}</li>
+                <li>• Average Annual Cash Flow: {formatCurrency((totalRevenue - totalExpenses - totalCapital) / results.forecast_years)}</li>
               </ul>
             </div>
           </div>

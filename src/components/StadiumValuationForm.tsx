@@ -21,8 +21,8 @@ import { Switch } from "@/components/ui/switch";
 import { Slider } from "@/components/ui/slider";
 import { Separator } from "@/components/ui/separator";
 import { Badge } from "@/components/ui/badge";
-import { Plus, Trash2, MapPin, DollarSign, TrendingUp, Users, Building, Shield } from "lucide-react";
-import { StadiumInputs, defaultStadiumInputs } from "@/utils/stadiumCalculations";
+import { Plus, Trash2, MapPin, DollarSign, TrendingUp, Users, Building, Shield, Settings, Edit } from "lucide-react";
+import { StadiumInputs, defaultStadiumInputs, CustomRevenueItem, CustomExpenseItem } from "@/utils/stadiumCalculations";
 
 interface StadiumValuationFormProps {
   onSubmit: (inputs: StadiumInputs) => void;
@@ -55,6 +55,169 @@ export const StadiumValuationForm: React.FC<StadiumValuationFormProps> = ({ onSu
     }));
   };
 
+  const handleCapitalChange = (category: keyof StadiumInputs['capital_adjustments'], year: number, value: number) => {
+    setInputs(prev => ({
+      ...prev,
+      capital_adjustments: {
+        ...prev.capital_adjustments,
+        [category]: prev.capital_adjustments[category].map((val, idx) => idx === year ? value : val)
+      }
+    }));
+  };
+
+  const addCustomRevenueItem = () => {
+    const newItem: CustomRevenueItem = {
+      label: "New Revenue Stream",
+      values: Array(inputs.forecast_years).fill(0)
+    };
+    setInputs(prev => ({
+      ...prev,
+      revenue: {
+        ...prev.revenue,
+        custom_revenue_items: [...prev.revenue.custom_revenue_items, newItem]
+      }
+    }));
+  };
+
+  const addCustomExpenseItem = () => {
+    const newItem: CustomExpenseItem = {
+      label: "New Expense Item",
+      values: Array(inputs.forecast_years).fill(0)
+    };
+    setInputs(prev => ({
+      ...prev,
+      expenses: {
+        ...prev.expenses,
+        custom_expense_items: [...prev.expenses.custom_expense_items, newItem]
+      }
+    }));
+  };
+
+  const addCustomCapitalItem = () => {
+    const newItem: CustomExpenseItem = {
+      label: "New Capital Item",
+      values: Array(inputs.forecast_years).fill(0)
+    };
+    setInputs(prev => ({
+      ...prev,
+      capital_adjustments: {
+        ...prev.capital_adjustments,
+        custom_capital_items: [...prev.capital_adjustments.custom_capital_items, newItem]
+      }
+    }));
+  };
+
+  const updateCustomRevenueLabel = (index: number, label: string) => {
+    setInputs(prev => ({
+      ...prev,
+      revenue: {
+        ...prev.revenue,
+        custom_revenue_items: prev.revenue.custom_revenue_items.map((item, idx) => 
+          idx === index ? { ...item, label } : item
+        )
+      }
+    }));
+  };
+
+  const updateCustomRevenueValue = (index: number, year: number, value: number) => {
+    setInputs(prev => ({
+      ...prev,
+      revenue: {
+        ...prev.revenue,
+        custom_revenue_items: prev.revenue.custom_revenue_items.map((item, idx) => 
+          idx === index ? {
+            ...item,
+            values: item.values.map((val, yearIdx) => yearIdx === year ? value : val)
+          } : item
+        )
+      }
+    }));
+  };
+
+  const updateCustomExpenseLabel = (index: number, label: string) => {
+    setInputs(prev => ({
+      ...prev,
+      expenses: {
+        ...prev.expenses,
+        custom_expense_items: prev.expenses.custom_expense_items.map((item, idx) => 
+          idx === index ? { ...item, label } : item
+        )
+      }
+    }));
+  };
+
+  const updateCustomExpenseValue = (index: number, year: number, value: number) => {
+    setInputs(prev => ({
+      ...prev,
+      expenses: {
+        ...prev.expenses,
+        custom_expense_items: prev.expenses.custom_expense_items.map((item, idx) => 
+          idx === index ? {
+            ...item,
+            values: item.values.map((val, yearIdx) => yearIdx === year ? value : val)
+          } : item
+        )
+      }
+    }));
+  };
+
+  const updateCustomCapitalLabel = (index: number, label: string) => {
+    setInputs(prev => ({
+      ...prev,
+      capital_adjustments: {
+        ...prev.capital_adjustments,
+        custom_capital_items: prev.capital_adjustments.custom_capital_items.map((item, idx) => 
+          idx === index ? { ...item, label } : item
+        )
+      }
+    }));
+  };
+
+  const updateCustomCapitalValue = (index: number, year: number, value: number) => {
+    setInputs(prev => ({
+      ...prev,
+      capital_adjustments: {
+        ...prev.capital_adjustments,
+        custom_capital_items: prev.capital_adjustments.custom_capital_items.map((item, idx) => 
+          idx === index ? {
+            ...item,
+            values: item.values.map((val, yearIdx) => yearIdx === year ? value : val)
+          } : item
+        )
+      }
+    }));
+  };
+
+  const removeCustomRevenueItem = (index: number) => {
+    setInputs(prev => ({
+      ...prev,
+      revenue: {
+        ...prev.revenue,
+        custom_revenue_items: prev.revenue.custom_revenue_items.filter((_, idx) => idx !== index)
+      }
+    }));
+  };
+
+  const removeCustomExpenseItem = (index: number) => {
+    setInputs(prev => ({
+      ...prev,
+      expenses: {
+        ...prev.expenses,
+        custom_expense_items: prev.expenses.custom_expense_items.filter((_, idx) => idx !== index)
+      }
+    }));
+  };
+
+  const removeCustomCapitalItem = (index: number) => {
+    setInputs(prev => ({
+      ...prev,
+      capital_adjustments: {
+        ...prev.capital_adjustments,
+        custom_capital_items: prev.capital_adjustments.custom_capital_items.filter((_, idx) => idx !== index)
+      }
+    }));
+  };
+
   const addForecastYear = () => {
     if (inputs.forecast_years < 15) {
       const newYear = inputs.forecast_years;
@@ -67,7 +230,10 @@ export const StadiumValuationForm: React.FC<StadiumValuationFormProps> = ({ onSu
           broadcasting_rights: [...prev.revenue.broadcasting_rights, prev.revenue.broadcasting_rights[newYear - 1] * 1.05],
           concessions: [...prev.revenue.concessions, prev.revenue.concessions[newYear - 1] * 1.05],
           luxury_suites: [...prev.revenue.luxury_suites, prev.revenue.luxury_suites[newYear - 1] * 1.05],
-          other_revenue: [...prev.revenue.other_revenue, prev.revenue.other_revenue[newYear - 1] * 1.05]
+          custom_revenue_items: prev.revenue.custom_revenue_items.map(item => ({
+            ...item,
+            values: [...item.values, (item.values[newYear - 1] || 0) * 1.05]
+          }))
         },
         expenses: {
           maintenance: [...prev.expenses.maintenance, prev.expenses.maintenance[newYear - 1] * 1.05],
@@ -75,7 +241,20 @@ export const StadiumValuationForm: React.FC<StadiumValuationFormProps> = ({ onSu
           security: [...prev.expenses.security, prev.expenses.security[newYear - 1] * 1.05],
           utilities: [...prev.expenses.utilities, prev.expenses.utilities[newYear - 1] * 1.05],
           upkeep: [...prev.expenses.upkeep, prev.expenses.upkeep[newYear - 1] * 1.05],
-          other_expenses: [...prev.expenses.other_expenses, prev.expenses.other_expenses[newYear - 1] * 1.05]
+          custom_expense_items: prev.expenses.custom_expense_items.map(item => ({
+            ...item,
+            values: [...item.values, (item.values[newYear - 1] || 0) * 1.05]
+          }))
+        },
+        capital_adjustments: {
+          major_repairs: [...prev.capital_adjustments.major_repairs, prev.capital_adjustments.major_repairs[newYear - 1] * 1.05],
+          structural_maintenance: [...prev.capital_adjustments.structural_maintenance, prev.capital_adjustments.structural_maintenance[newYear - 1] * 1.05],
+          letting_up_allowances: [...prev.capital_adjustments.letting_up_allowances, prev.capital_adjustments.letting_up_allowances[newYear - 1] * 1.05],
+          capital_improvements: [...prev.capital_adjustments.capital_improvements, prev.capital_adjustments.capital_improvements[newYear - 1] * 1.05],
+          custom_capital_items: prev.capital_adjustments.custom_capital_items.map(item => ({
+            ...item,
+            values: [...item.values, (item.values[newYear - 1] || 0) * 1.05]
+          }))
         }
       }));
     }
@@ -92,7 +271,10 @@ export const StadiumValuationForm: React.FC<StadiumValuationFormProps> = ({ onSu
           broadcasting_rights: prev.revenue.broadcasting_rights.slice(0, -1),
           concessions: prev.revenue.concessions.slice(0, -1),
           luxury_suites: prev.revenue.luxury_suites.slice(0, -1),
-          other_revenue: prev.revenue.other_revenue.slice(0, -1)
+          custom_revenue_items: prev.revenue.custom_revenue_items.map(item => ({
+            ...item,
+            values: item.values.slice(0, -1)
+          }))
         },
         expenses: {
           maintenance: prev.expenses.maintenance.slice(0, -1),
@@ -100,7 +282,20 @@ export const StadiumValuationForm: React.FC<StadiumValuationFormProps> = ({ onSu
           security: prev.expenses.security.slice(0, -1),
           utilities: prev.expenses.utilities.slice(0, -1),
           upkeep: prev.expenses.upkeep.slice(0, -1),
-          other_expenses: prev.expenses.other_expenses.slice(0, -1)
+          custom_expense_items: prev.expenses.custom_expense_items.map(item => ({
+            ...item,
+            values: item.values.slice(0, -1)
+          }))
+        },
+        capital_adjustments: {
+          major_repairs: prev.capital_adjustments.major_repairs.slice(0, -1),
+          structural_maintenance: prev.capital_adjustments.structural_maintenance.slice(0, -1),
+          letting_up_allowances: prev.capital_adjustments.letting_up_allowances.slice(0, -1),
+          capital_improvements: prev.capital_adjustments.capital_improvements.slice(0, -1),
+          custom_capital_items: prev.capital_adjustments.custom_capital_items.map(item => ({
+            ...item,
+            values: item.values.slice(0, -1)
+          }))
         }
       }));
     }
@@ -353,22 +548,54 @@ export const StadiumValuationForm: React.FC<StadiumValuationFormProps> = ({ onSu
 
           <Separator />
 
-          {/* Other Revenue */}
-          <div className="space-y-3">
-            <h4 className="font-semibold">Other Revenue</h4>
-            <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-2">
-              {inputs.revenue.other_revenue.map((value, year) => (
-                <div key={year} className="space-y-1">
-                  <Label className="text-xs">Year {year + 1}</Label>
-                  <Input
-                    type="number"
-                    value={value}
-                    onChange={(e) => handleRevenueChange('other_revenue', year, parseFloat(e.target.value) || 0)}
-                    className="text-sm"
-                  />
-                </div>
-              ))}
+          {/* Custom Revenue Items */}
+          <div className="space-y-4">
+            <div className="flex items-center justify-between">
+              <h4 className="font-semibold">Custom Revenue Streams</h4>
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                onClick={addCustomRevenueItem}
+              >
+                <Plus className="h-4 w-4 mr-2" />
+                Add Revenue Stream
+              </Button>
             </div>
+            
+            {inputs.revenue.custom_revenue_items.map((item, itemIndex) => (
+              <div key={itemIndex} className="space-y-3 p-4 border rounded-lg">
+                <div className="flex items-center gap-2">
+                  <Input
+                    value={item.label}
+                    onChange={(e) => updateCustomRevenueLabel(itemIndex, e.target.value)}
+                    placeholder="Revenue stream name"
+                    className="flex-1"
+                  />
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    onClick={() => removeCustomRevenueItem(itemIndex)}
+                  >
+                    <Trash2 className="h-4 w-4" />
+                  </Button>
+                </div>
+                <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-2">
+                  {item.values.map((value, year) => (
+                    <div key={year} className="space-y-1">
+                      <Label className="text-xs">Year {year + 1}</Label>
+                      <Input
+                        type="number"
+                        value={value}
+                        onChange={(e) => updateCustomRevenueValue(itemIndex, year, parseFloat(e.target.value) || 0)}
+                        className="text-sm"
+                      />
+                    </div>
+                  ))}
+                </div>
+              </div>
+            ))}
           </div>
         </CardContent>
       </Card>
@@ -562,22 +789,198 @@ export const StadiumValuationForm: React.FC<StadiumValuationFormProps> = ({ onSu
 
           <Separator />
 
-          {/* Other Expenses */}
+          {/* Custom Expense Items */}
+          <div className="space-y-4">
+            <div className="flex items-center justify-between">
+              <h4 className="font-semibold">Custom Expenses</h4>
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                onClick={addCustomExpenseItem}
+              >
+                <Plus className="h-4 w-4 mr-2" />
+                Add Expense Item
+              </Button>
+            </div>
+            
+            {inputs.expenses.custom_expense_items.map((item, itemIndex) => (
+              <div key={itemIndex} className="space-y-3 p-4 border rounded-lg">
+                <div className="flex items-center gap-2">
+                  <Input
+                    value={item.label}
+                    onChange={(e) => updateCustomExpenseLabel(itemIndex, e.target.value)}
+                    placeholder="Expense item name"
+                    className="flex-1"
+                  />
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    onClick={() => removeCustomExpenseItem(itemIndex)}
+                  >
+                    <Trash2 className="h-4 w-4" />
+                  </Button>
+                </div>
+                <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-2">
+                  {item.values.map((value, year) => (
+                    <div key={year} className="space-y-1">
+                      <Label className="text-xs">Year {year + 1}</Label>
+                      <Input
+                        type="number"
+                        value={value}
+                        onChange={(e) => updateCustomExpenseValue(itemIndex, year, parseFloat(e.target.value) || 0)}
+                        className="text-sm"
+                      />
+                    </div>
+                  ))}
+                </div>
+              </div>
+            ))}
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Capital Adjustments */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <Settings className="h-5 w-5" />
+            Capital Adjustments & Major Repairs
+          </CardTitle>
+          <CardDescription>
+            Capital expenditure forecasts for major repairs, structural maintenance, and improvements
+          </CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-6">
+          {/* Major Repairs */}
           <div className="space-y-3">
-            <h4 className="font-semibold">Other Expenses</h4>
+            <h4 className="font-semibold">Major Repairs</h4>
             <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-2">
-              {inputs.expenses.other_expenses.map((value, year) => (
+              {inputs.capital_adjustments.major_repairs.map((value, year) => (
                 <div key={year} className="space-y-1">
                   <Label className="text-xs">Year {year + 1}</Label>
                   <Input
                     type="number"
                     value={value}
-                    onChange={(e) => handleExpenseChange('other_expenses', year, parseFloat(e.target.value) || 0)}
+                    onChange={(e) => handleCapitalChange('major_repairs', year, parseFloat(e.target.value) || 0)}
                     className="text-sm"
                   />
                 </div>
               ))}
             </div>
+          </div>
+
+          <Separator />
+
+          {/* Structural Maintenance */}
+          <div className="space-y-3">
+            <h4 className="font-semibold">Structural Maintenance</h4>
+            <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-2">
+              {inputs.capital_adjustments.structural_maintenance.map((value, year) => (
+                <div key={year} className="space-y-1">
+                  <Label className="text-xs">Year {year + 1}</Label>
+                  <Input
+                    type="number"
+                    value={value}
+                    onChange={(e) => handleCapitalChange('structural_maintenance', year, parseFloat(e.target.value) || 0)}
+                    className="text-sm"
+                  />
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <Separator />
+
+          {/* Letting Up Allowances */}
+          <div className="space-y-3">
+            <h4 className="font-semibold">Letting Up Allowances</h4>
+            <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-2">
+              {inputs.capital_adjustments.letting_up_allowances.map((value, year) => (
+                <div key={year} className="space-y-1">
+                  <Label className="text-xs">Year {year + 1}</Label>
+                  <Input
+                    type="number"
+                    value={value}
+                    onChange={(e) => handleCapitalChange('letting_up_allowances', year, parseFloat(e.target.value) || 0)}
+                    className="text-sm"
+                  />
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <Separator />
+
+          {/* Capital Improvements */}
+          <div className="space-y-3">
+            <h4 className="font-semibold">Capital Improvements</h4>
+            <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-2">
+              {inputs.capital_adjustments.capital_improvements.map((value, year) => (
+                <div key={year} className="space-y-1">
+                  <Label className="text-xs">Year {year + 1}</Label>
+                  <Input
+                    type="number"
+                    value={value}
+                    onChange={(e) => handleCapitalChange('capital_improvements', year, parseFloat(e.target.value) || 0)}
+                    className="text-sm"
+                  />
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <Separator />
+
+          {/* Custom Capital Items */}
+          <div className="space-y-4">
+            <div className="flex items-center justify-between">
+              <h4 className="font-semibold">Custom Capital Items</h4>
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                onClick={addCustomCapitalItem}
+              >
+                <Plus className="h-4 w-4 mr-2" />
+                Add Capital Item
+              </Button>
+            </div>
+            
+            {inputs.capital_adjustments.custom_capital_items.map((item, itemIndex) => (
+              <div key={itemIndex} className="space-y-3 p-4 border rounded-lg">
+                <div className="flex items-center gap-2">
+                  <Input
+                    value={item.label}
+                    onChange={(e) => updateCustomCapitalLabel(itemIndex, e.target.value)}
+                    placeholder="Capital item name"
+                    className="flex-1"
+                  />
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    onClick={() => removeCustomCapitalItem(itemIndex)}
+                  >
+                    <Trash2 className="h-4 w-4" />
+                  </Button>
+                </div>
+                <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-2">
+                  {item.values.map((value, year) => (
+                    <div key={year} className="space-y-1">
+                      <Label className="text-xs">Year {year + 1}</Label>
+                      <Input
+                        type="number"
+                        value={value}
+                        onChange={(e) => updateCustomCapitalValue(itemIndex, year, parseFloat(e.target.value) || 0)}
+                        className="text-sm"
+                      />
+                    </div>
+                  ))}
+                </div>
+              </div>
+            ))}
           </div>
         </CardContent>
       </Card>
