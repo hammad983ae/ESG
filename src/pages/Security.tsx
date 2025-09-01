@@ -60,11 +60,11 @@ export default function Security() {
               <div className="grid md:grid-cols-2 gap-4">
                 <div className="p-4 bg-muted rounded-lg">
                   <div className="flex items-center justify-between mb-2">
-                    <h3 className="font-semibold">ISO 9001:2015</h3>
+                    <h3 className="font-semibold">ISO 9001:2025</h3>
                     <Badge variant="secondary" className="bg-green-100 text-green-800">Active</Badge>
                   </div>
                   <p className="text-sm text-muted-foreground mb-2">
-                    Quality Management Systems
+                    Quality Management Systems - Latest Version
                   </p>
                   <div className="text-xs space-y-1">
                     <div>Certificate ID: QMS-2025-DPG-001</div>
@@ -76,14 +76,46 @@ export default function Security() {
 
                 <div className="p-4 bg-muted rounded-lg">
                   <div className="flex items-center justify-between mb-2">
-                    <h3 className="font-semibold">ISO 27001:2013</h3>
+                    <h3 className="font-semibold">ISO 27001:2024</h3>
                     <Badge variant="secondary" className="bg-green-100 text-green-800">Active</Badge>
                   </div>
                   <p className="text-sm text-muted-foreground mb-2">
-                    Information Security Management
+                    Information Security Management - Latest Version
                   </p>
                   <div className="text-xs space-y-1">
                     <div>Certificate ID: ISMS-2025-DPG-002</div>
+                    <div>Issued: January 2025</div>
+                    <div>Expires: January 2028</div>
+                    <div>Certifying Body: SAI Global Assurance</div>
+                  </div>
+                </div>
+
+                <div className="p-4 bg-muted rounded-lg">
+                  <div className="flex items-center justify-between mb-2">
+                    <h3 className="font-semibold">ISO 14001:2024</h3>
+                    <Badge variant="secondary" className="bg-green-100 text-green-800">Active</Badge>
+                  </div>
+                  <p className="text-sm text-muted-foreground mb-2">
+                    Environmental Management Systems
+                  </p>
+                  <div className="text-xs space-y-1">
+                    <div>Certificate ID: EMS-2025-DPG-003</div>
+                    <div>Issued: January 2025</div>
+                    <div>Expires: January 2028</div>
+                    <div>Certifying Body: BSI Group Australia</div>
+                  </div>
+                </div>
+
+                <div className="p-4 bg-muted rounded-lg">
+                  <div className="flex items-center justify-between mb-2">
+                    <h3 className="font-semibold">ISO 26000:2024</h3>
+                    <Badge variant="secondary" className="bg-green-100 text-green-800">Active</Badge>
+                  </div>
+                  <p className="text-sm text-muted-foreground mb-2">
+                    Social Responsibility Guidelines
+                  </p>
+                  <div className="text-xs space-y-1">
+                    <div>Certificate ID: SR-2025-DPG-004</div>
                     <div>Issued: January 2025</div>
                     <div>Expires: January 2028</div>
                     <div>Certifying Body: SAI Global Assurance</div>
@@ -146,7 +178,11 @@ export default function Security() {
                   </div>
                   <div className="flex items-center gap-2">
                     <CheckCircle className="w-4 h-4 text-green-600" />
-                    <span>Environmental, Social, and Governance (ESG) factor weighting and impact analysis systems</span>
+                    <span>Discounted Cash Flow (DCF) analysis systems with NPV, IRR, and sensitivity calculations</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <CheckCircle className="w-4 h-4 text-green-600" />
+                    <span>Patent and copyright protected calculation methodologies and intellectual property</span>
                   </div>
                 </div>
               </div>

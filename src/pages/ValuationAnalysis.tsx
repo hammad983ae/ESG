@@ -62,6 +62,8 @@ import { PetrolStationValuationForm } from "@/components/PetrolStationValuationF
 import { PetrolStationValuationResults } from "@/components/PetrolStationValuationResults";
 import { DeferredManagementValuationForm } from "@/components/DeferredManagementValuationForm";
 import { DeferredManagementValuationResults } from "@/components/DeferredManagementValuationResults";
+import { DCFCalculationForm } from "@/components/DCFCalculationForm";
+import { DCFCalculationResults } from "@/components/DCFCalculationResults";
 import { ARYInputs, ARYResults, calculateAllRisksYield } from "@/utils/aryCalculations";
 import { 
   ESGInputs, 
@@ -118,6 +120,11 @@ import {
   DeferredManagementResults,
   calculateDeferredManagementValuation
 } from "@/utils/deferredManagementCalculations";
+import {
+  DCFData,
+  DCFResults,
+  calculateDCF
+} from "@/utils/dcfCalculations";
 
 export default function ValuationAnalysis() {
   // ARY States
@@ -180,6 +187,10 @@ export default function ValuationAnalysis() {
   // Deferred Management Valuation States
   const [deferredManagementInputs, setDeferredManagementInputs] = useState<DeferredManagementInputs | null>(null);
   const [deferredManagementResults, setDeferredManagementResults] = useState<DeferredManagementResults | null>(null);
+  
+  // DCF Analysis States
+  const [dcfInputs, setDcfInputs] = useState<DCFData | null>(null);
+  const [dcfResults, setDcfResults] = useState<DCFResults | null>(null);
 
   const handleARYSubmit = (inputs: ARYInputs) => {
     try {
@@ -310,6 +321,10 @@ export default function ValuationAnalysis() {
         setDeferredManagementInputs(null);
         setDeferredManagementResults(null);
         break;
+      case 'dcf':
+        setDcfInputs(null);
+        setDcfResults(null);
+        break;
     }
   };
 
@@ -421,6 +436,17 @@ export default function ValuationAnalysis() {
     }
   };
 
+  const handleDCFSubmit = (inputs: DCFData) => {
+    try {
+      const calculatedResults = calculateDCF(inputs);
+      setDcfInputs(inputs);
+      setDcfResults(calculatedResults);
+      toast.success("DCF analysis completed successfully!");
+    } catch (error) {
+      toast.error(`DCF analysis error: ${error instanceof Error ? error.message : 'Unknown error'}`);
+    }
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-background to-muted">
       <div className="container mx-auto px-4 py-8">
@@ -519,6 +545,10 @@ export default function ValuationAnalysis() {
             <TabsTrigger value="deferred-management" className="flex items-center gap-2 p-3">
               <Users className="w-4 h-4" />
               Deferred Management
+            </TabsTrigger>
+            <TabsTrigger value="dcf" className="flex items-center gap-2 p-3">
+              <TrendingUp className="w-4 h-4" />
+              DCF Analysis
             </TabsTrigger>
           </TabsList>
 
@@ -1151,6 +1181,45 @@ export default function ValuationAnalysis() {
               </div>
             ) : (
               <DeferredManagementValuationResults inputs={deferredManagementInputs!} results={deferredManagementResults} />
+            )}
+          </TabsContent>
+          
+          {/* DCF Analysis Tab */}
+          <TabsContent value="dcf" className="mt-6">
+            <div className="flex items-center justify-between mb-6">
+              <div>
+                <h2 className="text-2xl font-semibold">Discounted Cash Flow (DCF) Analysis</h2>
+                <p className="text-muted-foreground">
+                  Comprehensive DCF valuation with NPV, IRR, profitability index, and payback period analysis
+                </p>
+              </div>
+              {dcfResults && (
+                <Button onClick={() => handleReset('dcf')} variant="outline">
+                  New Analysis
+                </Button>
+              )}
+            </div>
+
+            {!dcfResults ? (
+              <div className="max-w-6xl mx-auto">
+                <Card className="mb-6">
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-2">
+                      <TrendingUp className="w-5 h-5" />
+                      DCF Investment Analysis
+                    </CardTitle>
+                    <CardDescription>
+                      This comprehensive DCF analysis calculates Net Present Value (NPV), Internal Rate of Return (IRR), 
+                      profitability index, and payback periods to provide complete investment decision metrics. 
+                      Includes ESG adjustment options, terminal value calculations, and sensitivity analysis 
+                      for property investment evaluation and decision-making.
+                    </CardDescription>
+                  </CardHeader>
+                </Card>
+                <DCFCalculationForm onSubmit={handleDCFSubmit} />
+              </div>
+            ) : (
+              <DCFCalculationResults data={dcfInputs!} results={dcfResults} />
             )}
           </TabsContent>
         </Tabs>
