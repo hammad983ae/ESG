@@ -21,7 +21,7 @@
  */
 
 import { useState } from "react";
-import { ArrowLeft, Target, TrendingUp, Leaf, Calculator, Settings, Building2, Sliders, Baby } from "lucide-react";
+import { ArrowLeft, Target, TrendingUp, Leaf, Calculator, Settings, Building2, Sliders, Baby, Fuel } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -57,6 +57,8 @@ import { ChildcareValuationForm } from "@/components/ChildcareValuationForm";
 import { ChildcareValuationResults } from "@/components/ChildcareValuationResults";
 import { ComprehensiveESGAssessmentForm } from "@/components/ComprehensiveESGAssessmentForm";
 import { ComprehensiveESGAssessmentResults } from "@/components/ComprehensiveESGAssessmentResults";
+import { PetrolStationValuationForm } from "@/components/PetrolStationValuationForm";
+import { PetrolStationValuationResults } from "@/components/PetrolStationValuationResults";
 import { ARYInputs, ARYResults, calculateAllRisksYield } from "@/utils/aryCalculations";
 import { 
   ESGInputs, 
@@ -103,6 +105,11 @@ import {
   ComprehensiveESGResults,
   calculateComprehensiveESG
 } from "@/utils/comprehensiveESGCalculations";
+import {
+  PetrolStationInputs,
+  PetrolStationResults,
+  calculatePetrolStationValuation
+} from "@/utils/petrolStationCalculations";
 
 export default function ValuationAnalysis() {
   // ARY States
@@ -157,6 +164,10 @@ export default function ValuationAnalysis() {
   // Comprehensive ESG Assessment States
   const [comprehensiveESGInputs, setComprehensiveESGInputs] = useState<ComprehensiveESGInputs | null>(null);
   const [comprehensiveESGResults, setComprehensiveESGResults] = useState<ComprehensiveESGResults | null>(null);
+
+  // Petrol Station Valuation States
+  const [petrolStationInputs, setPetrolStationInputs] = useState<PetrolStationInputs | null>(null);
+  const [petrolStationResults, setPetrolStationResults] = useState<PetrolStationResults | null>(null);
 
   const handleARYSubmit = (inputs: ARYInputs) => {
     try {
@@ -279,6 +290,10 @@ export default function ValuationAnalysis() {
         setComprehensiveESGInputs(null);
         setComprehensiveESGResults(null);
         break;
+      case 'petrol-station':
+        setPetrolStationInputs(null);
+        setPetrolStationResults(null);
+        break;
     }
   };
 
@@ -365,6 +380,17 @@ export default function ValuationAnalysis() {
       toast.success("Comprehensive ESG assessment completed successfully!");
     } catch (error) {
       toast.error(`ESG assessment error: ${error instanceof Error ? error.message : 'Unknown error'}`);
+    }
+  };
+
+  const handlePetrolStationValuationSubmit = (inputs: PetrolStationInputs) => {
+    try {
+      const calculatedResults = calculatePetrolStationValuation(inputs);
+      setPetrolStationInputs(inputs);
+      setPetrolStationResults(calculatedResults);
+      toast.success("Petrol station valuation completed successfully!");
+    } catch (error) {
+      toast.error(`Petrol station valuation error: ${error instanceof Error ? error.message : 'Unknown error'}`);
     }
   };
 
@@ -458,6 +484,10 @@ export default function ValuationAnalysis() {
             <TabsTrigger value="comprehensive-esg" className="flex items-center gap-2 p-3">
               <Leaf className="w-4 h-4" />
               Comprehensive ESG
+            </TabsTrigger>
+            <TabsTrigger value="petrol-station" className="flex items-center gap-2 p-3">
+              <Fuel className="w-4 h-4" />
+              Petrol Stations
             </TabsTrigger>
           </TabsList>
 
@@ -1013,6 +1043,45 @@ export default function ValuationAnalysis() {
               </div>
             ) : (
               <ComprehensiveESGAssessmentResults results={comprehensiveESGResults} />
+            )}
+          </TabsContent>
+
+          {/* Petrol Station Valuation Tab */}
+          <TabsContent value="petrol-station" className="mt-6">
+            <div className="flex items-center justify-between mb-6">
+              <div>
+                <h2 className="text-2xl font-semibold">Petrol Station Valuation</h2>
+                <p className="text-muted-foreground">
+                  Comprehensive valuation using six specialized methods for petrol stations and fuel retail properties
+                </p>
+              </div>
+              {petrolStationResults && (
+                <Button onClick={() => handleReset('petrol-station')} variant="outline">
+                  New Analysis
+                </Button>
+              )}
+            </div>
+
+            {!petrolStationResults ? (
+              <div className="max-w-6xl mx-auto">
+                <Card className="mb-6">
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-2">
+                      <Fuel className="w-5 h-5" />
+                      Petrol Station Valuation Methods
+                    </CardTitle>
+                    <CardDescription>
+                      This comprehensive analysis includes six valuation approaches specifically designed for petrol stations: 
+                      Income Method (NOI/Cap Rate), Sales Comparison, Land/Asset Value, Replacement Cost (Insurance), 
+                      Rent Approach, and Industry Multiplier Method. Each method incorporates ESG sustainability factors 
+                      and provides detailed analysis of value per pump and building efficiency metrics.
+                    </CardDescription>
+                  </CardHeader>
+                </Card>
+                <PetrolStationValuationForm onSubmit={handlePetrolStationValuationSubmit} />
+              </div>
+            ) : (
+              <PetrolStationValuationResults results={petrolStationResults} />
             )}
           </TabsContent>
         </Tabs>
