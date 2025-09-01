@@ -19,6 +19,9 @@ export interface RentRevisionInputs {
   market_rent: number;
   proposed_rent: number;
   units_or_area: number;
+  land_area: number;
+  current_improved_land_rate: number;
+  proposed_improved_land_rate: number;
   cpi_adjustment: number;
   revision_date: string;
   comparable_evidence: string;
@@ -53,6 +56,13 @@ export interface RentRevisionResults {
   market_conditions: string;
   esg_considerations: string;
   recommendation: string;
+  land_analysis: {
+    land_area: number;
+    current_annual_land_value: number;
+    proposed_annual_land_value: number;
+    land_value_increase_amount: number;
+    land_value_increase_percentage: number;
+  };
   supporting_analysis: {
     current_rate_per_unit: number;
     proposed_rate_per_unit: number;
@@ -75,6 +85,14 @@ export function calculateRentRevision(inputs: RentRevisionInputs): RentRevisionR
   const cpi_adjusted_rent = inputs.current_rent * (1 + inputs.cpi_adjustment / 100);
   const market_comparison_variance = inputs.market_rent > 0 
     ? ((inputs.proposed_rent - inputs.market_rent) / inputs.market_rent) * 100 
+    : 0;
+
+  // Land value calculations
+  const current_annual_land_value = inputs.current_improved_land_rate * inputs.land_area;
+  const proposed_annual_land_value = inputs.proposed_improved_land_rate * inputs.land_area;
+  const land_value_increase_amount = proposed_annual_land_value - current_annual_land_value;
+  const land_value_increase_percentage = inputs.current_improved_land_rate > 0 
+    ? ((inputs.proposed_improved_land_rate - inputs.current_improved_land_rate) / inputs.current_improved_land_rate) * 100 
     : 0;
 
   // Calculate next review date (typically 12 months from revision date)
@@ -125,6 +143,13 @@ export function calculateRentRevision(inputs: RentRevisionInputs): RentRevisionR
     market_conditions: inputs.market_conditions,
     esg_considerations: inputs.include_esg_factors ? inputs.esg_notes : "",
     recommendation,
+    land_analysis: {
+      land_area: inputs.land_area,
+      current_annual_land_value,
+      proposed_annual_land_value,
+      land_value_increase_amount,
+      land_value_increase_percentage
+    },
     supporting_analysis: {
       current_rate_per_unit: inputs.current_rent,
       proposed_rate_per_unit: inputs.proposed_rent,
@@ -143,6 +168,9 @@ export const defaultRentRevisionInputs: RentRevisionInputs = {
   market_rent: 0,
   proposed_rent: 0,
   units_or_area: 0,
+  land_area: 0,
+  current_improved_land_rate: 0,
+  proposed_improved_land_rate: 0,
   cpi_adjustment: 3.5,
   revision_date: new Date().toISOString().split('T')[0],
   comparable_evidence: "",

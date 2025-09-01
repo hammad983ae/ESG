@@ -102,6 +102,56 @@ export const RentRevisionResults: React.FC<RentRevisionResultsProps> = ({ result
         </CardContent>
       </Card>
 
+      {/* Land Value Analysis */}
+      {results.land_analysis.land_area > 0 && (
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <Target className="h-5 w-5" />
+              Land Value Analysis
+            </CardTitle>
+            <CardDescription>
+              Improved land area rental analysis
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+              <div className="text-center p-4 bg-muted/50 rounded-lg">
+                <div className="text-2xl font-bold text-primary">
+                  {results.land_analysis.land_area.toLocaleString()}
+                </div>
+                <div className="text-sm text-muted-foreground">Land Area (sqm)</div>
+              </div>
+              <div className="text-center p-4 bg-muted/50 rounded-lg">
+                <div className="text-2xl font-bold text-primary">
+                  {formatCurrency(results.land_analysis.current_annual_land_value)}
+                </div>
+                <div className="text-sm text-muted-foreground">Current Land Value</div>
+              </div>
+              <div className="text-center p-4 bg-muted/50 rounded-lg">
+                <div className="text-2xl font-bold text-primary">
+                  {formatCurrency(results.land_analysis.proposed_annual_land_value)}
+                </div>
+                <div className="text-sm text-muted-foreground">Proposed Land Value</div>
+              </div>
+              <div className="text-center p-4 bg-primary/10 rounded-lg">
+                <div className="flex items-center justify-center gap-2">
+                  <div className="text-2xl font-bold text-primary">
+                    {formatPercentage(results.land_analysis.land_value_increase_percentage)}
+                  </div>
+                  {results.land_analysis.land_value_increase_percentage > 0 ? (
+                    <TrendingUp className="h-5 w-5 text-green-500" />
+                  ) : (
+                    <TrendingDown className="h-5 w-5 text-red-500" />
+                  )}
+                </div>
+                <div className="text-sm text-muted-foreground">Land Value Change</div>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      )}
+
       {/* Revision Status */}
       <Card>
         <CardHeader>

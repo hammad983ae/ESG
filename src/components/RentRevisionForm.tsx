@@ -278,6 +278,43 @@ export const RentRevisionForm: React.FC<RentRevisionFormProps> = ({ onSubmit }) 
               />
             </div>
           </div>
+
+          <Separator />
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div className="space-y-2">
+              <Label htmlFor="land-area">Land Area (sqm)</Label>
+              <Input
+                id="land-area"
+                type="number"
+                value={inputs.land_area}
+                onChange={(e) => handleInputChange('land_area', parseFloat(e.target.value) || 0)}
+                placeholder="Enter land area"
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="current-land-rate">Current Improved Land Rate ($/sqm)</Label>
+              <Input
+                id="current-land-rate"
+                type="number"
+                step="0.01"
+                value={inputs.current_improved_land_rate}
+                onChange={(e) => handleInputChange('current_improved_land_rate', parseFloat(e.target.value) || 0)}
+                placeholder="Enter current land rate"
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="proposed-land-rate">Proposed Improved Land Rate ($/sqm)</Label>
+              <Input
+                id="proposed-land-rate"
+                type="number"
+                step="0.01"
+                value={inputs.proposed_improved_land_rate}
+                onChange={(e) => handleInputChange('proposed_improved_land_rate', parseFloat(e.target.value) || 0)}
+                placeholder="Enter proposed land rate"
+              />
+            </div>
+          </div>
         </CardContent>
       </Card>
 
