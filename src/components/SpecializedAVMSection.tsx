@@ -66,8 +66,8 @@ const propertyTypeOptions = {
   hospitality: ["Hotels", "Motels", "Resorts", "Serviced Apartments"],
   healthcare: ["Hospitals", "Medical Centers", "Aged Care", "Veterinary Clinics"],
   education: ["Schools", "Universities", "Training Centers", "Childcare Centers"],
-  agricultural: ["Crop Farms", "Livestock Farms", "Vineyards", "Poultry Farms"],
-  horticultural: ["Nurseries", "Greenhouses", "Orchards", "Market Gardens"]
+  agricultural: ["Crop Farms", "Livestock Farms", "Poultry Farms"],
+  horticultural: ["Nurseries", "Greenhouses", "Orchards", "Market Gardens", "Vineyards"]
 };
 
 const SpecializedAVMSection = () => {
