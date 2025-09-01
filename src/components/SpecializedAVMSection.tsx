@@ -13,6 +13,8 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
+import { AddressFinder } from "@/components/AddressFinder";
+import { useToast } from "@/components/ui/use-toast";
 import { 
   Building2, 
   Factory, 
@@ -60,6 +62,7 @@ const SpecializedAVMSection = () => {
   };
 
   const AVMForm = ({ assetType, icon: Icon, title }: { assetType: string, icon: any, title: string }) => {
+    const { toast } = useToast();
     const [formData, setFormData] = useState<AVMData>({
       propertyAddress: "",
       propertyType: assetType,
@@ -68,6 +71,17 @@ const SpecializedAVMSection = () => {
       yearBuilt: new Date().getFullYear(),
       condition: ""
     });
+
+    const handleAddressSelect = (propertyData: any) => {
+      setFormData(prev => ({
+        ...prev,
+        propertyAddress: propertyData.address,
+        landArea: propertyData.landArea || prev.landArea,
+        buildingArea: propertyData.buildingArea || prev.buildingArea,
+        yearBuilt: propertyData.yearBuilt || prev.yearBuilt,
+        propertyType: propertyData.propertyType || assetType
+      }));
+    };
 
     return (
       <div className="space-y-6">
@@ -88,14 +102,21 @@ const SpecializedAVMSection = () => {
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div className="space-y-2">
+              <div className="md:col-span-2 space-y-2">
                 <Label htmlFor="address">Property Address</Label>
-                <Input
-                  id="address"
-                  placeholder="Enter property address"
-                  value={formData.propertyAddress}
-                  onChange={(e) => setFormData({...formData, propertyAddress: e.target.value})}
+                <AddressFinder
+                  onAddressSelect={handleAddressSelect}
+                  placeholder="Search addresses using RP Data..."
                 />
+                <div className="flex items-center gap-2 mt-2">
+                  <Badge variant="outline" className="text-xs">
+                    <Globe className="h-3 w-3 mr-1" />
+                    RP Data Integration
+                  </Badge>
+                  <Badge variant="secondary" className="text-xs">
+                    Auto-populate property details
+                  </Badge>
+                </div>
               </div>
               
               <div className="space-y-2">
