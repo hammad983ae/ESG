@@ -364,7 +364,7 @@ export function ValuationDirectComparisonForm({ onSubmit }: ValuationDirectCompa
 
       <TabsContent value="analysis" className="space-y-6">
 
-        {/* Comparable Sales */}
+        {/* Comparable Sales Evidence */}
         {comparables.length > 0 && (
           <Card>
             <CardHeader>
@@ -383,113 +383,118 @@ export function ValuationDirectComparisonForm({ onSubmit }: ValuationDirectCompa
               </CardDescription>
             </CardHeader>
             <CardContent>
-              <div className="space-y-4">
+              <div className="space-y-6">
                 {comparables.map((comparable) => (
-                  <Card key={comparable.id} className="relative">
-                    <CardContent className="pt-6">
-                      <Button
-                        onClick={() => removeComparable(comparable.id)}
-                        variant="outline"
-                        size="sm"
-                        className="absolute top-2 right-2"
-                      >
-                        <Trash2 className="w-4 h-4" />
-                      </Button>
+                  <div key={comparable.id} className="border rounded-lg p-6 relative bg-card">
+                    <Button
+                      onClick={() => removeComparable(comparable.id)}
+                      variant="ghost"
+                      size="sm"
+                      className="absolute top-4 right-4"
+                    >
+                      <Trash2 className="w-4 h-4" />
+                    </Button>
+                    
+                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                      {/* Property Details Section */}
+                      <div>
+                        <h4 className="text-sm font-medium text-muted-foreground mb-4">Property Details</h4>
+                        <div className="grid grid-cols-2 gap-4">
+                          <div className="space-y-2">
+                            <Label className="text-xs text-muted-foreground">Property Name</Label>
+                            <Input
+                              value={comparable.property}
+                              onChange={(e) => updateComparable(comparable.id, 'property', e.target.value)}
+                              placeholder="Property name"
+                              className="h-9"
+                            />
+                          </div>
+                          
+                          <div className="space-y-2">
+                            <Label className="text-xs text-muted-foreground">Location</Label>
+                            <Input
+                              value={comparable.location}
+                              onChange={(e) => updateComparable(comparable.id, 'location', e.target.value)}
+                              placeholder="Location"
+                              className="h-9"
+                            />
+                          </div>
+                          
+                          <div className="space-y-2">
+                            <Label className="text-xs text-muted-foreground">Sale Date</Label>
+                            <Input
+                              type="date"
+                              value={comparable.saleDate}
+                              onChange={(e) => updateComparable(comparable.id, 'saleDate', e.target.value)}
+                              className="h-9"
+                            />
+                          </div>
+                          
+                          <div className="space-y-2">
+                            <Label className="text-xs text-muted-foreground">Sale Price ($)</Label>
+                            <Input
+                              type="number"
+                              value={comparable.price}
+                              onChange={(e) => updateComparable(comparable.id, 'price', Number(e.target.value))}
+                              placeholder="0"
+                              className="h-9"
+                            />
+                          </div>
+                          
+                          <div className="space-y-2">
+                            <Label className="text-xs text-muted-foreground">Size (sqm)</Label>
+                            <Input
+                              type="number"
+                              value={comparable.size}
+                              onChange={(e) => updateComparable(comparable.id, 'size', Number(e.target.value))}
+                              placeholder="0"
+                              className="h-9"
+                            />
+                          </div>
+                          
+                          <div className="space-y-2">
+                            <Label className="text-xs text-muted-foreground">Price per sqm</Label>
+                            <div className="h-9 px-3 py-2 bg-muted rounded-md border text-sm flex items-center">
+                              ${comparable.pricePerSqm.toFixed(0)}
+                            </div>
+                          </div>
+                        </div>
+                      </div>
                       
-                      <Tabs defaultValue="details" className="w-full">
-                        <TabsList className="grid w-full grid-cols-2">
-                          <TabsTrigger value="details">Property Details</TabsTrigger>
-                          <TabsTrigger value="adjustments">Adjustments</TabsTrigger>
-                        </TabsList>
-                        
-                        <TabsContent value="details" className="mt-4">
-                          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-                            <div className="space-y-2">
-                              <Label>Property Name</Label>
-                              <Input
-                                value={comparable.property}
-                                onChange={(e) => updateComparable(comparable.id, 'property', e.target.value)}
-                                placeholder="Property name"
-                              />
-                            </div>
-                            
-                            <div className="space-y-2">
-                              <Label>Location</Label>
-                              <Input
-                                value={comparable.location}
-                                onChange={(e) => updateComparable(comparable.id, 'location', e.target.value)}
-                                placeholder="Location"
-                              />
-                            </div>
-                            
-                            <div className="space-y-2">
-                              <Label>Sale Date</Label>
-                              <Input
-                                type="date"
-                                value={comparable.saleDate}
-                                onChange={(e) => updateComparable(comparable.id, 'saleDate', e.target.value)}
-                              />
-                            </div>
-                            
-                            <div className="space-y-2">
-                              <Label>Sale Price ($)</Label>
+                      {/* Adjustments Section */}
+                      <div>
+                        <h4 className="text-sm font-medium text-muted-foreground mb-4">Adjustments</h4>
+                        <div className="space-y-3">
+                          {Object.entries(comparable.adjustmentFactors).map(([factor, value]) => (
+                            <div key={factor} className="flex items-center gap-3">
+                              <Label className="capitalize text-sm w-20 flex-shrink-0">{factor}</Label>
                               <Input
                                 type="number"
-                                value={comparable.price}
-                                onChange={(e) => updateComparable(comparable.id, 'price', Number(e.target.value))}
-                                placeholder="0"
+                                step="0.01"
+                                min="0"
+                                max="2"
+                                value={value}
+                                onChange={(e) => updateComparable(comparable.id, `adjustmentFactors.${factor}`, Number(e.target.value))}
+                                className="h-8 w-20"
                               />
+                              <Badge variant={value > 1 ? "default" : value < 1 ? "destructive" : "secondary"} className="text-xs">
+                                {value > 1 ? '+' : ''}{((value - 1) * 100).toFixed(1)}%
+                              </Badge>
                             </div>
-                            
-                            <div className="space-y-2">
-                              <Label>Size (sqm)</Label>
-                              <Input
-                                type="number"
-                                value={comparable.size}
-                                onChange={(e) => updateComparable(comparable.id, 'size', Number(e.target.value))}
-                                placeholder="0"
-                              />
-                            </div>
-                            
-                            <div className="space-y-2">
-                              <Label>Price per sqm</Label>
-                              <div className="p-2 bg-muted rounded border text-sm">
-                                ${comparable.pricePerSqm.toFixed(0)}
-                              </div>
-                            </div>
-                            
-                            <div className="space-y-2">
-                              <Label>Adjusted Price</Label>
-                              <div className="p-2 bg-primary/10 rounded border text-sm font-medium">
+                          ))}
+                          
+                          <div className="mt-4 pt-4 border-t">
+                            <div className="flex justify-between items-center">
+                              <Label className="text-sm font-medium">Adjusted Price</Label>
+                              <div className="text-lg font-semibold text-primary">
                                 ${comparable.adjustedPrice.toLocaleString()}
                               </div>
                             </div>
                           </div>
-                        </TabsContent>
-                        
-                        <TabsContent value="adjustments" className="mt-4">
-                          <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
-                            {Object.entries(comparable.adjustmentFactors).map(([factor, value]) => (
-                              <div key={factor} className="space-y-2">
-                                <Label className="capitalize">{factor}</Label>
-                                <Input
-                                  type="number"
-                                  step="0.01"
-                                  min="0"
-                                  max="2"
-                                  value={value}
-                                  onChange={(e) => updateComparable(comparable.id, `adjustmentFactors.${factor}`, Number(e.target.value))}
-                                />
-                                <Badge variant={value > 1 ? "default" : value < 1 ? "destructive" : "secondary"} className="text-xs">
-                                  {value > 1 ? '+' : ''}{((value - 1) * 100).toFixed(1)}%
-                                </Badge>
-                              </div>
-                            ))}
-                          </div>
-                        </TabsContent>
-                      </Tabs>
-                    </CardContent>
-                  </Card>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
                 ))}
               </div>
             </CardContent>
