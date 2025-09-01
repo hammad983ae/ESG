@@ -55,6 +55,8 @@ import { HospitalityValuationForm } from "@/components/HospitalityValuationForm"
 import { HospitalityValuationResults } from "@/components/HospitalityValuationResults";
 import { ChildcareValuationForm } from "@/components/ChildcareValuationForm";
 import { ChildcareValuationResults } from "@/components/ChildcareValuationResults";
+import { ComprehensiveESGAssessmentForm } from "@/components/ComprehensiveESGAssessmentForm";
+import { ComprehensiveESGAssessmentResults } from "@/components/ComprehensiveESGAssessmentResults";
 import { ARYInputs, ARYResults, calculateAllRisksYield } from "@/utils/aryCalculations";
 import { 
   ESGInputs, 
@@ -96,6 +98,11 @@ import {
   ChildcareResults,
   calculateChildcareValuation
 } from "@/utils/childcareCalculations";
+import {
+  ComprehensiveESGInputs,
+  ComprehensiveESGResults,
+  calculateComprehensiveESG
+} from "@/utils/comprehensiveESGCalculations";
 
 export default function ValuationAnalysis() {
   // ARY States
@@ -146,6 +153,10 @@ export default function ValuationAnalysis() {
   // Childcare Valuation States
   const [childcareInputs, setChildcareInputs] = useState<ChildcareInputs | null>(null);
   const [childcareResults, setChildcareResults] = useState<ChildcareResults | null>(null);
+
+  // Comprehensive ESG Assessment States
+  const [comprehensiveESGInputs, setComprehensiveESGInputs] = useState<ComprehensiveESGInputs | null>(null);
+  const [comprehensiveESGResults, setComprehensiveESGResults] = useState<ComprehensiveESGResults | null>(null);
 
   const handleARYSubmit = (inputs: ARYInputs) => {
     try {
@@ -264,6 +275,10 @@ export default function ValuationAnalysis() {
         setChildcareInputs(null);
         setChildcareResults(null);
         break;
+      case 'comprehensive-esg':
+        setComprehensiveESGInputs(null);
+        setComprehensiveESGResults(null);
+        break;
     }
   };
 
@@ -339,6 +354,17 @@ export default function ValuationAnalysis() {
       toast.success("Childcare valuation completed successfully!");
     } catch (error) {
       toast.error(`Childcare valuation error: ${error instanceof Error ? error.message : 'Unknown error'}`);
+    }
+  };
+
+  const handleComprehensiveESGSubmit = (inputs: ComprehensiveESGInputs) => {
+    try {
+      const calculatedResults = calculateComprehensiveESG(inputs);
+      setComprehensiveESGInputs(inputs);
+      setComprehensiveESGResults(calculatedResults);
+      toast.success("Comprehensive ESG assessment completed successfully!");
+    } catch (error) {
+      toast.error(`ESG assessment error: ${error instanceof Error ? error.message : 'Unknown error'}`);
     }
   };
 
@@ -428,6 +454,10 @@ export default function ValuationAnalysis() {
             <TabsTrigger value="childcare" className="flex items-center gap-2 p-3">
               <Baby className="w-4 h-4" />
               Childcare Facilities
+            </TabsTrigger>
+            <TabsTrigger value="comprehensive-esg" className="flex items-center gap-2 p-3">
+              <Leaf className="w-4 h-4" />
+              Comprehensive ESG
             </TabsTrigger>
           </TabsList>
 
@@ -944,6 +974,45 @@ export default function ValuationAnalysis() {
               </div>
             ) : (
               <ChildcareValuationResults results={childcareResults} />
+            )}
+          </TabsContent>
+
+          {/* Comprehensive ESG Assessment Tab */}
+          <TabsContent value="comprehensive-esg" className="mt-6">
+            <div className="flex items-center justify-between mb-6">
+              <div>
+                <h2 className="text-2xl font-semibold">Comprehensive ESG Assessment</h2>
+                <p className="text-muted-foreground">
+                  Complete Environmental, Social, and Governance evaluation with automated scoring and valuation impact analysis
+                </p>
+              </div>
+              {comprehensiveESGResults && (
+                <Button onClick={() => handleReset('comprehensive-esg')} variant="outline">
+                  New Assessment
+                </Button>
+              )}
+            </div>
+
+            {!comprehensiveESGResults ? (
+              <div className="max-w-6xl mx-auto">
+                <Card className="mb-6">
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-2">
+                      <Leaf className="w-5 h-5" />
+                      Professional ESG Factors Checklist & Scoring
+                    </CardTitle>
+                    <CardDescription>
+                      This comprehensive assessment evaluates 13 key ESG factors across Environmental (5), Social (4), 
+                      and Governance (4) categories. Each factor is scored and weighted to generate an overall ESG score 
+                      and calculate the impact on property valuation. The system provides automated recommendations and 
+                      exportable reports for stakeholder communication.
+                    </CardDescription>
+                  </CardHeader>
+                </Card>
+                <ComprehensiveESGAssessmentForm onSubmit={handleComprehensiveESGSubmit} />
+              </div>
+            ) : (
+              <ComprehensiveESGAssessmentResults results={comprehensiveESGResults} />
             )}
           </TabsContent>
         </Tabs>
