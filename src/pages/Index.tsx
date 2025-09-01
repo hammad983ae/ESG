@@ -21,7 +21,7 @@
  */
 
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { PropertyAssessmentForm, PropertyData } from "@/components/PropertyAssessmentForm";
 import { BeforeAfterValuationForm, BeforeAfterValuationData } from "@/components/BeforeAfterValuationForm";
 import { BeforeAfterValuationResults } from "@/components/BeforeAfterValuationResults";
@@ -30,6 +30,7 @@ import { ExportTools } from "@/components/ExportTools";
 import { AdvancedCalculationsForm, AdvancedPropertyData } from "@/components/AdvancedCalculationsForm";
 import { AdvancedDashboard } from "@/components/AdvancedDashboard";
 import SpecializedAVMSection from "@/components/SpecializedAVMSection";
+import { SearchFunction } from "@/components/SearchFunction";
 import { calculateESGScores, ESGScores } from "@/utils/esgCalculations";
 import { calculateAdvancedRiskAssessment, AdvancedCalculationResults } from "@/utils/advancedCalculations";
 import { Button } from "@/components/ui/button";
@@ -38,6 +39,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Building, Calculator, BarChart3, ArrowLeft, Target, TrendingUp, Shield, ArrowUpDown } from "lucide-react";
 
 const Index = () => {
+  const navigate = useNavigate();
   const [currentStep, setCurrentStep] = useState<'form' | 'results'>('form');
   const [activeTab, setActiveTab] = useState<'basic' | 'advanced' | 'before-after'>('basic');
   
@@ -75,6 +77,27 @@ const Index = () => {
     setCurrentStep('form');
   };
 
+  const handleSearchSelection = (item: any) => {
+    if (item.route === "/") {
+      // Handle internal navigation
+      if (item.tab && ['basic', 'advanced', 'before-after'].includes(item.tab)) {
+        setActiveTab(item.tab as 'basic' | 'advanced' | 'before-after');
+        setCurrentStep('form');
+      } else if (item.tab?.includes('avm')) {
+        // Scroll to AVM section
+        setTimeout(() => {
+          const avmSection = document.querySelector('#specialized-avm-section');
+          if (avmSection) {
+            avmSection.scrollIntoView({ behavior: 'smooth' });
+          }
+        }, 100);
+      }
+    } else {
+      // Navigate to external route
+      navigate(item.route);
+    }
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-accent/20 to-background">
       <div className="container mx-auto px-4 py-8">
@@ -110,6 +133,11 @@ const Index = () => {
                   </Button>
                 </Link>
               </div>
+            </div>
+
+            {/* Search Function */}
+            <div className="mb-8">
+              <SearchFunction onSelectMethod={handleSearchSelection} />
             </div>
 
             {/* Assessment Type Tabs */}
@@ -287,7 +315,7 @@ const Index = () => {
             </Tabs>
 
             {/* Specialized AVM Section */}
-            <div className="mt-12 pt-8 border-t border-border/50">
+            <div id="specialized-avm-section" className="mt-12 pt-8 border-t border-border/50">
               <SpecializedAVMSection />
             </div>
           </div>
