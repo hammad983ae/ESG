@@ -293,17 +293,20 @@ export const ChildcareValuationForm: React.FC<ChildcareValuationFormProps> = ({ 
         <CardContent>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="space-y-2">
-              <Label htmlFor="gross-rent-per-placement">Gross Rent per LDC Placement</Label>
+              <Label htmlFor="gross-rent">Gross Rent per LDC Placement (Annual)</Label>
               <Input
-                id="gross-rent-per-placement"
+                id="gross-rent"
                 type="number"
                 value={inputs.gross_rent_per_placement}
                 onChange={(e) => handleInputChange('gross_rent_per_placement', parseFloat(e.target.value) || 0)}
                 placeholder="2,959"
               />
+              <div className="text-sm text-muted-foreground">
+                Industry standard: $2,500 - $4,500 per LDC placement annually
+              </div>
             </div>
             <div className="space-y-2">
-              <Label htmlFor="cap-rate">Capitalization Rate</Label>
+              <Label htmlFor="cap-rate">LDC Capitalization Rate</Label>
               <Input
                 id="cap-rate"
                 type="number"
@@ -312,9 +315,12 @@ export const ChildcareValuationForm: React.FC<ChildcareValuationFormProps> = ({ 
                 onChange={(e) => handleInputChange('cap_rate', parseFloat(e.target.value) || 0)}
                 placeholder="0.055"
               />
+              <div className="text-sm text-muted-foreground">
+                Childcare sector cap rates typically 4.5% - 6.5%
+              </div>
             </div>
             <div className="space-y-2">
-              <Label htmlFor="outgoings-allowance">Outgoings Allowance (%)</Label>
+              <Label htmlFor="outgoings-allowance">Outgoings Allowance (% of Gross Rent)</Label>
               <Input
                 id="outgoings-allowance"
                 type="number"
@@ -323,6 +329,9 @@ export const ChildcareValuationForm: React.FC<ChildcareValuationFormProps> = ({ 
                 onChange={(e) => handleInputChange('outgoings_allowance', parseFloat(e.target.value) || 0)}
                 placeholder="0.01"
               />
+              <div className="text-sm text-muted-foreground">
+                Typically 1% - 3% for childcare facilities
+              </div>
             </div>
             <div className="space-y-2">
               <Label htmlFor="land-tax-allowance">Land Tax Allowance (Annual)</Label>

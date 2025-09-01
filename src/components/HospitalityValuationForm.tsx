@@ -93,17 +93,20 @@ export const HospitalityValuationForm: React.FC<HospitalityValuationFormProps> =
                   placeholder="1,200,000"
                 />
               </div>
-              <div className="space-y-2">
-                <Label htmlFor="cap-rate">Capitalization Rate</Label>
-                <Input
-                  id="cap-rate"
-                  type="number"
-                  step="0.001"
-                  value={inputs.cap_rate}
-                  onChange={(e) => handleInputChange('cap_rate', parseFloat(e.target.value) || 0)}
-                  placeholder="0.08"
-                />
+            <div className="space-y-2">
+              <Label htmlFor="cap-rate">Hospitality Cap Rate</Label>
+              <Input
+                id="cap-rate"
+                type="number"
+                step="0.001"
+                value={inputs.cap_rate}
+                onChange={(e) => handleInputChange('cap_rate', parseFloat(e.target.value) || 0)}
+                placeholder="0.08"
+              />
+              <div className="text-sm text-muted-foreground">
+                Hotel/hospitality sector rates typically 6-12% depending on location and class
               </div>
+            </div>
             </div>
           </div>
 
