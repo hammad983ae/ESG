@@ -40,7 +40,7 @@ import {
   FileText,
   Calculator
 } from "lucide-react";
-import { RentRevisionInputs, PropertyTypeConfig, defaultRentRevisionInputs } from "@/utils/rentRevisionCalculations";
+import { RentRevisionInputs, PropertyTypeConfig, defaultRentRevisionInputs, sampleRentRevisionData } from "@/utils/rentRevisionCalculations";
 
 interface RentRevisionFormProps {
   onSubmit: (inputs: RentRevisionInputs) => void;
@@ -160,6 +160,13 @@ export const RentRevisionForm: React.FC<RentRevisionFormProps> = ({ onSubmit }) 
     onSubmit(inputs);
   };
 
+  const handleLoadSampleData = () => {
+    const sampleData = sampleRentRevisionData[inputs.property_type];
+    if (sampleData) {
+      setInputs(sampleData);
+    }
+  };
+
   const formatCurrency = (value: number) => `$${value.toLocaleString()}`;
   const currentConfig = propertyTypeConfigs[inputs.property_type];
   const IconComponent = currentConfig?.icon || Building2;
@@ -207,7 +214,7 @@ export const RentRevisionForm: React.FC<RentRevisionFormProps> = ({ onSubmit }) 
                 <h3 className="font-semibold">{currentConfig.terminology}</h3>
               </div>
               <p className="text-sm text-muted-foreground mb-2">{currentConfig.description}</p>
-              <div className="flex flex-wrap gap-2">
+              <div className="flex flex-wrap gap-2 mb-3">
                 <Badge variant="secondary">
                   Unit: {currentConfig.unit}
                 </Badge>
@@ -215,6 +222,15 @@ export const RentRevisionForm: React.FC<RentRevisionFormProps> = ({ onSubmit }) 
                   Range: {currentConfig.marketRange}
                 </Badge>
               </div>
+              <Button 
+                type="button" 
+                variant="outline" 
+                size="sm" 
+                onClick={handleLoadSampleData}
+                className="w-full"
+              >
+                Load Sample Data for {currentConfig.name}
+              </Button>
             </div>
           )}
         </CardContent>
