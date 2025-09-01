@@ -121,10 +121,10 @@ import {
   calculateDeferredManagementValuation
 } from "@/utils/deferredManagementCalculations";
 import {
-  DCFData,
-  DCFResults,
-  calculateDCF
-} from "@/utils/dcfCalculations";
+  StadiumInputs,
+  StadiumResults,
+  calculateStadiumValuation
+} from "@/utils/stadiumCalculations";
 
 export default function ValuationAnalysis() {
   // ARY States
@@ -191,6 +191,10 @@ export default function ValuationAnalysis() {
   // DCF Analysis States
   const [dcfInputs, setDcfInputs] = useState<DCFData | null>(null);
   const [dcfResults, setDcfResults] = useState<DCFResults | null>(null);
+  
+  // Stadium Valuation States
+  const [stadiumInputs, setStadiumInputs] = useState<StadiumInputs | null>(null);
+  const [stadiumResults, setStadiumResults] = useState<StadiumResults | null>(null);
 
   const handleARYSubmit = (inputs: ARYInputs) => {
     try {
@@ -321,9 +325,9 @@ export default function ValuationAnalysis() {
         setDeferredManagementInputs(null);
         setDeferredManagementResults(null);
         break;
-      case 'dcf':
-        setDcfInputs(null);
-        setDcfResults(null);
+      case 'stadium':
+        setStadiumInputs(null);
+        setStadiumResults(null);
         break;
     }
   };
@@ -436,7 +440,18 @@ export default function ValuationAnalysis() {
     }
   };
 
-  const handleDCFSubmit = (inputs: DCFData) => {
+  const handleStadiumSubmit = (inputs: StadiumInputs) => {
+    try {
+      const calculatedResults = calculateStadiumValuation(inputs);
+      setStadiumInputs(inputs);
+      setStadiumResults(calculatedResults);
+      toast.success("Stadium valuation completed successfully!");
+    } catch (error) {
+      toast.error(`Stadium valuation error: ${error instanceof Error ? error.message : 'Unknown error'}`);
+    }
+  };
+
+  const handleDCFSubmit = (inputs: any) => {
     try {
       const calculatedResults = calculateDCF(inputs);
       setDcfInputs(inputs);
@@ -549,6 +564,10 @@ export default function ValuationAnalysis() {
             <TabsTrigger value="dcf" className="flex items-center gap-2 p-3">
               <TrendingUp className="w-4 h-4" />
               DCF Analysis
+            </TabsTrigger>
+            <TabsTrigger value="stadium" className="flex items-center gap-2 p-3">
+              <Building2 className="w-4 h-4" />
+              Sports Stadium
             </TabsTrigger>
           </TabsList>
 
@@ -1220,6 +1239,31 @@ export default function ValuationAnalysis() {
               </div>
             ) : (
               <DCFCalculationResults data={dcfInputs!} results={dcfResults} />
+            )}
+          </TabsContent>
+          
+          {/* Stadium Valuation Tab */}
+          <TabsContent value="stadium" className="mt-6">
+            <div className="flex items-center justify-between mb-6">
+              <div>
+                <h2 className="text-2xl font-semibold">Sports Stadium Valuation</h2>
+                <p className="text-muted-foreground">
+                  Comprehensive stadium valuation using sublease income, retail income, and turnover methods
+                </p>
+              </div>
+              {stadiumResults && (
+                <Button onClick={() => handleReset('stadium')} variant="outline">
+                  New Analysis
+                </Button>
+              )}
+            </div>
+
+            {!stadiumResults ? (
+              <div className="max-w-6xl mx-auto">
+                <StadiumValuationForm onSubmit={handleStadiumSubmit} />
+              </div>
+            ) : (
+              <StadiumValuationResults results={stadiumResults} />
             )}
           </TabsContent>
         </Tabs>
