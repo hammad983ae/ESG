@@ -1,3 +1,17 @@
+/**
+ * Sustaino Pro - ESG Property Assessment Platform - Sports Stadium Results Display
+ * 
+ * Copyright (c) 2025 Delorenzo Property Group Pty Ltd. All Rights Reserved.
+ * Licensed under MIT License - see LICENSE file for details
+ * Patent Protected: AU2025000001-AU2025000018
+ * 
+ * Results visualization component for sports stadium valuations
+ * with comprehensive analysis and ESG impact reporting
+ * 
+ * @author Delorenzo Property Group Pty Ltd
+ * @version 1.0.0
+ */
+
 import React from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";

@@ -1,5 +1,21 @@
+/**
+ * Sustaino Pro - ESG Property Assessment Platform - Sports Stadium Valuation
+ * 
+ * Copyright (c) 2025 Delorenzo Property Group Pty Ltd. All Rights Reserved.
+ * Licensed under MIT License - see LICENSE file for details
+ * Patent Protected: AU2025000001-AU2025000018
+ * 
+ * Sports stadium valuation calculations including:
+ * - Sublease income approach with present value analysis
+ * - Retail income method based on attendee spending patterns
+ * - Turnover method using industry multipliers
+ * - ESG adjustment factors for sustainable stadium operations
+ * 
+ * @author Delorenzo Property Group Pty Ltd
+ * @version 1.0.0
+ */
+
 export interface StadiumInputs {
-  // Stadium Details
   capacity: number;
   event_days: number;
   avg_spend_per_attendee: number;
