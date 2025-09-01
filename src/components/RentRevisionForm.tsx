@@ -312,6 +312,39 @@ export const RentRevisionForm: React.FC<RentRevisionFormProps> = ({ onSubmit }) 
               rows={2}
             />
           </div>
+
+          {/* Area Details */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="space-y-2">
+              <Label htmlFor="lettable-area">
+                {inputs.property_type === 'agricultural' ? 'Area (hectares)' :
+                 inputs.property_type === 'childcare' ? 'Number of LDC Placements' :
+                 inputs.property_type === 'hospitality' ? 'Number of Rooms/Keys' :
+                 inputs.property_type === 'petrol' ? 'Site Count' :
+                 inputs.property_type === 'stadium' ? 'Number of Seats' :
+                 inputs.property_type === 'retirement' ? 'Number of Units' :
+                 inputs.property_type === 'healthcare' ? 'Beds/Treatment Rooms' :
+                 'Lettable Area (sqm)'}
+              </Label>
+              <Input
+                id="lettable-area"
+                type="number"
+                value={inputs.lettable_area}
+                onChange={(e) => handleInputChange('lettable_area', parseFloat(e.target.value) || 0)}
+                placeholder="Enter area/quantity"
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="land-area">Land Area (sqm)</Label>
+              <Input
+                id="land-area"
+                type="number"
+                value={inputs.land_area}
+                onChange={(e) => handleInputChange('land_area', parseFloat(e.target.value) || 0)}
+                placeholder="Enter land area"
+              />
+            </div>
+          </div>
         </CardContent>
       </Card>
 
@@ -460,39 +493,6 @@ export const RentRevisionForm: React.FC<RentRevisionFormProps> = ({ onSubmit }) 
           </div>
 
           <Separator />
-
-          {/* Area Details */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div className="space-y-2">
-              <Label htmlFor="lettable-area">
-                {inputs.property_type === 'agricultural' ? 'Area (hectares)' :
-                 inputs.property_type === 'childcare' ? 'Number of LDC Placements' :
-                 inputs.property_type === 'hospitality' ? 'Number of Rooms/Keys' :
-                 inputs.property_type === 'petrol' ? 'Site Count' :
-                 inputs.property_type === 'stadium' ? 'Number of Seats' :
-                 inputs.property_type === 'retirement' ? 'Number of Units' :
-                 inputs.property_type === 'healthcare' ? 'Beds/Treatment Rooms' :
-                 'Lettable Area (sqm)'}
-              </Label>
-              <Input
-                id="lettable-area"
-                type="number"
-                value={inputs.lettable_area}
-                onChange={(e) => handleInputChange('lettable_area', parseFloat(e.target.value) || 0)}
-                placeholder="Enter area/quantity"
-              />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="land-area">Land Area (sqm)</Label>
-              <Input
-                id="land-area"
-                type="number"
-                value={inputs.land_area}
-                onChange={(e) => handleInputChange('land_area', parseFloat(e.target.value) || 0)}
-                placeholder="Enter land area"
-              />
-            </div>
-          </div>
 
           {/* Include/Exclude Toggles for Current Lease */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
