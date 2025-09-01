@@ -31,9 +31,10 @@ export const ChildcareValuationForm: React.FC<ChildcareValuationFormProps> = ({ 
     const newProperty: ComparisonProperty = {
       id: Date.now().toString(),
       sale_price: 0,
-      size: 0,
-      rent: 0,
-      value: 0,
+      placements: 0,
+      value_per_placement: 0,
+      gross_rent_per_placement: 0,
+      net_rent_per_placement: 0,
       location: '',
       sale_date: ''
     };
@@ -81,99 +82,52 @@ export const ChildcareValuationForm: React.FC<ChildcareValuationFormProps> = ({ 
             <Label htmlFor="esg-included">Include ESG Adjustments</Label>
           </div>
           
-          {inputs.esg_included && (
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              <div className="space-y-2">
-                <Label>General ESG Factor: {formatPercentage(inputs.esg_factor)}</Label>
-                <Slider
-                  value={[inputs.esg_factor]}
-                  onValueChange={([value]) => handleInputChange('esg_factor', value)}
-                  max={0.2}
-                  min={-0.1}
-                  step={0.005}
-                />
-              </div>
-              <div className="space-y-2">
-                <Label>Land ESG Factor: {formatPercentage(inputs.esg_land_factor)}</Label>
-                <Slider
-                  value={[inputs.esg_land_factor]}
-                  onValueChange={([value]) => handleInputChange('esg_land_factor', value)}
-                  max={0.2}
-                  min={-0.1}
-                  step={0.005}
-                />
-              </div>
-              <div className="space-y-2">
-                <Label>Construction ESG Factor: {formatPercentage(inputs.esg_construction_factor)}</Label>
-                <Slider
-                  value={[inputs.esg_construction_factor]}
-                  onValueChange={([value]) => handleInputChange('esg_construction_factor', value)}
-                  max={0.2}
-                  min={-0.1}
-                  step={0.005}
-                />
-              </div>
+              {inputs.esg_included && (
+            <div className="space-y-2">
+              <Label>ESG Factor: {formatPercentage(inputs.esg_factor)}</Label>
+              <Slider
+                value={[inputs.esg_factor]}
+                onValueChange={([value]) => handleInputChange('esg_factor', value)}
+                max={0.2}
+                min={-0.1}
+                step={0.005}
+              />
             </div>
           )}
         </CardContent>
       </Card>
 
-      {/* LDC Long Day Childcare */}
+      {/* LDC Direct Comparison Approach */}
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <Building className="h-5 w-5" />
-            Long Day Childcare (LDC) Approach
+            Long Day Childcare (LDC) Direct Comparison Approach
           </CardTitle>
           <CardDescription>
-            Calculate total property value based on land value and childcare facility development costs
+            Calculate property value using per placement valuation method based on comparable LDC sales
           </CardDescription>
         </CardHeader>
         <CardContent>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="space-y-2">
-              <Label htmlFor="land-value">Land Value</Label>
-              <Input
-                id="land-value"
-                type="number"
-                value={inputs.land_value}
-                onChange={(e) => handleInputChange('land_value', parseFloat(e.target.value) || 0)}
-                placeholder="300,000"
-              />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="construction-cost">Childcare Facility Development Cost</Label>
-              <Input
-                id="construction-cost"
-                type="number"
-                value={inputs.construction_cost}
-                onChange={(e) => handleInputChange('construction_cost', parseFloat(e.target.value) || 0)}
-                placeholder="700,000"
-              />
-            </div>
-          </div>
-          
-          <div className="mt-4 grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div className="space-y-2">
-              <Label htmlFor="childcare-placements">Number of Childcare Placements</Label>
+              <Label htmlFor="childcare-placements">Number of LDC Placements</Label>
               <Input
                 id="childcare-placements"
                 type="number"
-                value={inputs.childcare_placements || 75}
+                value={inputs.childcare_placements}
                 onChange={(e) => handleInputChange('childcare_placements', parseInt(e.target.value) || 0)}
-                placeholder="75"
+                placeholder="169"
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="cost-per-placement">Development Cost per Placement</Label>
+              <Label htmlFor="value-per-placement">Value per LDC Placement</Label>
               <Input
-                id="cost-per-placement"
+                id="value-per-placement"
                 type="number"
-                value={inputs.cost_per_placement || 0}
-                onChange={(e) => handleInputChange('cost_per_placement', parseFloat(e.target.value) || 0)}
-                placeholder="Calculated automatically"
-                disabled
-                className="bg-muted"
+                value={inputs.value_per_placement}
+                onChange={(e) => handleInputChange('value_per_placement', parseFloat(e.target.value) || 0)}
+                placeholder="60,000"
               />
             </div>
           </div>
@@ -181,32 +135,32 @@ export const ChildcareValuationForm: React.FC<ChildcareValuationFormProps> = ({ 
           {inputs.esg_included && (
             <div className="mt-4 p-3 bg-muted/50 rounded-lg">
               <div className="text-sm text-muted-foreground">
-                Estimated LDC Total with ESG: {formatCurrency((inputs.land_value * (1 + inputs.esg_land_factor)) + (inputs.construction_cost * (1 + inputs.esg_construction_factor)))}
+                LDC Total Value with ESG: {formatCurrency(inputs.childcare_placements * inputs.value_per_placement * (1 + inputs.esg_factor))}
               </div>
               <div className="text-sm text-muted-foreground mt-1">
-                Cost per Placement: {formatCurrency(inputs.construction_cost / (inputs.childcare_placements || 75))}
+                Effective Value per Placement: {formatCurrency(inputs.value_per_placement * (1 + inputs.esg_factor))}
               </div>
             </div>
           )}
         </CardContent>
       </Card>
 
-      {/* Direct Comparison Data */}
+      {/* LDC Comparable Analysis */}
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <BarChart3 className="h-5 w-5" />
-            Comparable Sales Data
+            LDC Comparable Sales Analysis
           </CardTitle>
           <CardDescription>
-            Add comparable childcare facility sales for direct comparison analysis
+            Add comparable LDC facility sales for per placement analysis
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
           {inputs.comparison_data.map((comp, index) => (
             <div key={comp.id} className="border rounded-lg p-4 space-y-4">
               <div className="flex items-center justify-between">
-                <Badge variant="secondary">Comparable {index + 1}</Badge>
+                <Badge variant="secondary">LDC Comparable {index + 1}</Badge>
                 {inputs.comparison_data.length > 1 && (
                   <Button
                     type="button"
@@ -226,34 +180,43 @@ export const ChildcareValuationForm: React.FC<ChildcareValuationFormProps> = ({ 
                     type="number"
                     value={comp.sale_price}
                     onChange={(e) => handleComparisonDataChange(index, 'sale_price', parseFloat(e.target.value) || 0)}
-                    placeholder="1,200,000"
+                    placeholder="10,140,000"
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label>Size (sqm)</Label>
+                  <Label>LDC Placements</Label>
                   <Input
                     type="number"
-                    value={comp.size}
-                    onChange={(e) => handleComparisonDataChange(index, 'size', parseFloat(e.target.value) || 0)}
-                    placeholder="5,000"
+                    value={comp.placements}
+                    onChange={(e) => handleComparisonDataChange(index, 'placements', parseFloat(e.target.value) || 0)}
+                    placeholder="169"
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label>Annual Rent</Label>
+                  <Label>Value per Placement</Label>
                   <Input
                     type="number"
-                    value={comp.rent}
-                    onChange={(e) => handleComparisonDataChange(index, 'rent', parseFloat(e.target.value) || 0)}
-                    placeholder="50,000"
+                    value={comp.value_per_placement}
+                    onChange={(e) => handleComparisonDataChange(index, 'value_per_placement', parseFloat(e.target.value) || 0)}
+                    placeholder="60,000"
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label>Assessed Value</Label>
+                  <Label>Gross Rent per Placement</Label>
                   <Input
                     type="number"
-                    value={comp.value}
-                    onChange={(e) => handleComparisonDataChange(index, 'value', parseFloat(e.target.value) || 0)}
-                    placeholder="1,100,000"
+                    value={comp.gross_rent_per_placement}
+                    onChange={(e) => handleComparisonDataChange(index, 'gross_rent_per_placement', parseFloat(e.target.value) || 0)}
+                    placeholder="2,959"
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label>Net Rent per Placement</Label>
+                  <Input
+                    type="number"
+                    value={comp.net_rent_per_placement}
+                    onChange={(e) => handleComparisonDataChange(index, 'net_rent_per_placement', parseFloat(e.target.value) || 0)}
+                    placeholder="2,800"
                   />
                 </div>
                 <div className="space-y-2">
@@ -284,32 +247,32 @@ export const ChildcareValuationForm: React.FC<ChildcareValuationFormProps> = ({ 
             className="w-full"
           >
             <Plus className="h-4 w-4 mr-2" />
-            Add Comparable Property
+            Add LDC Comparable
           </Button>
         </CardContent>
       </Card>
 
-      {/* Rent Approach */}
+      {/* LDC Rental Approach */}
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <DollarSign className="h-5 w-5" />
-            Rent-Based Valuation
+            LDC Rental Capitalization Approach
           </CardTitle>
           <CardDescription>
-            Calculate property value using rental income and market multipliers
+            Calculate property value using gross LDC rents with outgoings and land tax allowances
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="space-y-2">
-              <Label htmlFor="annual-rent">Annual Rent</Label>
+              <Label htmlFor="gross-rent-per-placement">Gross Rent per LDC Placement</Label>
               <Input
-                id="annual-rent"
+                id="gross-rent-per-placement"
                 type="number"
-                value={inputs.annual_rent}
-                onChange={(e) => handleInputChange('annual_rent', parseFloat(e.target.value) || 0)}
-                placeholder="52,000"
+                value={inputs.gross_rent_per_placement}
+                onChange={(e) => handleInputChange('gross_rent_per_placement', parseFloat(e.target.value) || 0)}
+                placeholder="2,959"
               />
             </div>
             <div className="space-y-2">
@@ -320,27 +283,39 @@ export const ChildcareValuationForm: React.FC<ChildcareValuationFormProps> = ({ 
                 step="0.001"
                 value={inputs.cap_rate}
                 onChange={(e) => handleInputChange('cap_rate', parseFloat(e.target.value) || 0)}
-                placeholder="0.06"
+                placeholder="0.055"
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="rent-multiplier">Rent Multiplier</Label>
+              <Label htmlFor="outgoings-allowance">Outgoings Allowance (%)</Label>
               <Input
-                id="rent-multiplier"
+                id="outgoings-allowance"
                 type="number"
-                step="0.1"
-                value={inputs.rent_multiplier}
-                onChange={(e) => handleInputChange('rent_multiplier', parseFloat(e.target.value) || 0)}
-                placeholder="20"
+                step="0.001"
+                value={inputs.outgoings_allowance}
+                onChange={(e) => handleInputChange('outgoings_allowance', parseFloat(e.target.value) || 0)}
+                placeholder="0.01"
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="land-tax-allowance">Land Tax Allowance (Annual)</Label>
+              <Input
+                id="land-tax-allowance"
+                type="number"
+                value={inputs.land_tax_allowance}
+                onChange={(e) => handleInputChange('land_tax_allowance', parseFloat(e.target.value) || 0)}
+                placeholder="5,000"
               />
             </div>
           </div>
           
-          {inputs.annual_rent > 0 && inputs.esg_included && (
+          {inputs.gross_rent_per_placement > 0 && inputs.cap_rate > 0 && (
             <div className="mt-4 p-3 bg-muted/50 rounded-lg">
               <div className="text-sm text-muted-foreground space-y-1">
-                <div>Cap Rate Approach: {formatCurrency((inputs.annual_rent * (1 + inputs.esg_factor)) / inputs.cap_rate)}</div>
-                <div>Rent Multiplier Approach: {formatCurrency(inputs.annual_rent * inputs.rent_multiplier * (1 + inputs.esg_factor))}</div>
+                <div>Gross Annual Rent: {formatCurrency(inputs.childcare_placements * inputs.gross_rent_per_placement * (inputs.esg_included ? 1 + inputs.esg_factor : 1))}</div>
+                <div>Less Outgoings: {formatCurrency((inputs.childcare_placements * inputs.gross_rent_per_placement * inputs.outgoings_allowance) + inputs.land_tax_allowance)}</div>
+                <div>Net Operating Income: {formatCurrency((inputs.childcare_placements * inputs.gross_rent_per_placement * (inputs.esg_included ? 1 + inputs.esg_factor : 1)) - ((inputs.childcare_placements * inputs.gross_rent_per_placement * inputs.outgoings_allowance) + inputs.land_tax_allowance))}</div>
+                <div>Capitalized Value: {formatCurrency(((inputs.childcare_placements * inputs.gross_rent_per_placement * (inputs.esg_included ? 1 + inputs.esg_factor : 1)) - ((inputs.childcare_placements * inputs.gross_rent_per_placement * inputs.outgoings_allowance) + inputs.land_tax_allowance)) / inputs.cap_rate)}</div>
               </div>
             </div>
           )}

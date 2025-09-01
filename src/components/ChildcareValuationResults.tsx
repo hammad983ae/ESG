@@ -16,39 +16,18 @@ export const ChildcareValuationResults: React.FC<ChildcareValuationResultsProps>
 
   const valuationMethods = [
     {
-      name: "LDC Approach",
+      name: "LDC Direct Comparison",
       icon: Building,
-      value: results.total_ldc_value,
-      description: "Long Day Childcare facility development",
-      breakdown: `Land: ${formatCurrency(results.ldc_land_value)}, Development: ${formatCurrency(results.ldc_construction_value)}`
+      value: results.ldc_direct_comparison_value,
+      description: "Long Day Childcare per placement valuation",
+      breakdown: `${results.childcare_placements} placements × ${formatCurrency(results.value_per_placement)}`
     },
     {
-      name: "Direct Comparison",
-      icon: BarChart3,
-      value: results.average_sale_price,
-      description: "Average of comparable sales",
-      breakdown: `Avg Size: ${results.average_size.toLocaleString()} sqm, Price/sqm: ${formatCurrency(results.price_per_sqm)}`
-    },
-    {
-      name: "Comparison Value",
-      icon: Target,
-      value: results.average_value,
-      description: "Average assessed value of comparables",
-      breakdown: `Based on ${results.average_rent > 0 ? 'rental data' : 'market assessments'}`
-    },
-    {
-      name: "Rent Capitalization",
+      name: "Rental Capitalization",
       icon: DollarSign,
-      value: results.rent_based_value,
-      description: "Annual rent capitalized at market rate",
-      breakdown: `Annual Rent: ${formatCurrency(results.average_rent || 0)}`
-    },
-    {
-      name: "Rent Multiplier",
-      icon: TrendingUp,
-      value: results.rent_multiplier_value,
-      description: "Rent times industry multiplier",
-      breakdown: `Market multiplier approach`
+      value: results.capitalized_value,
+      description: "Gross rents capitalized after outgoings",
+      breakdown: `NOI: ${formatCurrency(results.net_operating_income)}`
     }
   ];
 
@@ -199,12 +178,12 @@ export const ChildcareValuationResults: React.FC<ChildcareValuationResultsProps>
             <div className="space-y-2">
               <h4 className="font-medium">Long Day Childcare Indicators</h4>
               <ul className="text-sm text-muted-foreground space-y-1">
-                <li>• Total placements: {results.childcare_placements} children</li>
-                <li>• Development cost per placement: {formatCurrency(results.cost_per_placement)}</li>
-                <li>• Average price per sqm: {formatCurrency(results.price_per_sqm)}</li>
-                <li>• Typical facility size: {results.average_size.toLocaleString()} sqm</li>
-                <li>• Annual rental yield indication available</li>
-                <li>• Market-specific ESG considerations applied</li>
+                <li>• Total LDC placements: {results.childcare_placements} children</li>
+                <li>• Value per placement: {formatCurrency(results.value_per_placement)}</li>
+                <li>• Average comparable value per placement: {formatCurrency(results.average_value_per_placement)}</li>
+                <li>• Placement value range: {formatCurrency(results.placement_value_range.low)} - {formatCurrency(results.placement_value_range.high)}</li>
+                <li>• Gross rent per placement: {formatCurrency(results.average_gross_rent_per_placement)}</li>
+                <li>• Net rent per placement: {formatCurrency(results.average_net_rent_per_placement)}</li>
               </ul>
             </div>
           </CardContent>
@@ -212,23 +191,18 @@ export const ChildcareValuationResults: React.FC<ChildcareValuationResultsProps>
 
         <Card>
           <CardHeader>
-            <CardTitle>Valuation Confidence</CardTitle>
+            <CardTitle>LDC Rental Analysis</CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="space-y-2">
-              <h4 className="font-medium">Assessment Quality</h4>
-              <div className="flex items-center gap-2">
-                <Badge variant={activeMethodsCount >= 4 ? "default" : activeMethodsCount >= 2 ? "secondary" : "destructive"}>
-                  {activeMethodsCount >= 4 ? "High" : activeMethodsCount >= 2 ? "Medium" : "Low"} Confidence
-                </Badge>
-                <span className="text-sm text-muted-foreground">
-                  {activeMethodsCount} of 5 methods active
-                </span>
-              </div>
-              <div className="text-sm text-muted-foreground">
-                Range variance: {rangePercentage.toFixed(1)}% 
-                {rangePercentage < 15 ? " (Low)" : rangePercentage < 30 ? " (Moderate)" : " (High)"}
-              </div>
+              <h4 className="font-medium">Rental Income Breakdown</h4>
+              <ul className="text-sm text-muted-foreground space-y-1">
+                <li>• Gross annual rent: {formatCurrency(results.gross_annual_rent)}</li>
+                <li>• Total outgoings: {formatCurrency(results.total_outgoings)}</li>
+                <li>• Net operating income: {formatCurrency(results.net_operating_income)}</li>
+                <li>• Capitalized value: {formatCurrency(results.capitalized_value)}</li>
+                <li>• Assessment based on comparable LDC facilities</li>
+              </ul>
             </div>
           </CardContent>
         </Card>
