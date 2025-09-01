@@ -123,6 +123,24 @@ export interface RentRevisionResults {
   };
 }
 
+// Rent conversion utility functions
+export function grossToNetRent(grossRent: number, incentiveRate: number): number {
+  return grossRent * (1 - incentiveRate);
+}
+
+export function faceToEffectiveRent(faceRent: number, incentiveRate: number): number {
+  return faceRent * (1 - incentiveRate);
+}
+
+export function effectiveToNetRent(effectiveRent: number, additionalDeductions: number = 0): number {
+  return effectiveRent - additionalDeductions;
+}
+
+// Calculate total deductions (outgoings + land tax)
+export function calculateTotalDeductions(outgoings: number, landTax: number): number {
+  return outgoings + landTax;
+}
+
 export function calculateRentRevision(inputs: RentRevisionInputs): RentRevisionResults {
   // Calculate annual rent values (NET BASIS)
   const face_rent_annual = inputs.face_rent * inputs.lettable_area;

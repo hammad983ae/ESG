@@ -40,7 +40,16 @@ import {
   FileText,
   Calculator
 } from "lucide-react";
-import { RentRevisionInputs, PropertyTypeConfig, defaultRentRevisionInputs, sampleRentRevisionData } from "@/utils/rentRevisionCalculations";
+import { 
+  RentRevisionInputs, 
+  PropertyTypeConfig, 
+  defaultRentRevisionInputs, 
+  sampleRentRevisionData,
+  grossToNetRent,
+  faceToEffectiveRent,
+  effectiveToNetRent,
+  calculateTotalDeductions
+} from "@/utils/rentRevisionCalculations";
 
 interface RentRevisionFormProps {
   onSubmit: (inputs: RentRevisionInputs) => void;
@@ -164,6 +173,31 @@ export const RentRevisionForm: React.FC<RentRevisionFormProps> = ({ onSubmit }) 
     const sampleData = sampleRentRevisionData[inputs.property_type];
     if (sampleData) {
       setInputs(sampleData);
+    }
+  };
+
+  // Rent conversion handlers
+  const handleGrossToNet = () => {
+    if (inputs.gross_rent > 0 && inputs.incentives > 0) {
+      const incentiveRate = inputs.incentives / inputs.gross_rent;
+      const netRent = grossToNetRent(inputs.gross_rent, incentiveRate);
+      setInputs(prev => ({ ...prev, net_rent: netRent }));
+    }
+  };
+
+  const handleFaceToEffective = () => {
+    if (inputs.face_rent > 0 && inputs.incentives > 0) {
+      const incentiveRate = inputs.incentives / inputs.face_rent;
+      const effectiveRent = faceToEffectiveRent(inputs.face_rent, incentiveRate);
+      setInputs(prev => ({ ...prev, effective_rent: effectiveRent }));
+    }
+  };
+
+  const handleEffectiveToNet = () => {
+    if (inputs.effective_rent > 0) {
+      const totalDeductions = calculateTotalDeductions(inputs.outgoings, inputs.land_tax);
+      const netRent = effectiveToNetRent(inputs.effective_rent, totalDeductions);
+      setInputs(prev => ({ ...prev, net_rent: netRent }));
     }
   };
 
@@ -490,6 +524,49 @@ export const RentRevisionForm: React.FC<RentRevisionFormProps> = ({ onSubmit }) 
                 {formatCurrency(inputs.outgoings_per_sqm * inputs.lettable_area)}
               </div>
             </div>
+          </div>
+
+          {/* Rent Conversion Tools */}
+          <div className="p-4 bg-primary/5 rounded-lg border border-primary/20">
+            <div className="flex items-center gap-2 mb-3">
+              <Calculator className="h-4 w-4 text-primary" />
+              <h4 className="font-semibold text-primary">Rent Conversion Tools</h4>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+              <Button 
+                type="button" 
+                variant="outline" 
+                size="sm"
+                onClick={handleGrossToNet}
+                disabled={!inputs.gross_rent || !inputs.incentives}
+                className="text-xs"
+              >
+                Gross → Net Rent
+              </Button>
+              <Button 
+                type="button" 
+                variant="outline" 
+                size="sm"
+                onClick={handleFaceToEffective}
+                disabled={!inputs.face_rent || !inputs.incentives}
+                className="text-xs"
+              >
+                Face → Effective Rent
+              </Button>
+              <Button 
+                type="button" 
+                variant="outline" 
+                size="sm"
+                onClick={handleEffectiveToNet}
+                disabled={!inputs.effective_rent}
+                className="text-xs"
+              >
+                Effective → Net Rent
+              </Button>
+            </div>
+            <p className="text-xs text-muted-foreground mt-2">
+              Automatic rent conversions using incentive rates and deductions (outgoings + land tax)
+            </p>
           </div>
 
           <Separator />
