@@ -126,6 +126,12 @@ const Index = () => {
                     Valuation Analysis
                   </Button>
                 </Link>
+                <Link to="/rent-revision">
+                  <Button variant="outline" size="lg" className="flex items-center gap-2">
+                    <ArrowUpDown className="w-5 h-5" />
+                    Rent Revision
+                  </Button>
+                </Link>
                 <Link to="/security">
                   <Button variant="outline" size="lg" className="flex items-center gap-2">
                     <Shield className="w-5 h-5" />
