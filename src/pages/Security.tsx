@@ -124,6 +124,30 @@ export default function Security() {
                     <CheckCircle className="w-4 h-4 text-green-600" />
                     <span>All Risks Yield (ARY) calculation systems</span>
                   </div>
+                  <div className="flex items-center gap-2">
+                    <CheckCircle className="w-4 h-4 text-green-600" />
+                    <span>Comprehensive ESG factors checklist and automated scoring system</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <CheckCircle className="w-4 h-4 text-green-600" />
+                    <span>Traditional valuation methodologies (ESG-exclusive): Direct Comparison, Summation Approach, Net Income Capitalization</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <CheckCircle className="w-4 h-4 text-green-600" />
+                    <span>ESG-inclusive valuation methodologies: Sustainability-weighted comparable sales, ESG-adjusted capitalization rates</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <CheckCircle className="w-4 h-4 text-green-600" />
+                    <span>Specialized property valuation systems: Hospitality, Childcare, Petrol Station methodologies</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <CheckCircle className="w-4 h-4 text-green-600" />
+                    <span>Advanced calculation engines: Hypothetical Development, Sensitivity Analysis, Income Multiplier Methods</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <CheckCircle className="w-4 h-4 text-green-600" />
+                    <span>Environmental, Social, and Governance (ESG) factor weighting and impact analysis systems</span>
+                  </div>
                 </div>
               </div>
 
@@ -134,6 +158,16 @@ export default function Security() {
                   <div>Licensed to: Delorenzo Property Group Pty Ltd</div>
                   <div>Commercial Use: Authorized</div>
                   <div>Distribution: Restricted to authorized users</div>
+                  <div className="mt-3 pt-3 border-t border-border">
+                    <div className="font-medium mb-2">Protected Valuation Methodologies:</div>
+                    <div className="ml-2 space-y-1">
+                      <div>• ESG-Inclusive: Sustainability factor integration, green building premium calculations</div>
+                      <div>• ESG-Exclusive: Traditional income, cost, and market approaches without environmental factors</div>
+                      <div>• Property-Specific: Hospitality (5 methods), Childcare (3 methods), Petrol Station (6 methods)</div>
+                      <div>• Advanced Analytics: Sensitivity analysis, hypothetical development, multiplier methods</div>
+                      <div>• Comprehensive ESG: 13-factor assessment covering Environmental, Social, Governance categories</div>
+                    </div>
+                  </div>
                 </div>
               </div>
             </CardContent>
