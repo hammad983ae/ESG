@@ -1,8 +1,9 @@
 /**
  * Delorenzo Property Group - ESG Property Assessment Platform - Main Dashboard
  * 
- * Copyright (c) 2025 Delorenzo Property Group Pty Ltd
+ * Copyright (c) 2025 Delorenzo Property Group Pty Ltd. All Rights Reserved.
  * Licensed under MIT License - see LICENSE file for details
+ * Patent Protected: AU2025000001-AU2025000014
  * 
  * Professional sustainability and risk evaluation platform for real estate properties.
  * Provides basic ESG assessment and advanced automated calculations with comprehensive 
@@ -22,6 +23,8 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { PropertyAssessmentForm, PropertyData } from "@/components/PropertyAssessmentForm";
+import { BeforeAfterValuationForm, BeforeAfterValuationData } from "@/components/BeforeAfterValuationForm";
+import { BeforeAfterValuationResults } from "@/components/BeforeAfterValuationResults";
 import { ESGDashboard } from "@/components/ESGDashboard";
 import { ExportTools } from "@/components/ExportTools"; 
 import { AdvancedCalculationsForm, AdvancedPropertyData } from "@/components/AdvancedCalculationsForm";
@@ -32,11 +35,11 @@ import { calculateAdvancedRiskAssessment, AdvancedCalculationResults } from "@/u
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Building, Calculator, BarChart3, ArrowLeft, Target, TrendingUp, Shield } from "lucide-react";
+import { Building, Calculator, BarChart3, ArrowLeft, Target, TrendingUp, Shield, ArrowUpDown } from "lucide-react";
 
 const Index = () => {
   const [currentStep, setCurrentStep] = useState<'form' | 'results'>('form');
-  const [activeTab, setActiveTab] = useState<'basic' | 'advanced'>('basic');
+  const [activeTab, setActiveTab] = useState<'basic' | 'advanced' | 'before-after'>('basic');
   
   // Basic ESG Assessment State
   const [propertyData, setPropertyData] = useState<PropertyData | null>(null);
@@ -45,6 +48,9 @@ const Index = () => {
   // Advanced Assessment State
   const [advancedPropertyData, setAdvancedPropertyData] = useState<AdvancedPropertyData | null>(null);
   const [advancedResults, setAdvancedResults] = useState<AdvancedCalculationResults | null>(null);
+  
+  // Before & After Valuation State
+  const [beforeAfterData, setBeforeAfterData] = useState<BeforeAfterValuationData | null>(null);
 
   const handleBasicFormSubmit = (data: PropertyData) => {
     setPropertyData(data);
@@ -57,6 +63,11 @@ const Index = () => {
     setAdvancedPropertyData(data);
     const results = calculateAdvancedRiskAssessment(data);
     setAdvancedResults(results);
+    setCurrentStep('results');
+  };
+
+  const handleBeforeAfterFormSubmit = (data: BeforeAfterValuationData) => {
+    setBeforeAfterData(data);
     setCurrentStep('results');
   };
 
@@ -102,11 +113,15 @@ const Index = () => {
             </div>
 
             {/* Assessment Type Tabs */}
-            <Tabs value={activeTab} onValueChange={(value) => setActiveTab(value as 'basic' | 'advanced')} className="w-full">
-              <TabsList className="grid w-full grid-cols-2 max-w-md mx-auto">
+            <Tabs value={activeTab} onValueChange={(value) => setActiveTab(value as 'basic' | 'advanced' | 'before-after')} className="w-full">
+              <TabsList className="grid w-full grid-cols-3 max-w-2xl mx-auto">
                 <TabsTrigger value="basic" className="flex items-center gap-2">
                   <BarChart3 className="h-4 w-4" />
                   Basic Assessment
+                </TabsTrigger>
+                <TabsTrigger value="before-after" className="flex items-center gap-2">
+                  <ArrowUpDown className="h-4 w-4" />
+                  Before & After
                 </TabsTrigger>
                 <TabsTrigger value="advanced" className="flex items-center gap-2">
                   <Target className="h-4 w-4" />
@@ -164,6 +179,58 @@ const Index = () => {
                 </div>
 
                 <PropertyAssessmentForm onSubmit={handleBasicFormSubmit} />
+              </TabsContent>
+
+              <TabsContent value="before-after" className="space-y-6">
+                {/* Before & After Features Card */}
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                  <Card className="bg-gradient-to-br from-card to-primary/10 border-primary/20">
+                    <CardHeader>
+                      <CardTitle className="flex items-center gap-2 text-primary">
+                        <ArrowUpDown className="h-5 w-5" />
+                        Value Analysis
+                      </CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <p className="text-sm text-muted-foreground">
+                        Compare property values before and after changes, improvements, 
+                        or market conditions with detailed impact analysis.
+                      </p>
+                    </CardContent>
+                  </Card>
+
+                  <Card className="bg-gradient-to-br from-card to-warning/10 border-warning/20">
+                    <CardHeader>
+                      <CardTitle className="flex items-center gap-2 text-warning">
+                        <Calculator className="h-5 w-5" />
+                        Change Impact
+                      </CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <p className="text-sm text-muted-foreground">
+                        Quantify the financial impact of property improvements, 
+                        deterioration, or market adjustments with percentage calculations.
+                      </p>
+                    </CardContent>
+                  </Card>
+
+                  <Card className="bg-gradient-to-br from-card to-success/10 border-success/20">
+                    <CardHeader>
+                      <CardTitle className="flex items-center gap-2 text-success">
+                        <TrendingUp className="h-5 w-5" />
+                        Professional Reports
+                      </CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <p className="text-sm text-muted-foreground">
+                        Generate comprehensive before/after reports with detailed 
+                        reasoning and supporting documentation for valuations.
+                      </p>
+                    </CardContent>
+                  </Card>
+                </div>
+
+                <BeforeAfterValuationForm onSubmit={handleBeforeAfterFormSubmit} />
               </TabsContent>
 
               <TabsContent value="advanced" className="space-y-6">
@@ -242,6 +309,10 @@ const Index = () => {
                 <ESGDashboard scores={esgScores} propertyName={propertyData.propertyName} />
                 <ExportTools scores={esgScores} propertyData={propertyData} />
               </>
+            )}
+
+            {activeTab === 'before-after' && beforeAfterData && (
+              <BeforeAfterValuationResults data={beforeAfterData} />
             )}
 
             {activeTab === 'advanced' && advancedResults && (
