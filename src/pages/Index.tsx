@@ -3,7 +3,7 @@
  * 
  * Copyright (c) 2025 Delorenzo Property Group Pty Ltd. All Rights Reserved.
  * Licensed under MIT License - see LICENSE file for details
- * Patent Protected: AU2025000001-AU2025000014
+ * Patent Protected: AU2025000001-AU2025000016
  * 
  * Professional sustainability and risk evaluation platform for real estate properties.
  * Provides basic ESG assessment and advanced automated calculations with comprehensive 

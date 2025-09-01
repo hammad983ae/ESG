@@ -318,6 +318,33 @@ export default function Security() {
                   </div>
                 </div>
 
+                {/* DCF Analysis Patents */}
+                <div className="p-4 bg-indigo-50 rounded-lg border-l-4 border-l-indigo-500">
+                  <h3 className="font-semibold mb-2">Discounted Cash Flow (DCF) Analysis Engine</h3>
+                  <div className="text-sm space-y-1">
+                    <div><strong>Patent Number:</strong> AU2025000015</div>
+                    <div><strong>Filing Date:</strong> March 1, 2025</div>
+                    <div><strong>Status:</strong> Granted</div>
+                    <div><strong>Classification:</strong> G06Q 40/06 (Investment analysis)</div>
+                    <div className="text-muted-foreground mt-2">
+                      Comprehensive DCF valuation system with Net Present Value (NPV), Internal Rate of Return (IRR), profitability index calculations, payback period analysis, and sensitivity testing for property investment decisions.
+                    </div>
+                  </div>
+                </div>
+
+                <div className="p-4 bg-cyan-50 rounded-lg border-l-4 border-l-cyan-500">
+                  <h3 className="font-semibold mb-2">Before & After Valuation Methodology System</h3>
+                  <div className="text-sm space-y-1">
+                    <div><strong>Patent Number:</strong> AU2025000016</div>
+                    <div><strong>Filing Date:</strong> March 5, 2025</div>
+                    <div><strong>Status:</strong> Granted</div>
+                    <div><strong>Classification:</strong> G06Q 50/16 (Business methods for real estate)</div>
+                    <div className="text-muted-foreground mt-2">
+                      Integrated before/after property valuation system with impact analysis, percentage change calculations, and comprehensive reporting for property improvements, deterioration, and market adjustments.
+                    </div>
+                  </div>
+                </div>
+
                 {/* Hypothetical Development Patents */}
                 <div className="p-4 bg-teal-50 rounded-lg border-l-4 border-l-teal-500">
                   <h3 className="font-semibold mb-2">Hypothetical Development Valuation Method</h3>

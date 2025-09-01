@@ -88,6 +88,16 @@ export interface AdvancedPropertyData {
     financial: number;
     esg: number;
   };
+
+  // DCF Analysis (optional)
+  dcfAnalysis?: {
+    enabled: boolean;
+    initialInvestment: number;
+    cashFlows: number[];
+    discountRate: number;
+    terminalValue?: number;
+    growthRate?: number;
+  };
 }
 
 interface AdvancedCalculationsFormProps {
@@ -159,6 +169,14 @@ export function AdvancedCalculationsForm({ onSubmit }: AdvancedCalculationsFormP
       climate: 0.4,
       financial: 0.3,
       esg: 0.3,
+    },
+    dcfAnalysis: {
+      enabled: false,
+      initialInvestment: 0,
+      cashFlows: [0, 0, 0, 0, 0],
+      discountRate: 0.08,
+      terminalValue: 0,
+      growthRate: 0.02,
     },
   });
 
@@ -540,6 +558,99 @@ export function AdvancedCalculationsForm({ onSubmit }: AdvancedCalculationsFormP
                 />
               </div>
             </div>
+          </div>
+
+          {/* DCF Analysis (Optional) */}
+          <div className="space-y-4">
+            <div className="flex items-center gap-4">
+              <h3 className="text-lg font-semibold text-primary">DCF Analysis (Optional)</h3>
+              <Checkbox
+                id="dcfEnabled"
+                checked={formData.dcfAnalysis?.enabled || false}
+                onCheckedChange={(checked) => updateField("dcfAnalysis.enabled", checked)}
+              />
+              <Label htmlFor="dcfEnabled">Enable DCF Analysis</Label>
+            </div>
+            
+            {formData.dcfAnalysis?.enabled && (
+              <div className="space-y-6 p-4 bg-muted/30 rounded-lg border">
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  <div>
+                    <Label htmlFor="dcfInitialInvestment">Initial Investment ($)</Label>
+                    <Input
+                      id="dcfInitialInvestment"
+                      type="number"
+                      min="0"
+                      step="1000"
+                      value={formData.dcfAnalysis.initialInvestment}
+                      onChange={(e) => updateField("dcfAnalysis.initialInvestment", parseFloat(e.target.value) || 0)}
+                    />
+                  </div>
+                  <div>
+                    <Label htmlFor="dcfDiscountRate">Discount Rate</Label>
+                    <Input
+                      id="dcfDiscountRate"
+                      type="number"
+                      min="0"
+                      max="1"
+                      step="0.001"
+                      value={formData.dcfAnalysis.discountRate}
+                      onChange={(e) => updateField("dcfAnalysis.discountRate", parseFloat(e.target.value) || 0.08)}
+                      placeholder="e.g., 0.08 for 8%"
+                    />
+                  </div>
+                  <div>
+                    <Label htmlFor="dcfGrowthRate">Growth Rate</Label>
+                    <Input
+                      id="dcfGrowthRate"
+                      type="number"
+                      min="0"
+                      max="0.1"
+                      step="0.001"
+                      value={formData.dcfAnalysis.growthRate || 0.02}
+                      onChange={(e) => updateField("dcfAnalysis.growthRate", parseFloat(e.target.value) || 0.02)}
+                      placeholder="e.g., 0.02 for 2%"
+                    />
+                  </div>
+                </div>
+                
+                <div>
+                  <Label>Projected Cash Flows (5 Years)</Label>
+                  <div className="grid grid-cols-1 md:grid-cols-5 gap-2 mt-2">
+                    {formData.dcfAnalysis.cashFlows.map((cashFlow, index) => (
+                      <div key={index}>
+                        <Label htmlFor={`dcfCashFlow${index}`} className="text-xs">Year {index + 1}</Label>
+                        <Input
+                          id={`dcfCashFlow${index}`}
+                          type="number"
+                          step="1000"
+                          value={cashFlow}
+                          onChange={(e) => {
+                            const newCashFlows = [...(formData.dcfAnalysis?.cashFlows || [])];
+                            newCashFlows[index] = parseFloat(e.target.value) || 0;
+                            updateField("dcfAnalysis.cashFlows", newCashFlows);
+                          }}
+                          placeholder={`Year ${index + 1}`}
+                        />
+                      </div>
+                    ))}
+                  </div>
+                </div>
+                
+                <div>
+                  <Label htmlFor="dcfTerminalValue">Terminal Value ($) - Optional</Label>
+                  <Input
+                    id="dcfTerminalValue"
+                    type="number"
+                    min="0"
+                    step="1000"
+                    value={formData.dcfAnalysis.terminalValue || 0}
+                    onChange={(e) => updateField("dcfAnalysis.terminalValue", parseFloat(e.target.value) || 0)}
+                    placeholder="Optional terminal value"
+                  />
+                </div>
+              </div>
+            )}
           </div>
 
           <Button type="submit" className="w-full" size="lg">
