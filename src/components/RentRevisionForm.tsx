@@ -417,7 +417,7 @@ export const RentRevisionForm: React.FC<RentRevisionFormProps> = ({ onSubmit }) 
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="cpi-adjustment">CPI Adjustment (%)</Label>
+              <Label htmlFor="cpi-adjustment">CPI or Fixed Adjustments (%)</Label>
               <Input
                 id="cpi-adjustment"
                 type="number"
