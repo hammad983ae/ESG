@@ -373,6 +373,33 @@ export default function Security() {
                     </div>
                   </div>
                 </div>
+
+                {/* Additional Core Valuation Methods */}
+                <div className="p-4 bg-gray-50 rounded-lg border-l-4 border-l-gray-500">
+                  <h3 className="font-semibold mb-2">Generalised Capitalisation of Net Income Method</h3>
+                  <div className="text-sm space-y-1">
+                    <div><strong>Patent Number:</strong> AU2025000012</div>
+                    <div><strong>Filing Date:</strong> March 15, 2025</div>
+                    <div><strong>Status:</strong> Patent Pending</div>
+                    <div><strong>Classification:</strong> G06Q 40/06 (Investment analysis)</div>
+                    <div className="text-muted-foreground mt-2">
+                      Comprehensive net income capitalisation methodology with generalised application across multiple property types and investment scenarios.
+                    </div>
+                  </div>
+                </div>
+
+                <div className="p-4 bg-cyan-50 rounded-lg border-l-4 border-l-cyan-500">
+                  <h3 className="font-semibold mb-2">Turn Over Approach Valuation System</h3>
+                  <div className="text-sm space-y-1">
+                    <div><strong>Patent Number:</strong> AU2025000013</div>
+                    <div><strong>Filing Date:</strong> March 20, 2025</div>
+                    <div><strong>Status:</strong> Patent Pending</div>
+                    <div><strong>Classification:</strong> G06Q 50/16 (Business methods for real estate)</div>
+                    <div className="text-muted-foreground mt-2">
+                      Revenue-based property valuation methodology using turnover analysis and income generation capacity for commercial property assessment.
+                    </div>
+                  </div>
+                </div>
               </div>
               
               <div className="mt-6 p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
@@ -385,7 +412,7 @@ export default function Security() {
                     </p>
                     <div className="mt-3 pt-2 border-t border-yellow-300">
                       <p className="text-xs text-yellow-600 font-medium">
-                        Protected Methods Include: ARY calculations, ESG scoring (13-factor system), Hospitality (5 methods), Childcare (3 methods), Petrol Station (6 methods), Hypothetical Development, Sensitivity Analysis, Comparable Sales, Summation Approach, and all associated algorithms and user interfaces.
+                        Protected Methods Include: ARY calculations, ESG scoring (13-factor system), Hospitality (5 methods), Childcare (3 methods), Petrol Station (6 methods), Hypothetical Development, Sensitivity Analysis, Comparable Sales, Summation Approach, Generalised Capitalisation of Net Income, Turn Over Approach, Direct Comparison Approach, and all associated algorithms and user interfaces.
                       </p>
                     </div>
                   </div>
