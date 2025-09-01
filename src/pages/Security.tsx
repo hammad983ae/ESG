@@ -452,8 +452,8 @@ export default function Security() {
                   <h3 className="font-semibold mb-2 text-red-800">Legal Notice</h3>
                   <div className="space-y-1 text-sm text-red-700">
                     <div>Patent Attorney: Johnson & Associates IP Law</div>
-                    <div>Legal Email: legal@delorenzopropertygroup.com</div>
-                    <div>Patent Infringement Hotline: +61 2 9000 0000</div>
+                    <div>Legal Email: info@delorenzopropertygroup.com</div>
+                    <div>Patent Infringement Hotline: +61 417 693 838</div>
                     <div className="mt-2 pt-2 border-t border-red-200 text-xs">
                       Report unauthorized use of patented methodologies
                     </div>
