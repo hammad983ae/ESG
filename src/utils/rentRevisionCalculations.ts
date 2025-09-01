@@ -17,11 +17,14 @@ export interface RentRevisionInputs {
   lease_expiry_date: string;
   current_rent: number;
   market_rent: number;
+  market_land_rate: number;
   proposed_rent: number;
   units_or_area: number;
   land_area: number;
   current_improved_land_rate: number;
   proposed_improved_land_rate: number;
+  include_rent_analysis: boolean;
+  include_land_analysis: boolean;
   cpi_adjustment: number;
   revision_date: string;
   comparable_evidence: string;
@@ -56,8 +59,11 @@ export interface RentRevisionResults {
   market_conditions: string;
   esg_considerations: string;
   recommendation: string;
+  include_rent_analysis: boolean;
+  include_land_analysis: boolean;
   land_analysis: {
     land_area: number;
+    market_annual_land_value: number;
     current_annual_land_value: number;
     proposed_annual_land_value: number;
     land_value_increase_amount: number;
@@ -88,6 +94,7 @@ export function calculateRentRevision(inputs: RentRevisionInputs): RentRevisionR
     : 0;
 
   // Land value calculations
+  const market_annual_land_value = inputs.market_land_rate * inputs.land_area;
   const current_annual_land_value = inputs.current_improved_land_rate * inputs.land_area;
   const proposed_annual_land_value = inputs.proposed_improved_land_rate * inputs.land_area;
   const land_value_increase_amount = proposed_annual_land_value - current_annual_land_value;
@@ -143,8 +150,11 @@ export function calculateRentRevision(inputs: RentRevisionInputs): RentRevisionR
     market_conditions: inputs.market_conditions,
     esg_considerations: inputs.include_esg_factors ? inputs.esg_notes : "",
     recommendation,
+    include_rent_analysis: inputs.include_rent_analysis,
+    include_land_analysis: inputs.include_land_analysis,
     land_analysis: {
       land_area: inputs.land_area,
+      market_annual_land_value,
       current_annual_land_value,
       proposed_annual_land_value,
       land_value_increase_amount,
@@ -166,11 +176,14 @@ export const defaultRentRevisionInputs: RentRevisionInputs = {
   lease_expiry_date: "",
   current_rent: 0,
   market_rent: 0,
+  market_land_rate: 0,
   proposed_rent: 0,
   units_or_area: 0,
   land_area: 0,
   current_improved_land_rate: 0,
   proposed_improved_land_rate: 0,
+  include_rent_analysis: true,
+  include_land_analysis: true,
   cpi_adjustment: 3.5,
   revision_date: new Date().toISOString().split('T')[0],
   comparable_evidence: "",

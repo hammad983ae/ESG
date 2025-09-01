@@ -281,7 +281,7 @@ export const RentRevisionForm: React.FC<RentRevisionFormProps> = ({ onSubmit }) 
 
           <Separator />
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="space-y-2">
               <Label htmlFor="land-area">Land Area (sqm)</Label>
               <Input
@@ -301,17 +301,6 @@ export const RentRevisionForm: React.FC<RentRevisionFormProps> = ({ onSubmit }) 
                 value={inputs.current_improved_land_rate}
                 onChange={(e) => handleInputChange('current_improved_land_rate', parseFloat(e.target.value) || 0)}
                 placeholder="Enter current land rate"
-              />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="proposed-land-rate">Proposed Improved Land Rate ($/sqm)</Label>
-              <Input
-                id="proposed-land-rate"
-                type="number"
-                step="0.01"
-                value={inputs.proposed_improved_land_rate}
-                onChange={(e) => handleInputChange('proposed_improved_land_rate', parseFloat(e.target.value) || 0)}
-                placeholder="Enter proposed land rate"
               />
             </div>
           </div>
@@ -344,6 +333,17 @@ export const RentRevisionForm: React.FC<RentRevisionFormProps> = ({ onSubmit }) 
               />
             </div>
             <div className="space-y-2">
+              <Label htmlFor="market-land-rate">Market Land Rate ($/sqm)</Label>
+              <Input
+                id="market-land-rate"
+                type="number"
+                step="0.01"
+                value={inputs.market_land_rate}
+                onChange={(e) => handleInputChange('market_land_rate', parseFloat(e.target.value) || 0)}
+                placeholder="Enter market land rate"
+              />
+            </div>
+            <div className="space-y-2">
               <Label htmlFor="proposed-rent">
                 Proposed Rent ({currentConfig?.unit || 'per unit'})
               </Label>
@@ -353,6 +353,17 @@ export const RentRevisionForm: React.FC<RentRevisionFormProps> = ({ onSubmit }) 
                 value={inputs.proposed_rent}
                 onChange={(e) => handleInputChange('proposed_rent', parseFloat(e.target.value) || 0)}
                 placeholder="Enter proposed rent"
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="proposed-land-rate">Proposed Improved Land Rate ($/sqm)</Label>
+              <Input
+                id="proposed-land-rate"
+                type="number"
+                step="0.01"
+                value={inputs.proposed_improved_land_rate}
+                onChange={(e) => handleInputChange('proposed_improved_land_rate', parseFloat(e.target.value) || 0)}
+                placeholder="Enter proposed land rate"
               />
             </div>
             <div className="space-y-2">
@@ -374,6 +385,25 @@ export const RentRevisionForm: React.FC<RentRevisionFormProps> = ({ onSubmit }) 
                 value={inputs.revision_date}
                 onChange={(e) => handleInputChange('revision_date', e.target.value)}
               />
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+            <div className="flex items-center space-x-2">
+              <Switch
+                id="include-rent-analysis"
+                checked={inputs.include_rent_analysis}
+                onCheckedChange={(checked) => handleInputChange('include_rent_analysis', checked)}
+              />
+              <Label htmlFor="include-rent-analysis">Include Rent Analysis</Label>
+            </div>
+            <div className="flex items-center space-x-2">
+              <Switch
+                id="include-land-analysis"
+                checked={inputs.include_land_analysis}
+                onCheckedChange={(checked) => handleInputChange('include_land_analysis', checked)}
+              />
+              <Label htmlFor="include-land-analysis">Include Land Rate Analysis</Label>
             </div>
           </div>
 

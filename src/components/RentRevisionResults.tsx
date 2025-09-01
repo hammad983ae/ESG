@@ -103,7 +103,7 @@ export const RentRevisionResults: React.FC<RentRevisionResultsProps> = ({ result
       </Card>
 
       {/* Land Value Analysis */}
-      {results.land_analysis.land_area > 0 && (
+      {results.include_land_analysis && results.land_analysis.land_area > 0 && (
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
@@ -115,12 +115,18 @@ export const RentRevisionResults: React.FC<RentRevisionResultsProps> = ({ result
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
               <div className="text-center p-4 bg-muted/50 rounded-lg">
                 <div className="text-2xl font-bold text-primary">
                   {results.land_analysis.land_area.toLocaleString()}
                 </div>
                 <div className="text-sm text-muted-foreground">Land Area (sqm)</div>
+              </div>
+              <div className="text-center p-4 bg-muted/50 rounded-lg">
+                <div className="text-2xl font-bold text-primary">
+                  {formatCurrency(results.land_analysis.market_annual_land_value)}
+                </div>
+                <div className="text-sm text-muted-foreground">Market Land Value</div>
               </div>
               <div className="text-center p-4 bg-muted/50 rounded-lg">
                 <div className="text-2xl font-bold text-primary">
