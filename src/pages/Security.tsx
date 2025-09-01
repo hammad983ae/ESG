@@ -400,6 +400,19 @@ export default function Security() {
                     </div>
                   </div>
                 </div>
+
+                <div className="p-4 bg-pink-50 rounded-lg border-l-4 border-l-pink-500">
+                  <h3 className="font-semibold mb-2">Term and Reversion Approach Valuation System</h3>
+                  <div className="text-sm space-y-1">
+                    <div><strong>Patent Number:</strong> AU2025000014</div>
+                    <div><strong>Filing Date:</strong> March 25, 2025</div>
+                    <div><strong>Status:</strong> Patent Pending</div>
+                    <div><strong>Classification:</strong> G06Q 40/06 (Investment analysis)</div>
+                    <div className="text-muted-foreground mt-2">
+                      Advanced leasehold valuation methodology incorporating present value calculations for lease payments (term) and terminal value analysis for property reversion. Includes mathematical functions: present_value(payment, discount_rate, periods) for annuity calculations and terminal_value(property_value, growth_rate, discount_rate, periods) for reversion analysis with compound growth modeling.
+                    </div>
+                  </div>
+                </div>
               </div>
               
               <div className="mt-6 p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
@@ -412,7 +425,7 @@ export default function Security() {
                     </p>
                     <div className="mt-3 pt-2 border-t border-yellow-300">
                       <p className="text-xs text-yellow-600 font-medium">
-                        Protected Methods Include: ARY calculations, ESG scoring (13-factor system), Hospitality (5 methods), Childcare (3 methods), Petrol Station (6 methods), Hypothetical Development, Sensitivity Analysis, Comparable Sales, Summation Approach, Generalised Capitalisation of Net Income, Turn Over Approach, Direct Comparison Approach, and all associated algorithms and user interfaces.
+                        Protected Methods Include: ARY calculations, ESG scoring (13-factor system), Hospitality (5 methods), Childcare (3 methods), Petrol Station (6 methods), Hypothetical Development, Sensitivity Analysis, Comparable Sales, Summation Approach, Generalised Capitalisation of Net Income, Turn Over Approach, Direct Comparison Approach, Term and Reversion Approach (with present_value and terminal_value mathematical functions), and all associated algorithms and user interfaces.
                       </p>
                     </div>
                   </div>
