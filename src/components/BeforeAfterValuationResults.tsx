@@ -9,7 +9,7 @@ interface BeforeAfterValuationResultsProps {
 }
 
 export function BeforeAfterValuationResults({ data }: BeforeAfterValuationResultsProps) {
-  const isPositiveChange = data.changeImpact >= 0;
+  const compensation = data.compensation;
   const absPercentageChange = Math.abs(data.percentageChange);
   
   const getChangeCategory = () => {
@@ -36,7 +36,7 @@ export function BeforeAfterValuationResults({ data }: BeforeAfterValuationResult
         <CardHeader>
           <CardTitle className="text-2xl font-bold flex items-center gap-2">
             <Calculator className="h-6 w-6" />
-            Before & After Valuation Analysis
+            Acquisition Compensation Analysis
           </CardTitle>
           <p className="text-muted-foreground">
             Property: {data.propertyName} | Analysis Date: {new Date(data.valuationDate).toLocaleDateString()}
@@ -55,27 +55,21 @@ export function BeforeAfterValuationResults({ data }: BeforeAfterValuationResult
           </CardHeader>
           <CardContent>
             <p className="text-3xl font-bold text-primary">${data.beforeValue.toLocaleString()}</p>
-            <p className="text-sm text-muted-foreground">Original Property Value</p>
+            <p className="text-sm text-muted-foreground">Full Market Value Before Acquisition</p>
           </CardContent>
         </Card>
 
-        <Card className={`border-l-4 ${isPositiveChange ? 'border-l-success' : 'border-l-destructive'}`}>
+        <Card className="border-l-4 border-l-warning">
           <CardHeader className="pb-3">
             <CardTitle className="text-lg flex items-center gap-2">
-              {isPositiveChange ? (
-                <TrendingUp className="h-5 w-5 text-success" />
-              ) : (
-                <TrendingDown className="h-5 w-5 text-destructive" />
-              )}
-              Value Change
+              <ArrowRight className="h-5 w-5 text-warning" />
+              Residual Value
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <p className={`text-3xl font-bold ${isPositiveChange ? 'text-success' : 'text-destructive'}`}>
-              {isPositiveChange ? '+' : ''}${data.changeImpact.toLocaleString()}
-            </p>
+            <p className="text-3xl font-bold text-warning">${data.afterValue.toLocaleString()}</p>
             <p className="text-sm text-muted-foreground">
-              {data.percentageChange.toFixed(2)}% change
+              Market Value of Remaining Property
             </p>
           </CardContent>
         </Card>
@@ -84,31 +78,31 @@ export function BeforeAfterValuationResults({ data }: BeforeAfterValuationResult
           <CardHeader className="pb-3">
             <CardTitle className="text-lg flex items-center gap-2">
               <TrendingUp className="h-5 w-5 text-success" />
-              After Value
+              Compensation
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <p className="text-3xl font-bold text-success">${data.afterValue.toLocaleString()}</p>
-            <p className="text-sm text-muted-foreground">Adjusted Property Value</p>
+            <p className="text-3xl font-bold text-success">${compensation.toLocaleString()}</p>
+            <p className="text-sm text-muted-foreground">Total Compensation Due</p>
           </CardContent>
         </Card>
       </div>
 
-      {/* Change Analysis */}
+      {/* Acquisition Analysis */}
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <ArrowRight className="h-5 w-5" />
-            Change Analysis
+            Acquisition Analysis
           </CardTitle>
         </CardHeader>
         <CardContent className="space-y-6">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="space-y-3">
               <div>
-                <Label>Change Type</Label>
+                <Label>Acquisition Type</Label>
                 <Badge variant="outline" className="ml-2 capitalize">
-                  {data.changeType.replace('-', ' ')}
+                  {data.acquisitionType.replace('-', ' ')}
                 </Badge>
               </div>
               
@@ -120,22 +114,22 @@ export function BeforeAfterValuationResults({ data }: BeforeAfterValuationResult
               </div>
               
               <div>
-                <Label>Change Description</Label>
-                <p className="text-sm text-muted-foreground mt-1">{data.changeDescription}</p>
+                <Label>Acquisition Description</Label>
+                <p className="text-sm text-muted-foreground mt-1">{data.acquisitionDescription}</p>
               </div>
             </div>
 
             <div className="space-y-3">
               <div>
-                <Label>Percentage Change Distribution</Label>
+                <Label>Compensation Distribution</Label>
                 <div className="mt-2">
                   <Progress 
                     value={absPercentageChange} 
                     className="h-3" 
-                    max={50}
+                    max={100}
                   />
                   <p className="text-xs text-muted-foreground mt-1">
-                    {absPercentageChange.toFixed(1)}% of 50% scale
+                    {absPercentageChange.toFixed(1)}% of original value
                   </p>
                 </div>
               </div>
@@ -143,10 +137,10 @@ export function BeforeAfterValuationResults({ data }: BeforeAfterValuationResult
               <div className="p-3 bg-muted/50 rounded-lg">
                 <p className="text-xs text-muted-foreground uppercase tracking-wide mb-1">Calculation Formula</p>
                 <p className="text-sm font-mono">
-                  After Value = Before Value + Change Impact
+                  Compensation = Before Value - After Value
                 </p>
                 <p className="text-sm font-mono">
-                  ${data.afterValue.toLocaleString()} = ${data.beforeValue.toLocaleString()} {data.changeImpact >= 0 ? '+' : ''} ${data.changeImpact.toLocaleString()}
+                  ${compensation.toLocaleString()} = ${data.beforeValue.toLocaleString()} - ${data.afterValue.toLocaleString()}
                 </p>
               </div>
             </div>
@@ -159,22 +153,22 @@ export function BeforeAfterValuationResults({ data }: BeforeAfterValuationResult
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <FileText className="h-5 w-5" />
-            Detailed Analysis & Reasoning
+            Damages and Benefits Analysis
           </CardTitle>
         </CardHeader>
         <CardContent>
           <div className="space-y-4">
             <div>
-              <Label className="text-sm font-semibold">Reason for Valuation Change:</Label>
+              <Label className="text-sm font-semibold">Detailed Analysis of Land Taken, Damages, and Benefits:</Label>
               <p className="text-sm text-muted-foreground mt-2 leading-relaxed">
-                {data.reasonForChange}
+                {data.damagesAndBenefits}
               </p>
             </div>
             
             <div className="p-4 bg-muted/30 rounded-lg border">
               <h4 className="font-semibold mb-2 flex items-center gap-2">
                 <Calendar className="h-4 w-4" />
-                Valuation Summary
+                Compensation Summary
               </h4>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
                 <div>
@@ -182,15 +176,21 @@ export function BeforeAfterValuationResults({ data }: BeforeAfterValuationResult
                   <p className="font-medium">{new Date(data.valuationDate).toLocaleDateString()}</p>
                 </div>
                 <div>
-                  <p className="text-muted-foreground">Net Change:</p>
-                  <p className={`font-medium ${isPositiveChange ? 'text-success' : 'text-destructive'}`}>
-                    {isPositiveChange ? '+' : ''}${data.changeImpact.toLocaleString()}
+                  <p className="text-muted-foreground">Total Compensation:</p>
+                  <p className="font-medium text-success">
+                    ${compensation.toLocaleString()}
                   </p>
                 </div>
                 <div>
                   <p className="text-muted-foreground">Impact Level:</p>
                   <p className="font-medium">{getChangeCategory()}</p>
                 </div>
+              </div>
+              <div className="mt-4 p-3 bg-success/10 rounded-lg">
+                <p className="text-sm text-muted-foreground">
+                  This compensation represents the amount due for the {data.acquisitionType} acquisition, 
+                  accounting for land taken, damages incurred, and any benefits received.
+                </p>
               </div>
             </div>
           </div>
