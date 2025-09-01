@@ -20,7 +20,9 @@ export const ChildcareValuationResults: React.FC<ChildcareValuationResultsProps>
       icon: Building,
       value: results.ldc_direct_comparison_value,
       description: "Long Day Childcare per placement valuation",
-      breakdown: `${results.childcare_placements} placements × ${formatCurrency(results.value_per_placement)}`
+      breakdown: results.land_value_included 
+        ? `${results.childcare_placements} placements × ${formatCurrency(results.value_per_placement)} + Land Value: ${formatCurrency(results.land_value)}`
+        : `${results.childcare_placements} placements × ${formatCurrency(results.value_per_placement)}`
     },
     {
       name: "Rental Capitalization",
@@ -180,6 +182,9 @@ export const ChildcareValuationResults: React.FC<ChildcareValuationResultsProps>
               <ul className="text-sm text-muted-foreground space-y-1">
                 <li>• Total LDC placements: {results.childcare_placements} children</li>
                 <li>• Value per placement: {formatCurrency(results.value_per_placement)}</li>
+                {results.land_value_included && (
+                  <li>• Land value component: {formatCurrency(results.land_value)}</li>
+                )}
                 <li>• Average comparable value per placement: {formatCurrency(results.average_value_per_placement)}</li>
                 <li>• Placement value range: {formatCurrency(results.placement_value_range.low)} - {formatCurrency(results.placement_value_range.high)}</li>
                 <li>• Gross rent per placement: {formatCurrency(results.average_gross_rent_per_placement)}</li>

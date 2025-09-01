@@ -132,16 +132,43 @@ export const ChildcareValuationForm: React.FC<ChildcareValuationFormProps> = ({ 
             </div>
           </div>
           
-          {inputs.esg_included && (
-            <div className="mt-4 p-3 bg-muted/50 rounded-lg">
-              <div className="text-sm text-muted-foreground">
-                LDC Total Value with ESG: {formatCurrency(inputs.childcare_placements * inputs.value_per_placement * (1 + inputs.esg_factor))}
+          <Separator />
+          
+          <div className="space-y-4">
+            <div className="flex items-center space-x-2">
+              <Switch
+                id="land-value-included"
+                checked={inputs.land_value_included}
+                onCheckedChange={(checked) => handleInputChange('land_value_included', checked)}
+              />
+              <Label htmlFor="land-value-included">Include Land Value Component</Label>
+            </div>
+            
+            {inputs.land_value_included && (
+              <div className="space-y-2">
+                <Label htmlFor="land-value">Land Value</Label>
+                <Input
+                  id="land-value"
+                  type="number"
+                  value={inputs.land_value}
+                  onChange={(e) => handleInputChange('land_value', parseFloat(e.target.value) || 0)}
+                  placeholder="0"
+                />
               </div>
-              <div className="text-sm text-muted-foreground mt-1">
-                Effective Value per Placement: {formatCurrency(inputs.value_per_placement * (1 + inputs.esg_factor))}
+            )}
+          </div>
+          
+          <div className="mt-4 p-3 bg-muted/50 rounded-lg">
+            <div className="text-sm text-muted-foreground space-y-1">
+              <div>Placement Value: {formatCurrency(inputs.childcare_placements * inputs.value_per_placement * (inputs.esg_included ? 1 + inputs.esg_factor : 1))}</div>
+              {inputs.land_value_included && (
+                <div>Land Value: {formatCurrency(inputs.land_value)}</div>
+              )}
+              <div className="font-medium">
+                Total LDC Value: {formatCurrency((inputs.childcare_placements * inputs.value_per_placement * (inputs.esg_included ? 1 + inputs.esg_factor : 1)) + (inputs.land_value_included ? inputs.land_value : 0))}
               </div>
             </div>
-          )}
+          </div>
         </CardContent>
       </Card>
 

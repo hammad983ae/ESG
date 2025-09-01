@@ -3,6 +3,10 @@ export interface ChildcareInputs {
   childcare_placements: number;
   value_per_placement: number;
   
+  // Land Value Component
+  land_value_included: boolean;
+  land_value: number;
+  
   // Comparable Data for Per Placement Analysis
   comparison_data: ComparisonProperty[];
   
@@ -33,6 +37,8 @@ export interface ChildcareResults {
   ldc_direct_comparison_value: number;
   childcare_placements: number;
   value_per_placement: number;
+  land_value: number;
+  land_value_included: boolean;
   
   // Comparison Analysis Results
   average_value_per_placement: number;
@@ -60,9 +66,12 @@ export interface ChildcareResults {
 export function calculateLDCDirectComparisonValue(
   placements: number, 
   value_per_placement: number, 
+  land_value: number = 0,
+  land_value_included: boolean = false,
   esg_factor: number = 0
 ): number {
-  return placements * value_per_placement * (1 + esg_factor);
+  const placement_value = placements * value_per_placement * (1 + esg_factor);
+  return land_value_included ? placement_value + land_value : placement_value;
 }
 
 export function calculateComparisonAnalysis(
@@ -151,6 +160,8 @@ export function calculateChildcareValuation(inputs: ChildcareInputs): ChildcareR
   const ldc_direct_comparison_value = calculateLDCDirectComparisonValue(
     inputs.childcare_placements, 
     inputs.value_per_placement, 
+    inputs.land_value,
+    inputs.land_value_included,
     effective_esg_factor
   );
 
@@ -183,6 +194,8 @@ export function calculateChildcareValuation(inputs: ChildcareInputs): ChildcareR
     ldc_direct_comparison_value,
     childcare_placements: inputs.childcare_placements,
     value_per_placement: inputs.value_per_placement * (1 + effective_esg_factor),
+    land_value: inputs.land_value,
+    land_value_included: inputs.land_value_included,
     average_value_per_placement: comparison_results.average_value_per_placement,
     average_gross_rent_per_placement: comparison_results.average_gross_rent_per_placement,
     average_net_rent_per_placement: comparison_results.average_net_rent_per_placement,
@@ -201,6 +214,8 @@ export function calculateChildcareValuation(inputs: ChildcareInputs): ChildcareR
 export const defaultChildcareInputs: ChildcareInputs = {
   childcare_placements: 169,
   value_per_placement: 60000, // Based on user's example ($40,765 to $86,451 range, mid-point $60,000)
+  land_value_included: false,
+  land_value: 0,
   comparison_data: [
     {
       id: '1',
