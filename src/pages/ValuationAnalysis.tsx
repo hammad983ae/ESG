@@ -47,6 +47,8 @@ import { SimpleCapNetIncomeForm } from "@/components/SimpleCapNetIncomeForm";
 import { SimpleCapNetIncomeResultsDisplay } from "@/components/SimpleCapNetIncomeResults";
 import { ValuationSummationForm } from "@/components/ValuationSummationForm";
 import { ValuationDirectComparisonForm } from "@/components/ValuationDirectComparisonForm";
+import { HypotheticalDevelopmentForm } from "@/components/HypotheticalDevelopmentForm";
+import { HypotheticalDevelopmentResults } from "@/components/HypotheticalDevelopmentResults";
 import { ARYInputs, ARYResults, calculateAllRisksYield } from "@/utils/aryCalculations";
 import { 
   ESGInputs, 
@@ -67,6 +69,11 @@ import {
   ESGWeightedSalesResults,
   calculateESGWeightedComparableSales
 } from "@/utils/comparableSalesCalculations";
+import {
+  HypotheticalDevelopmentParams,
+  HypotheticalDevelopmentResult,
+  performHypotheticalDevelopmentValuation
+} from "@/utils/hypotheticalDevelopmentCalculations";
 
 export default function ValuationAnalysis() {
   // ARY States
@@ -104,6 +111,11 @@ export default function ValuationAnalysis() {
   // Direct Comparison States
   const [directCompInputs, setDirectCompInputs] = useState<any>(null);
   const [directCompResults, setDirectCompResults] = useState<any>(null);
+
+  // Hypothetical Development States
+  const [hypotheticalInputs, setHypotheticalInputs] = useState<HypotheticalDevelopmentParams | null>(null);
+  const [hypotheticalResults, setHypotheticalResults] = useState<HypotheticalDevelopmentResult | null>(null);
+  const [hypotheticalRiskFactor, setHypotheticalRiskFactor] = useState<number>(1.0);
 
   const handleARYSubmit = (inputs: ARYInputs) => {
     try {
@@ -209,6 +221,11 @@ export default function ValuationAnalysis() {
         setDirectCompInputs(null);
         setDirectCompResults(null);
         break;
+      case 'hypotheticaldevelopment':
+        setHypotheticalInputs(null);
+        setHypotheticalResults(null);
+        setHypotheticalRiskFactor(1.0);
+        break;
     }
   };
 
@@ -247,6 +264,18 @@ export default function ValuationAnalysis() {
       toast.success("Direct comparison valuation completed!");
     } catch (error) {
       toast.error(`Direct comparison analysis error: ${error instanceof Error ? error.message : 'Unknown error'}`);
+    }
+  };
+
+  const handleHypotheticalDevelopmentSubmit = (params: HypotheticalDevelopmentParams, riskFactor: number) => {
+    try {
+      const calculatedResults = performHypotheticalDevelopmentValuation(params, riskFactor);
+      setHypotheticalInputs(params);
+      setHypotheticalResults(calculatedResults);
+      setHypotheticalRiskFactor(riskFactor);
+      toast.success("Hypothetical development valuation completed!");
+    } catch (error) {
+      toast.error(`Hypothetical development analysis error: ${error instanceof Error ? error.message : 'Unknown error'}`);
     }
   };
 
@@ -324,6 +353,10 @@ export default function ValuationAnalysis() {
             <TabsTrigger value="directcomparison" className="flex items-center gap-2 p-3">
               <TrendingUp className="w-4 h-4" />
               Direct Comparison
+            </TabsTrigger>
+            <TabsTrigger value="hypotheticaldevelopment" className="flex items-center gap-2 p-3">
+              <Building2 className="w-4 h-4" />
+              Hypothetical Development
             </TabsTrigger>
           </TabsList>
 
@@ -778,6 +811,47 @@ export default function ValuationAnalysis() {
                   </div>
                 </CardContent>
               </Card>
+            )}
+          </TabsContent>
+
+          {/* Hypothetical Development Approach Tab */}
+          <TabsContent value="hypotheticaldevelopment" className="mt-6">
+            <div className="flex items-center justify-between mb-6">
+              <div>
+                <h2 className="text-2xl font-semibold">Hypothetical Development Approach</h2>
+                <p className="text-muted-foreground">
+                  Calculate residual land value based on development feasibility with comprehensive cost analysis
+                </p>
+              </div>
+              {hypotheticalResults && (
+                <Button onClick={() => handleReset('hypotheticaldevelopment')} variant="outline">
+                  New Analysis
+                </Button>
+              )}
+            </div>
+
+            {!hypotheticalResults ? (
+              <div className="max-w-6xl mx-auto">
+                <Card className="mb-6">
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-2">
+                      <Building2 className="w-5 h-5" />
+                      About Hypothetical Development Approach
+                    </CardTitle>
+                    <CardDescription>
+                      This valuation method determines land value by analyzing what a developer would pay for the site, 
+                      considering the completed development's value minus all development costs and required profit margins. 
+                      It's particularly useful for development sites and investment analysis.
+                    </CardDescription>
+                  </CardHeader>
+                </Card>
+                <HypotheticalDevelopmentForm onSubmit={handleHypotheticalDevelopmentSubmit} />
+              </div>
+            ) : (
+              <HypotheticalDevelopmentResults 
+                results={hypotheticalResults} 
+                onNewCalculation={() => handleReset('hypotheticaldevelopment')} 
+              />
             )}
           </TabsContent>
         </Tabs>
