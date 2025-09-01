@@ -62,7 +62,7 @@ export const RentRevisionResults: React.FC<RentRevisionResultsProps> = ({ result
             Rent Revision Executive Summary
           </CardTitle>
           <CardDescription>
-            Professional analysis for {results.tenant_name} - {results.property_type.charAt(0).toUpperCase() + results.property_type.slice(1)} Property
+            Professional analysis for {results.lessee} - {results.property_type.charAt(0).toUpperCase() + results.property_type.slice(1)} Property
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -193,27 +193,27 @@ export const RentRevisionResults: React.FC<RentRevisionResultsProps> = ({ result
           <CardContent className="space-y-4">
             <div className="space-y-2">
               <div className="flex justify-between">
-                <span className="text-sm text-muted-foreground">Current Rate:</span>
+                <span className="text-sm text-muted-foreground">Current Net Rent Rate:</span>
                 <span className="font-medium">
-                  {formatCurrency(results.supporting_analysis.current_rate_per_unit)} per {results.supporting_analysis.unit_type.replace(/s$/, '')}
+                  {formatCurrency(results.net_rent_annual / results.supporting_analysis.lettable_area)} per {results.supporting_analysis.unit_type.replace(/s$/, '')}
                 </span>
               </div>
               <div className="flex justify-between">
-                <span className="text-sm text-muted-foreground">Proposed Rate:</span>
+                <span className="text-sm text-muted-foreground">Proposed Rent Rate:</span>
                 <span className="font-medium">
-                  {formatCurrency(results.supporting_analysis.proposed_rate_per_unit)} per {results.supporting_analysis.unit_type.replace(/s$/, '')}
+                  {formatCurrency(results.proposed_annual_rent / results.supporting_analysis.lettable_area)} per {results.supporting_analysis.unit_type.replace(/s$/, '')}
                 </span>
               </div>
               <div className="flex justify-between">
-                <span className="text-sm text-muted-foreground">Market Rate:</span>
+                <span className="text-sm text-muted-foreground">Market Rent Rate:</span>
                 <span className="font-medium">
-                  {formatCurrency(results.supporting_analysis.market_rate_per_unit)} per {results.supporting_analysis.unit_type.replace(/s$/, '')}
+                  {formatCurrency(results.market_annual_rent / results.supporting_analysis.lettable_area)} per {results.supporting_analysis.unit_type.replace(/s$/, '')}
                 </span>
               </div>
               <Separator />
               <div className="flex justify-between">
-                <span className="text-sm text-muted-foreground">Total {results.supporting_analysis.unit_type}:</span>
-                <span className="font-medium">{results.supporting_analysis.units_or_area.toLocaleString()}</span>
+                <span className="text-sm text-muted-foreground">Total Area/Units:</span>
+                <span className="font-medium">{results.supporting_analysis.lettable_area.toLocaleString()}</span>
               </div>
               <div className="flex justify-between">
                 <span className="text-sm text-muted-foreground">CPI Adjusted Rent:</span>

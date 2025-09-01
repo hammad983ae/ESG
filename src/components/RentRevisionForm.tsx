@@ -36,7 +36,9 @@ import {
   Home,
   TrendingUp,
   Calendar,
-  DollarSign
+  DollarSign,
+  FileText,
+  Calculator
 } from "lucide-react";
 import { RentRevisionInputs, PropertyTypeConfig, defaultRentRevisionInputs } from "@/utils/rentRevisionCalculations";
 
@@ -169,10 +171,10 @@ export const RentRevisionForm: React.FC<RentRevisionFormProps> = ({ onSubmit }) 
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <TrendingUp className="h-5 w-5" />
-            Rent Revision Analysis
+            Professional Rent Revision Analysis
           </CardTitle>
           <CardDescription>
-            Professional rent revision with property-specific terminology and market benchmarking
+            Comprehensive rent revision with property-specific terminology and NET BASIS calculations
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
@@ -218,48 +220,187 @@ export const RentRevisionForm: React.FC<RentRevisionFormProps> = ({ onSubmit }) 
         </CardContent>
       </Card>
 
-      {/* Current Lease Details */}
+      {/* Tenant and Lease Details */}
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
-            <Calendar className="h-5 w-5" />
-            Current Lease Details
+            <FileText className="h-5 w-5" />
+            Lease Information
           </CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="space-y-2">
-              <Label htmlFor="tenant-name">Tenant Name</Label>
+              <Label htmlFor="lessor">Lessor</Label>
               <Input
-                id="tenant-name"
-                value={inputs.tenant_name}
-                onChange={(e) => handleInputChange('tenant_name', e.target.value)}
-                placeholder="Enter tenant name"
+                id="lessor"
+                value={inputs.lessor}
+                onChange={(e) => handleInputChange('lessor', e.target.value)}
+                placeholder="Enter lessor name"
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="lease-expiry">Lease Expiry Date</Label>
+              <Label htmlFor="lessee">Lessee (Tenant)</Label>
               <Input
-                id="lease-expiry"
+                id="lessee"
+                value={inputs.lessee}
+                onChange={(e) => handleInputChange('lessee', e.target.value)}
+                placeholder="Enter lessee/tenant name"
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="commencement-date">Commencement Date</Label>
+              <Input
+                id="commencement-date"
                 type="date"
-                value={inputs.lease_expiry_date}
-                onChange={(e) => handleInputChange('lease_expiry_date', e.target.value)}
+                value={inputs.commencement_date}
+                onChange={(e) => handleInputChange('commencement_date', e.target.value)}
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="current-rent">
-                Current Rent ({currentConfig?.unit || 'per unit'})
-              </Label>
+              <Label htmlFor="expiring-date">Expiring Date</Label>
               <Input
-                id="current-rent"
-                type="number"
-                value={inputs.current_rent}
-                onChange={(e) => handleInputChange('current_rent', parseFloat(e.target.value) || 0)}
-                placeholder="Enter current rent"
+                id="expiring-date"
+                type="date"
+                value={inputs.expiring_date}
+                onChange={(e) => handleInputChange('expiring_date', e.target.value)}
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="units-area">
+              <Label htmlFor="review-date">Review Date</Label>
+              <Input
+                id="review-date"
+                type="date"
+                value={inputs.review_date}
+                onChange={(e) => handleInputChange('review_date', e.target.value)}
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="revision-effective-date">Revision Effective Date</Label>
+              <Input
+                id="revision-effective-date"
+                type="date"
+                value={inputs.revision_effective_date}
+                onChange={(e) => handleInputChange('revision_effective_date', e.target.value)}
+              />
+            </div>
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="options-further-terms">Options/Further Terms</Label>
+            <Textarea
+              id="options-further-terms"
+              value={inputs.options_further_terms}
+              onChange={(e) => handleInputChange('options_further_terms', e.target.value)}
+              placeholder="Detail lease options and further terms..."
+              rows={2}
+            />
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Rent Components (NET BASIS) */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <Calculator className="h-5 w-5" />
+            Rent Components (NET BASIS)
+          </CardTitle>
+          <CardDescription>
+            All rent calculations on NET basis - excluding outgoings and land tax
+          </CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div className="space-y-2">
+              <Label htmlFor="face-rent">Face Rent ({currentConfig?.unit || 'per unit'})</Label>
+              <Input
+                id="face-rent"
+                type="number"
+                value={inputs.face_rent}
+                onChange={(e) => handleInputChange('face_rent', parseFloat(e.target.value) || 0)}
+                placeholder="0"
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="effective-rent">Effective Rent ({currentConfig?.unit || 'per unit'})</Label>
+              <Input
+                id="effective-rent"
+                type="number"
+                value={inputs.effective_rent}
+                onChange={(e) => handleInputChange('effective_rent', parseFloat(e.target.value) || 0)}
+                placeholder="0"
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="gross-rent">Gross Rent ({currentConfig?.unit || 'per unit'})</Label>
+              <Input
+                id="gross-rent"
+                type="number"
+                value={inputs.gross_rent}
+                onChange={(e) => handleInputChange('gross_rent', parseFloat(e.target.value) || 0)}
+                placeholder="0"
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="net-rent">Net Rent ({currentConfig?.unit || 'per unit'})</Label>
+              <Input
+                id="net-rent"
+                type="number"
+                value={inputs.net_rent}
+                onChange={(e) => handleInputChange('net_rent', parseFloat(e.target.value) || 0)}
+                placeholder="0"
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="incentives">Incentives ({currentConfig?.unit || 'per unit'})</Label>
+              <Input
+                id="incentives"
+                type="number"
+                value={inputs.incentives}
+                onChange={(e) => handleInputChange('incentives', parseFloat(e.target.value) || 0)}
+                placeholder="0"
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="outgoings">Outgoings ({currentConfig?.unit || 'per unit'})</Label>
+              <Input
+                id="outgoings"
+                type="number"
+                value={inputs.outgoings}
+                onChange={(e) => handleInputChange('outgoings', parseFloat(e.target.value) || 0)}
+                placeholder="0"
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="land-tax">Land Tax ({currentConfig?.unit || 'per unit'})</Label>
+              <Input
+                id="land-tax"
+                type="number"
+                value={inputs.land_tax}
+                onChange={(e) => handleInputChange('land_tax', parseFloat(e.target.value) || 0)}
+                placeholder="0"
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="outgoings-per-sqm">Outgoings per sqm</Label>
+              <Input
+                id="outgoings-per-sqm"
+                type="number"
+                step="0.01"
+                value={inputs.outgoings_per_sqm}
+                onChange={(e) => handleInputChange('outgoings_per_sqm', parseFloat(e.target.value) || 0)}
+                placeholder="0"
+              />
+            </div>
+          </div>
+
+          <Separator />
+
+          {/* Area Details */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="space-y-2">
+              <Label htmlFor="lettable-area">
                 {inputs.property_type === 'agricultural' ? 'Area (hectares)' :
                  inputs.property_type === 'childcare' ? 'Number of LDC Placements' :
                  inputs.property_type === 'hospitality' ? 'Number of Rooms/Keys' :
@@ -267,22 +408,30 @@ export const RentRevisionForm: React.FC<RentRevisionFormProps> = ({ onSubmit }) 
                  inputs.property_type === 'stadium' ? 'Number of Seats' :
                  inputs.property_type === 'retirement' ? 'Number of Units' :
                  inputs.property_type === 'healthcare' ? 'Beds/Treatment Rooms' :
-                 'Area (sqm)'}
+                 'Lettable Area (sqm)'}
               </Label>
               <Input
-                id="units-area"
+                id="lettable-area"
                 type="number"
-                value={inputs.units_or_area}
-                onChange={(e) => handleInputChange('units_or_area', parseFloat(e.target.value) || 0)}
-                placeholder="Enter quantity"
+                value={inputs.lettable_area}
+                onChange={(e) => handleInputChange('lettable_area', parseFloat(e.target.value) || 0)}
+                placeholder="Enter area/quantity"
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="land-area">Land Area (sqm)</Label>
+              <Input
+                id="land-area"
+                type="number"
+                value={inputs.land_area}
+                onChange={(e) => handleInputChange('land_area', parseFloat(e.target.value) || 0)}
+                placeholder="Enter land area"
               />
             </div>
           </div>
 
-          <Separator />
-
           {/* Include/Exclude Toggles for Current Lease */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
             <div className="flex items-center space-x-2">
               <Switch
                 id="include-current-rent-analysis"
@@ -301,33 +450,21 @@ export const RentRevisionForm: React.FC<RentRevisionFormProps> = ({ onSubmit }) 
             </div>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div className="space-y-2">
-              <Label htmlFor="land-area">Land Area (sqm)</Label>
-              <Input
-                id="land-area"
-                type="number"
-                value={inputs.land_area}
-                onChange={(e) => handleInputChange('land_area', parseFloat(e.target.value) || 0)}
-                placeholder="Enter land area"
-              />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="current-land-rate">Current Improved Land Rate ($/sqm)</Label>
-              <Input
-                id="current-land-rate"
-                type="number"
-                step="0.01"
-                value={inputs.current_improved_land_rate}
-                onChange={(e) => handleInputChange('current_improved_land_rate', parseFloat(e.target.value) || 0)}
-                placeholder="Enter current land rate"
-              />
-            </div>
+          <div className="space-y-2">
+            <Label htmlFor="improved-rent-rate-per-sqm">Improved Rent Rate (per sqm)</Label>
+            <Input
+              id="improved-rent-rate-per-sqm"
+              type="number"
+              step="0.01"
+              value={inputs.improved_rent_rate_per_sqm}
+              onChange={(e) => handleInputChange('improved_rent_rate_per_sqm', parseFloat(e.target.value) || 0)}
+              placeholder="Enter improved rent rate"
+            />
           </div>
         </CardContent>
       </Card>
 
-      {/* Market Analysis */}
+      {/* Market Analysis & Proposed Revision */}
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
@@ -339,7 +476,7 @@ export const RentRevisionForm: React.FC<RentRevisionFormProps> = ({ onSubmit }) 
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
-          {/* Market Rent Section */}
+          {/* Market Rent Section - Top Row */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="space-y-2">
               <Label htmlFor="market-rent">
@@ -356,21 +493,13 @@ export const RentRevisionForm: React.FC<RentRevisionFormProps> = ({ onSubmit }) 
             <div className="space-y-2">
               <Label htmlFor="market-rent-overall">Market Rent Overall</Label>
               <div className="p-3 bg-muted/50 rounded-md text-lg font-semibold">
-                {formatCurrency(inputs.market_rent * inputs.units_or_area)}
+                {formatCurrency(inputs.market_rent * inputs.lettable_area)}
               </div>
             </div>
           </div>
 
-          {/* Include/Exclude Toggles */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
-            <div className="flex items-center space-x-2">
-              <Switch
-                id="include-rent-analysis"
-                checked={inputs.include_rent_analysis}
-                onCheckedChange={(checked) => handleInputChange('include_rent_analysis', checked)}
-              />
-              <Label htmlFor="include-rent-analysis">Include Rent Analysis</Label>
-            </div>
+          {/* Include/Exclude Toggles for Land Analysis */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="flex items-center space-x-2">
               <Switch
                 id="include-land-analysis"
@@ -381,10 +510,10 @@ export const RentRevisionForm: React.FC<RentRevisionFormProps> = ({ onSubmit }) 
             </div>
           </div>
 
-          {/* Proposed Land Rate Section */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+          {/* Proposed Land Rate Section - Bottom Row */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="space-y-2">
-              <Label htmlFor="proposed-land-rate">Proposed Improved Land Rate ($/sqm)</Label>
+              <Label htmlFor="proposed-land-rate">Proposed Improved Land Rate (per sqm)</Label>
               <Input
                 id="proposed-land-rate"
                 type="number"
@@ -402,7 +531,7 @@ export const RentRevisionForm: React.FC<RentRevisionFormProps> = ({ onSubmit }) 
             </div>
           </div>
 
-          {/* Additional Fields */}
+          {/* Additional Market Fields */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
             <div className="space-y-2">
               <Label htmlFor="proposed-rent">
@@ -417,23 +546,14 @@ export const RentRevisionForm: React.FC<RentRevisionFormProps> = ({ onSubmit }) 
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="cpi-adjustment">CPI or Fixed Adjustments (%)</Label>
+              <Label htmlFor="cpi-fixed-adjustments">CPI or Fixed Adjustments (%)</Label>
               <Input
-                id="cpi-adjustment"
+                id="cpi-fixed-adjustments"
                 type="number"
                 step="0.1"
-                value={inputs.cpi_adjustment}
-                onChange={(e) => handleInputChange('cpi_adjustment', parseFloat(e.target.value) || 0)}
+                value={inputs.cpi_fixed_adjustments}
+                onChange={(e) => handleInputChange('cpi_fixed_adjustments', parseFloat(e.target.value) || 0)}
                 placeholder="3.5"
-              />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="revision-date">Revision Effective Date</Label>
-              <Input
-                id="revision-date"
-                type="date"
-                value={inputs.revision_date}
-                onChange={(e) => handleInputChange('revision_date', e.target.value)}
               />
             </div>
           </div>
@@ -485,28 +605,28 @@ export const RentRevisionForm: React.FC<RentRevisionFormProps> = ({ onSubmit }) 
       </Card>
 
       {/* Summary Calculations */}
-      {inputs.current_rent > 0 && inputs.proposed_rent > 0 && inputs.units_or_area > 0 && (
+      {inputs.net_rent > 0 && inputs.proposed_rent > 0 && inputs.lettable_area > 0 && (
         <Card>
           <CardHeader>
-            <CardTitle>Revision Summary</CardTitle>
+            <CardTitle>Revision Summary (NET BASIS)</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               <div className="text-center p-4 bg-muted/50 rounded-lg">
                 <div className="text-2xl font-bold text-primary">
-                  {formatCurrency(inputs.current_rent * inputs.units_or_area)}
+                  {formatCurrency(inputs.net_rent * inputs.lettable_area)}
                 </div>
-                <div className="text-sm text-muted-foreground">Current Annual Rent</div>
+                <div className="text-sm text-muted-foreground">Current Net Annual Rent</div>
               </div>
               <div className="text-center p-4 bg-muted/50 rounded-lg">
                 <div className="text-2xl font-bold text-primary">
-                  {formatCurrency(inputs.proposed_rent * inputs.units_or_area)}
+                  {formatCurrency(inputs.proposed_rent * inputs.lettable_area)}
                 </div>
                 <div className="text-sm text-muted-foreground">Proposed Annual Rent</div>
               </div>
               <div className="text-center p-4 bg-primary/10 rounded-lg">
                 <div className="text-2xl font-bold text-primary">
-                  {(((inputs.proposed_rent - inputs.current_rent) / inputs.current_rent) * 100).toFixed(1)}%
+                  {(((inputs.proposed_rent - inputs.net_rent) / inputs.net_rent) * 100).toFixed(1)}%
                 </div>
                 <div className="text-sm text-muted-foreground">Rent Increase</div>
               </div>
@@ -517,7 +637,7 @@ export const RentRevisionForm: React.FC<RentRevisionFormProps> = ({ onSubmit }) 
 
       <Button type="submit" size="lg" className="w-full">
         <TrendingUp className="h-4 w-4 mr-2" />
-        Generate Rent Revision Report
+        Generate Professional Rent Revision Report
       </Button>
     </form>
   );

@@ -96,7 +96,7 @@ export default function RentRevision() {
               <div>
                 <h2 className="text-2xl font-semibold">Rent Revision Analysis Complete</h2>
                 <p className="text-muted-foreground">
-                  Professional analysis for {results.tenant_name} - {results.property_type.charAt(0).toUpperCase() + results.property_type.slice(1)} Property
+                  Professional analysis for {results.lessee} - {results.property_type.charAt(0).toUpperCase() + results.property_type.slice(1)} Property
                 </p>
               </div>
               <Button onClick={handleReset} variant="outline">
