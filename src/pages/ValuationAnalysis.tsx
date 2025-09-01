@@ -51,6 +51,8 @@ import { HypotheticalDevelopmentForm } from "@/components/HypotheticalDevelopmen
 import { HypotheticalDevelopmentResults } from "@/components/HypotheticalDevelopmentResults";
 import { SummationApproachForm } from "@/components/SummationApproachForm";
 import { SummationApproachResults } from "@/components/SummationApproachResults";
+import { HospitalityValuationForm } from "@/components/HospitalityValuationForm";
+import { HospitalityValuationResults } from "@/components/HospitalityValuationResults";
 import { ARYInputs, ARYResults, calculateAllRisksYield } from "@/utils/aryCalculations";
 import { 
   ESGInputs, 
@@ -82,6 +84,11 @@ import {
   SummationResults,
   calculateSummationValue
 } from "@/utils/summationCalculations";
+import {
+  HospitalityInputs,
+  HospitalityResults,
+  calculateHospitalityValuation
+} from "@/utils/hospitalityCalculations";
 
 export default function ValuationAnalysis() {
   // ARY States
@@ -124,6 +131,10 @@ export default function ValuationAnalysis() {
   const [hypotheticalInputs, setHypotheticalInputs] = useState<HypotheticalDevelopmentParams | null>(null);
   const [hypotheticalResults, setHypotheticalResults] = useState<HypotheticalDevelopmentResult | null>(null);
   const [hypotheticalApproach, setHypotheticalApproach] = useState<'conventional' | 'esd'>('conventional');
+
+  // Hospitality Valuation States
+  const [hospitalityInputs, setHospitalityInputs] = useState<HospitalityInputs | null>(null);
+  const [hospitalityResults, setHospitalityResults] = useState<HospitalityResults | null>(null);
 
   const handleARYSubmit = (inputs: ARYInputs) => {
     try {
@@ -234,6 +245,10 @@ export default function ValuationAnalysis() {
         setHypotheticalResults(null);
         setHypotheticalApproach('conventional');
         break;
+      case 'hospitality':
+        setHospitalityInputs(null);
+        setHospitalityResults(null);
+        break;
     }
   };
 
@@ -287,6 +302,17 @@ export default function ValuationAnalysis() {
       toast.success(`${approach === 'esd' ? 'ESD' : 'Conventional'} development valuation completed!`);
     } catch (error) {
       toast.error(`Hypothetical development analysis error: ${error instanceof Error ? error.message : 'Unknown error'}`);
+    }
+  };
+
+  const handleHospitalityValuationSubmit = (inputs: HospitalityInputs) => {
+    try {
+      const calculatedResults = calculateHospitalityValuation(inputs);
+      setHospitalityInputs(inputs);
+      setHospitalityResults(calculatedResults);
+      toast.success("Hospitality valuation completed successfully!");
+    } catch (error) {
+      toast.error(`Hospitality valuation error: ${error instanceof Error ? error.message : 'Unknown error'}`);
     }
   };
 
@@ -368,6 +394,10 @@ export default function ValuationAnalysis() {
             <TabsTrigger value="hypotheticaldevelopment" className="flex items-center gap-2 p-3">
               <Building2 className="w-4 h-4" />
               Hypothetical Development
+            </TabsTrigger>
+            <TabsTrigger value="hospitality" className="flex items-center gap-2 p-3">
+              <Building2 className="w-4 h-4" />
+              Hospitality & Commercial
             </TabsTrigger>
           </TabsList>
 
@@ -807,6 +837,45 @@ export default function ValuationAnalysis() {
                 approach={hypotheticalApproach}
                 onNewCalculation={() => handleReset('hypotheticaldevelopment')} 
               />
+            )}
+          </TabsContent>
+
+          {/* Hospitality & Commercial Valuation Tab */}
+          <TabsContent value="hospitality" className="mt-6">
+            <div className="flex items-center justify-between mb-6">
+              <div>
+                <h2 className="text-2xl font-semibold">Hospitality & Commercial Valuation</h2>
+                <p className="text-muted-foreground">
+                  Comprehensive valuation using five specialized approaches for hospitality and commercial properties
+                </p>
+              </div>
+              {hospitalityResults && (
+                <Button onClick={() => handleReset('hospitality')} variant="outline">
+                  New Analysis
+                </Button>
+              )}
+            </div>
+
+            {!hospitalityResults ? (
+              <div className="max-w-6xl mx-auto">
+                <Card className="mb-6">
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-2">
+                      <Building2 className="w-5 h-5" />
+                      Hospitality & Commercial Property Valuation Methods
+                    </CardTitle>
+                    <CardDescription>
+                      This comprehensive analysis includes five specialized valuation approaches designed for hospitality 
+                      and commercial properties: Income Approach, Gross Income Multiplier (GIM), Per Unit Valuation, 
+                      Revenue Multiplier, and Replacement Cost Method. Each method can be adjusted with ESG factors 
+                      to reflect sustainability premiums or discounts.
+                    </CardDescription>
+                  </CardHeader>
+                </Card>
+                <HospitalityValuationForm onSubmit={handleHospitalityValuationSubmit} />
+              </div>
+            ) : (
+              <HospitalityValuationResults results={hospitalityResults} />
             )}
           </TabsContent>
         </Tabs>
