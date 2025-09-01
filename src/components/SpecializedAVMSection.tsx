@@ -25,22 +25,78 @@ import {
   Bot,
   Globe,
   Calculator,
-  TrendingUp
+  TrendingUp,
+  Wheat,
+  TreePine,
+  Plus,
+  Trash2,
+  ChevronDown
 } from "lucide-react";
 
 interface AVMData {
+  id: string;
   propertyAddress: string;
   propertyType: string;
+  subPropertyType?: string;
   landArea: number;
   buildingArea: number;
   yearBuilt: number;
   condition: string;
+  estimatedValue?: number;
 }
+
+interface AggregatedResult {
+  totalValue: number;
+  averageConfidence: number;
+  totalComparables: number;
+  properties: AVMData[];
+  breakdown: {
+    [key: string]: {
+      count: number;
+      totalValue: number;
+      averageValue: number;
+    };
+  };
+}
+
+const propertyTypeOptions = {
+  commercial: ["Office Buildings", "Warehouses", "Shopping Centers", "Mixed Use"],
+  industrial: ["Manufacturing", "Distribution Centers", "Cold Storage", "Heavy Industrial"],
+  retail: ["Strip Centers", "Department Stores", "Specialty Retail", "Drive-Through"],
+  hospitality: ["Hotels", "Motels", "Resorts", "Serviced Apartments"],
+  healthcare: ["Hospitals", "Medical Centers", "Aged Care", "Veterinary Clinics"],
+  education: ["Schools", "Universities", "Training Centers", "Childcare Centers"],
+  agricultural: ["Crop Farms", "Livestock Farms", "Vineyards", "Poultry Farms"],
+  horticultural: ["Nurseries", "Greenhouses", "Orchards", "Market Gardens"]
+};
 
 const SpecializedAVMSection = () => {
   const [activeTab, setActiveTab] = useState("commercial");
   const [isProcessing, setIsProcessing] = useState(false);
   const [avmResults, setAvmResults] = useState<any>(null);
+  const [properties, setProperties] = useState<AVMData[]>([]);
+  const [aggregatedResults, setAggregatedResults] = useState<AggregatedResult | null>(null);
+
+  const addProperty = () => {
+    const newProperty: AVMData = {
+      id: Date.now().toString(),
+      propertyAddress: "",
+      propertyType: activeTab,
+      landArea: 0,
+      buildingArea: 0,
+      yearBuilt: new Date().getFullYear(),
+      condition: ""
+    };
+    setProperties([...properties, newProperty]);
+  };
+
+  const removeProperty = (id: string) => {
+    setProperties(properties.filter(p => p.id !== id));
+  };
+
+  const updateProperty = (id: string, updates: Partial<AVMData>) => {
+    setProperties(properties.map(p => p.id === id ? { ...p, ...updates } : p));
+  };
 
   const handleAVMSubmit = async (formData: AVMData, assetType: string) => {
     setIsProcessing(true);
@@ -61,11 +117,54 @@ const SpecializedAVMSection = () => {
     setIsProcessing(false);
   };
 
+  const calculateAggregatedResults = async () => {
+    if (properties.length === 0) return;
+    
+    setIsProcessing(true);
+    
+    // Simulate processing each property
+    const processedProperties = await Promise.all(
+      properties.map(async (property) => {
+        await new Promise(resolve => setTimeout(resolve, 500));
+        const estimatedValue = Math.floor(Math.random() * 2000000) + 500000;
+        return { ...property, estimatedValue };
+      })
+    );
+
+    // Calculate aggregated results
+    const totalValue = processedProperties.reduce((sum, p) => sum + (p.estimatedValue || 0), 0);
+    const breakdown: AggregatedResult['breakdown'] = {};
+    
+    processedProperties.forEach(property => {
+      const type = property.subPropertyType || property.propertyType;
+      if (!breakdown[type]) {
+        breakdown[type] = { count: 0, totalValue: 0, averageValue: 0 };
+      }
+      breakdown[type].count++;
+      breakdown[type].totalValue += property.estimatedValue || 0;
+      breakdown[type].averageValue = breakdown[type].totalValue / breakdown[type].count;
+    });
+
+    const aggregated: AggregatedResult = {
+      totalValue,
+      averageConfidence: 85,
+      totalComparables: processedProperties.length * 8,
+      properties: processedProperties,
+      breakdown
+    };
+
+    setProperties(processedProperties);
+    setAggregatedResults(aggregated);
+    setIsProcessing(false);
+  };
+
   const AVMForm = ({ assetType, icon: Icon, title }: { assetType: string, icon: any, title: string }) => {
     const { toast } = useToast();
     const [formData, setFormData] = useState<AVMData>({
+      id: Date.now().toString(),
       propertyAddress: "",
       propertyType: assetType,
+      subPropertyType: "",
       landArea: 0,
       buildingArea: 0,
       yearBuilt: new Date().getFullYear(),
@@ -118,18 +217,36 @@ const SpecializedAVMSection = () => {
                   </Badge>
                 </div>
               </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="subPropertyType">Specific Property Type</Label>
+                <Select onValueChange={(value) => setFormData({...formData, subPropertyType: value})}>
+                  <SelectTrigger className="bg-background border border-input">
+                    <SelectValue placeholder="Select specific type" />
+                    <ChevronDown className="h-4 w-4 opacity-50" />
+                  </SelectTrigger>
+                  <SelectContent className="bg-background border border-input shadow-lg z-50">
+                    {propertyTypeOptions[assetType as keyof typeof propertyTypeOptions]?.map((option) => (
+                      <SelectItem key={option} value={option} className="hover:bg-accent">
+                        {option}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
               
               <div className="space-y-2">
                 <Label htmlFor="condition">Property Condition</Label>
                 <Select onValueChange={(value) => setFormData({...formData, condition: value})}>
-                  <SelectTrigger>
+                  <SelectTrigger className="bg-background border border-input">
                     <SelectValue placeholder="Select condition" />
+                    <ChevronDown className="h-4 w-4 opacity-50" />
                   </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="excellent">Excellent</SelectItem>
-                    <SelectItem value="good">Good</SelectItem>
-                    <SelectItem value="fair">Fair</SelectItem>
-                    <SelectItem value="poor">Poor</SelectItem>
+                  <SelectContent className="bg-background border border-input shadow-lg z-50">
+                    <SelectItem value="excellent" className="hover:bg-accent">Excellent</SelectItem>
+                    <SelectItem value="good" className="hover:bg-accent">Good</SelectItem>
+                    <SelectItem value="fair" className="hover:bg-accent">Fair</SelectItem>
+                    <SelectItem value="poor" className="hover:bg-accent">Poor</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
@@ -180,22 +297,127 @@ const SpecializedAVMSection = () => {
               </Badge>
             </div>
 
-            <Button 
-              onClick={() => handleAVMSubmit(formData, assetType)}
-              disabled={!formData.propertyAddress || !formData.condition || isProcessing}
-              className="w-full"
-            >
-              {isProcessing ? "Processing AVM..." : "Generate AVM Report"}
-            </Button>
+            <div className="flex gap-2">
+              <Button 
+                onClick={() => handleAVMSubmit(formData, assetType)}
+                disabled={!formData.propertyAddress || !formData.condition || isProcessing}
+                className="flex-1"
+              >
+                {isProcessing ? "Processing AVM..." : "Generate Single AVM"}
+              </Button>
+              <Button 
+                onClick={() => {
+                  if (formData.propertyAddress && formData.condition) {
+                    setProperties([...properties, { ...formData, id: Date.now().toString() }]);
+                    toast({ title: "Property added to portfolio" });
+                  }
+                }}
+                variant="outline"
+                disabled={!formData.propertyAddress || !formData.condition}
+              >
+                <Plus className="h-4 w-4" />
+              </Button>
+            </div>
           </CardContent>
         </Card>
 
+        {/* Property Portfolio Management */}
+        {properties.length > 0 && (
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center justify-between">
+                <span className="flex items-center gap-2">
+                  <Building2 className="h-5 w-5" />
+                  Property Portfolio ({properties.length} properties)
+                </span>
+                <Button 
+                  onClick={calculateAggregatedResults}
+                  disabled={isProcessing}
+                  className="ml-2"
+                >
+                  {isProcessing ? "Processing..." : "Calculate Portfolio Value"}
+                </Button>
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-3">
+                {properties.map((property, index) => (
+                  <div key={property.id} className="flex items-center justify-between p-3 bg-muted/50 rounded-lg">
+                    <div className="flex-1">
+                      <p className="font-medium text-sm">{property.propertyAddress || `Property ${index + 1}`}</p>
+                      <p className="text-xs text-muted-foreground">
+                        {property.subPropertyType || property.propertyType} • {property.condition} condition
+                        {property.estimatedValue && ` • $${property.estimatedValue.toLocaleString()}`}
+                      </p>
+                    </div>
+                    <Button
+                      onClick={() => removeProperty(property.id)}
+                      variant="ghost"
+                      size="sm"
+                    >
+                      <Trash2 className="h-4 w-4" />
+                    </Button>
+                  </div>
+                ))}
+              </div>
+            </CardContent>
+          </Card>
+        )}
+
+        {/* Aggregated Results */}
+        {aggregatedResults && (
+          <Card className="bg-gradient-to-br from-primary/10 to-primary/5 border-primary/20">
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2 text-primary">
+                <TrendingUp className="h-5 w-5" />
+                Portfolio Valuation Results
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-6">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div className="space-y-2">
+                  <p className="text-sm text-muted-foreground">Total Portfolio Value</p>
+                  <p className="text-3xl font-bold text-primary">
+                    ${aggregatedResults.totalValue.toLocaleString()}
+                  </p>
+                </div>
+                
+                <div className="space-y-2">
+                  <p className="text-sm text-muted-foreground">Average Confidence</p>
+                  <p className="text-2xl font-semibold">{aggregatedResults.averageConfidence}%</p>
+                </div>
+
+                <div className="space-y-2">
+                  <p className="text-sm text-muted-foreground">Total Properties</p>
+                  <p className="text-xl font-semibold">{aggregatedResults.properties.length} assets</p>
+                </div>
+              </div>
+
+              <div className="space-y-3">
+                <h4 className="font-medium">Portfolio Breakdown</h4>
+                <div className="grid gap-2">
+                  {Object.entries(aggregatedResults.breakdown).map(([type, data]) => (
+                    <div key={type} className="flex justify-between items-center p-2 bg-background/50 rounded">
+                      <span className="text-sm font-medium">{type}</span>
+                      <div className="text-right">
+                        <p className="text-sm font-semibold">${data.totalValue.toLocaleString()}</p>
+                        <p className="text-xs text-muted-foreground">{data.count} properties</p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        )}
+
+        {/* Single Property Results */}
         {avmResults && (
           <Card className="bg-gradient-to-br from-success/10 to-success/5 border-success/20">
             <CardHeader>
               <CardTitle className="flex items-center gap-2 text-success">
                 <TrendingUp className="h-5 w-5" />
-                AVM Results
+                Individual AVM Results
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
@@ -252,7 +474,7 @@ const SpecializedAVMSection = () => {
       </div>
 
       <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-        <TabsList className="grid w-full grid-cols-3 lg:grid-cols-6">
+        <TabsList className="grid w-full grid-cols-4 lg:grid-cols-8">
           <TabsTrigger value="commercial" className="flex items-center gap-1 text-xs lg:text-sm">
             <Building2 className="h-4 w-4" />
             <span className="hidden sm:inline">Commercial</span>
@@ -276,6 +498,14 @@ const SpecializedAVMSection = () => {
           <TabsTrigger value="education" className="flex items-center gap-1 text-xs lg:text-sm">
             <GraduationCap className="h-4 w-4" />
             <span className="hidden sm:inline">Education</span>
+          </TabsTrigger>
+          <TabsTrigger value="agricultural" className="flex items-center gap-1 text-xs lg:text-sm">
+            <Wheat className="h-4 w-4" />
+            <span className="hidden sm:inline">Agricultural</span>
+          </TabsTrigger>
+          <TabsTrigger value="horticultural" className="flex items-center gap-1 text-xs lg:text-sm">
+            <TreePine className="h-4 w-4" />
+            <span className="hidden sm:inline">Horticultural</span>
           </TabsTrigger>
         </TabsList>
 
@@ -301,6 +531,14 @@ const SpecializedAVMSection = () => {
 
         <TabsContent value="education">
           <AVMForm assetType="education" icon={GraduationCap} title="Educational Properties" />
+        </TabsContent>
+
+        <TabsContent value="agricultural">
+          <AVMForm assetType="agricultural" icon={Wheat} title="Agricultural Assets" />
+        </TabsContent>
+
+        <TabsContent value="horticultural">
+          <AVMForm assetType="horticultural" icon={TreePine} title="Horticultural Properties" />
         </TabsContent>
       </Tabs>
     </div>
