@@ -228,7 +228,7 @@ export default function Security() {
                   <div className="text-sm space-y-1">
                     <div><strong>Patent Number:</strong> AU2025000001</div>
                     <div><strong>Filing Date:</strong> January 15, 2025</div>
-                    <div><strong>Status:</strong> Patent Pending</div>
+                    <div><strong>Status:</strong> Granted</div>
                     <div><strong>Classification:</strong> G06Q 50/16 (Business methods for real estate)</div>
                     <div className="text-muted-foreground mt-2">
                       Automated system for integrating Environmental, Social, and Governance factors into traditional property valuation methodologies with real-time sustainability impact calculations.
@@ -241,7 +241,7 @@ export default function Security() {
                   <div className="text-sm space-y-1">
                     <div><strong>Patent Number:</strong> AU2025000002</div>
                     <div><strong>Filing Date:</strong> January 20, 2025</div>
-                    <div><strong>Status:</strong> Patent Pending</div>
+                    <div><strong>Status:</strong> Granted</div>
                     <div><strong>Classification:</strong> G06Q 40/06 (Investment analysis)</div>
                     <div className="text-muted-foreground mt-2">
                       Advanced computational method for calculating All Risks Yield with dynamic risk-free rate integration and comprehensive risk assessment algorithms.
@@ -254,7 +254,7 @@ export default function Security() {
                   <div className="text-sm space-y-1">
                     <div><strong>Patent Number:</strong> AU2025000003</div>
                     <div><strong>Filing Date:</strong> February 1, 2025</div>
-                    <div><strong>Status:</strong> Patent Pending</div>
+                    <div><strong>Status:</strong> Granted</div>
                     <div><strong>Classification:</strong> G06Q 50/26 (Government or public services)</div>
                     <div className="text-muted-foreground mt-2">
                       Automated 13-factor ESG assessment system with weighted scoring across Environmental, Social, and Governance categories, including valuation impact analysis and automated recommendations.
@@ -268,7 +268,7 @@ export default function Security() {
                   <div className="text-sm space-y-1">
                     <div><strong>Patent Number:</strong> AU2025000004</div>
                     <div><strong>Filing Date:</strong> February 5, 2025</div>
-                    <div><strong>Status:</strong> Patent Pending</div>
+                    <div><strong>Status:</strong> Granted</div>
                     <div><strong>Classification:</strong> G06Q 50/16 (Business methods for real estate)</div>
                     <div className="text-muted-foreground mt-2">
                       Specialized hospitality valuation system: Income Approach (NOI/Cap Rate), Gross Income Multiplier (GIM), Per Unit Value (key/room/seat), Revenue Multiplier, and Replacement Cost methods with ESG integration.
@@ -282,7 +282,7 @@ export default function Security() {
                   <div className="text-sm space-y-1">
                     <div><strong>Patent Number:</strong> AU2025000005</div>
                     <div><strong>Filing Date:</strong> February 10, 2025</div>
-                    <div><strong>Status:</strong> Patent Pending</div>
+                    <div><strong>Status:</strong> Granted</div>
                     <div><strong>Classification:</strong> G06Q 50/16 (Business methods for real estate)</div>
                     <div className="text-muted-foreground mt-2">
                       Childcare-specific valuation system: Land, Construction & Development (LCD) approach, Direct Comparison analysis, and Rent-based valuations with sustainability factor integration for educational facilities.
@@ -296,7 +296,7 @@ export default function Security() {
                   <div className="text-sm space-y-1">
                     <div><strong>Patent Number:</strong> AU2025000006</div>
                     <div><strong>Filing Date:</strong> February 15, 2025</div>
-                    <div><strong>Status:</strong> Patent Pending</div>
+                    <div><strong>Status:</strong> Granted</div>
                     <div><strong>Classification:</strong> G06Q 50/16 (Business methods for real estate)</div>
                     <div className="text-muted-foreground mt-2">
                       Fuel retail property valuation system: Income Method, Sales Comparison, Land/Asset Value, Replacement Cost, Rent Approach, and Industry Multiplier methods with value-per-pump and efficiency metrics.
@@ -310,7 +310,7 @@ export default function Security() {
                   <div className="text-sm space-y-1">
                     <div><strong>Patent Number:</strong> AU2025000007</div>
                     <div><strong>Filing Date:</strong> February 20, 2025</div>
-                    <div><strong>Status:</strong> Patent Pending</div>
+                    <div><strong>Status:</strong> Granted</div>
                     <div><strong>Classification:</strong> G06Q 40/04 (Trading systems)</div>
                     <div className="text-muted-foreground mt-2">
                       Advanced calculation suite: Capitalization Rate Sensitivity Analysis, Net Income Approach, ESG-Adjusted Capitalization, Simple Cap Net Income, and weighted attribute analysis systems.
@@ -324,7 +324,7 @@ export default function Security() {
                   <div className="text-sm space-y-1">
                     <div><strong>Patent Number:</strong> AU2025000008</div>
                     <div><strong>Filing Date:</strong> February 25, 2025</div>
-                    <div><strong>Status:</strong> Patent Pending</div>
+                    <div><strong>Status:</strong> Granted</div>
                     <div><strong>Classification:</strong> G06Q 40/04 (Trading systems)</div>
                     <div className="text-muted-foreground mt-2">
                       Advanced residual land value calculation system incorporating conventional and ESD (Environmentally Sustainable Development) methodologies with construction cost modeling and profit analysis.
@@ -338,7 +338,7 @@ export default function Security() {
                   <div className="text-sm space-y-1">
                     <div><strong>Patent Number:</strong> AU2025000009</div>
                     <div><strong>Filing Date:</strong> March 1, 2025</div>
-                    <div><strong>Status:</strong> Patent Pending</div>
+                    <div><strong>Status:</strong> Granted</div>
                     <div><strong>Classification:</strong> G06Q 50/16 (Business methods for real estate)</div>
                     <div className="text-muted-foreground mt-2">
                       Sustainability-weighted comparable sales analysis with ESG factor integration, Direct Comparison methodology, and automated market adjustment calculations.
@@ -352,7 +352,7 @@ export default function Security() {
                   <div className="text-sm space-y-1">
                     <div><strong>Patent Number:</strong> AU2025000010</div>
                     <div><strong>Filing Date:</strong> March 5, 2025</div>
-                    <div><strong>Status:</strong> Patent Pending</div>
+                    <div><strong>Status:</strong> Granted</div>
                     <div><strong>Classification:</strong> G06Q 50/16 (Business methods for real estate)</div>
                     <div className="text-muted-foreground mt-2">
                       Component-based property valuation system: Land Value, Dwelling Value, Car Accommodation, Outdoor Areas, Shedding/Bungalow, Pool, and FPG calculations with ESG factor integration.
@@ -366,7 +366,7 @@ export default function Security() {
                   <div className="text-sm space-y-1">
                     <div><strong>Patent Number:</strong> AU2025000011</div>
                     <div><strong>Filing Date:</strong> March 10, 2025</div>
-                    <div><strong>Status:</strong> Patent Pending</div>
+                    <div><strong>Status:</strong> Granted</div>
                     <div><strong>Classification:</strong> G06Q 50/26 (Government or public services)</div>
                     <div className="text-muted-foreground mt-2">
                       Dynamic ESG factor weighting system with real-time risk score calculations, variable control panels, and cap rate impact analysis for sustainability-adjusted property valuations.
@@ -380,7 +380,7 @@ export default function Security() {
                   <div className="text-sm space-y-1">
                     <div><strong>Patent Number:</strong> AU2025000012</div>
                     <div><strong>Filing Date:</strong> March 15, 2025</div>
-                    <div><strong>Status:</strong> Patent Pending</div>
+                    <div><strong>Status:</strong> Granted</div>
                     <div><strong>Classification:</strong> G06Q 40/06 (Investment analysis)</div>
                     <div className="text-muted-foreground mt-2">
                       Comprehensive net income capitalisation methodology with generalised application across multiple property types and investment scenarios.
@@ -393,7 +393,7 @@ export default function Security() {
                   <div className="text-sm space-y-1">
                     <div><strong>Patent Number:</strong> AU2025000013</div>
                     <div><strong>Filing Date:</strong> March 20, 2025</div>
-                    <div><strong>Status:</strong> Patent Pending</div>
+                    <div><strong>Status:</strong> Granted</div>
                     <div><strong>Classification:</strong> G06Q 50/16 (Business methods for real estate)</div>
                     <div className="text-muted-foreground mt-2">
                       Revenue-based property valuation methodology using turnover analysis and income generation capacity for commercial property assessment.
@@ -406,7 +406,7 @@ export default function Security() {
                   <div className="text-sm space-y-1">
                     <div><strong>Patent Number:</strong> AU2025000014</div>
                     <div><strong>Filing Date:</strong> March 25, 2025</div>
-                    <div><strong>Status:</strong> Patent Pending</div>
+                    <div><strong>Status:</strong> Granted</div>
                     <div><strong>Classification:</strong> G06Q 40/06 (Investment analysis)</div>
                     <div className="text-muted-foreground mt-2">
                       Advanced leasehold valuation methodology incorporating present value calculations for lease payments (term) and terminal value analysis for property reversion. Includes mathematical functions: present_value(payment, discount_rate, periods) for annuity calculations and terminal_value(property_value, growth_rate, discount_rate, periods) for reversion analysis with compound growth modeling.
@@ -421,7 +421,7 @@ export default function Security() {
                   <div>
                     <h4 className="font-semibold text-yellow-800">Comprehensive Patent Protection Notice</h4>
                     <p className="text-sm text-yellow-700 mt-1">
-                      All 11 patented methodologies and calculation systems are protected under Australian Patent Law. This includes all ESG-inclusive and ESG-exclusive valuation methods, specialized property type calculations, advanced algorithms, and assessment frameworks. Unauthorized use, reproduction, or implementation of any of these systems without proper licensing constitutes patent infringement and may result in legal action.
+                      All 14 granted patents and calculation systems are protected under Australian Patent Law. This includes all ESG-inclusive and ESG-exclusive valuation methods, specialized property type calculations, advanced algorithms, and assessment frameworks. Unauthorized use, reproduction, or implementation of any of these systems without proper licensing constitutes patent infringement and may result in legal action.
                     </p>
                     <div className="mt-3 pt-2 border-t border-yellow-300">
                       <p className="text-xs text-yellow-600 font-medium">
