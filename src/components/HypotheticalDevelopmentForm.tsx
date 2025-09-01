@@ -4,11 +4,12 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
-import { Building2, DollarSign, TrendingUp, Clock } from 'lucide-react';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Building2, DollarSign, TrendingUp, Clock, Leaf } from 'lucide-react';
 import { HypotheticalDevelopmentParams } from '@/utils/hypotheticalDevelopmentCalculations';
 
 interface HypotheticalDevelopmentFormProps {
-  onSubmit: (params: HypotheticalDevelopmentParams, riskFactor: number) => void;
+  onSubmit: (params: HypotheticalDevelopmentParams, approach: 'conventional' | 'esd') => void;
 }
 
 export function HypotheticalDevelopmentForm({ onSubmit }: HypotheticalDevelopmentFormProps) {
@@ -18,15 +19,15 @@ export function HypotheticalDevelopmentForm({ onSubmit }: HypotheticalDevelopmen
     total_area_sqm: '',
     cap_rate: '',
     building_cost: '',
-    financing_cost: '',
     professional_fees: '',
     land_cost: '',
     marketing_cost: '',
-    profit_margin: '',
+    developer_profit_rate: '',
     interest_rate: '',
-    construction_period_months: '',
-    risk_factor: '1.0'
+    construction_period_months: ''
   });
+
+  const [approach, setApproach] = useState<'conventional' | 'esd'>('conventional');
 
   const handleInputChange = (field: string, value: string) => {
     setFormData(prev => ({ ...prev, [field]: value }));
@@ -40,24 +41,84 @@ export function HypotheticalDevelopmentForm({ onSubmit }: HypotheticalDevelopmen
       net_outgoings_per_sqm: parseFloat(formData.net_outgoings_per_sqm),
       total_area_sqm: parseFloat(formData.total_area_sqm),
       cap_rate: parseFloat(formData.cap_rate) / 100,
-      project_costs: {
-        building: parseFloat(formData.building_cost),
-        financing: parseFloat(formData.financing_cost),
-        professional_fees: parseFloat(formData.professional_fees),
-        land: parseFloat(formData.land_cost),
-        marketing: parseFloat(formData.marketing_cost)
-      },
-      profit_margin: parseFloat(formData.profit_margin) / 100,
+      building_cost: parseFloat(formData.building_cost),
+      professional_fees: parseFloat(formData.professional_fees),
+      land_cost: parseFloat(formData.land_cost),
+      marketing_cost: parseFloat(formData.marketing_cost),
+      developer_profit_rate: parseFloat(formData.developer_profit_rate) / 100,
       interest_rate: parseFloat(formData.interest_rate) / 100,
       construction_period_months: parseInt(formData.construction_period_months)
     };
 
-    const riskFactor = parseFloat(formData.risk_factor);
-    onSubmit(params, riskFactor);
+    onSubmit(params, approach);
+  };
+
+  const getDefaultValues = (selectedApproach: 'conventional' | 'esd') => {
+    if (selectedApproach === 'esd') {
+      // ESD typically has lower interest rates and profit margins
+      setFormData(prev => ({
+        ...prev,
+        interest_rate: prev.interest_rate || '7.0', // Lower interest rate for ESD
+        developer_profit_rate: prev.developer_profit_rate || '15.0' // Lower profit margin for ESD
+      }));
+    } else {
+      // Conventional development
+      setFormData(prev => ({
+        ...prev,
+        interest_rate: prev.interest_rate || '8.0', // Higher interest rate for conventional
+        developer_profit_rate: prev.developer_profit_rate || '20.0' // Higher profit margin for conventional
+      }));
+    }
+  };
+
+  const handleApproachChange = (newApproach: 'conventional' | 'esd') => {
+    setApproach(newApproach);
+    getDefaultValues(newApproach);
   };
 
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
+      <Card>
+        <CardHeader>
+          <CardTitle>Development Approach</CardTitle>
+          <CardDescription>
+            Select the development approach: Conventional or Environmentally Sustainable Development (ESD)
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <Tabs value={approach} onValueChange={(value: string) => handleApproachChange(value as 'conventional' | 'esd')}>
+            <TabsList className="grid w-full grid-cols-2">
+              <TabsTrigger value="conventional" className="flex items-center gap-2">
+                <Building2 className="w-4 h-4" />
+                Conventional
+              </TabsTrigger>
+              <TabsTrigger value="esd" className="flex items-center gap-2">
+                <Leaf className="w-4 h-4" />
+                ESD Development
+              </TabsTrigger>
+            </TabsList>
+            
+            <TabsContent value="conventional" className="mt-4">
+              <div className="p-4 bg-muted/50 rounded-lg">
+                <p className="text-sm text-muted-foreground">
+                  Conventional development with standard market rates for interest and profit margins.
+                  Typically higher risk profile with corresponding returns.
+                </p>
+              </div>
+            </TabsContent>
+            
+            <TabsContent value="esd" className="mt-4">
+              <div className="p-4 bg-green-50 dark:bg-green-950 rounded-lg">
+                <p className="text-sm text-green-700 dark:text-green-300">
+                  Environmentally Sustainable Development with lower interest rates and profit margins 
+                  due to reduced risk profile and sustainability incentives.
+                </p>
+              </div>
+            </TabsContent>
+          </Tabs>
+        </CardContent>
+      </Card>
+
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
@@ -120,10 +181,10 @@ export function HypotheticalDevelopmentForm({ onSubmit }: HypotheticalDevelopmen
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <DollarSign className="w-5 h-5" />
-            Project Costs
+            Development Costs
           </CardTitle>
           <CardDescription>
-            Enter all project-related costs for the development
+            Enter all development-related costs for the project
           </CardDescription>
         </CardHeader>
         <CardContent className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -135,17 +196,6 @@ export function HypotheticalDevelopmentForm({ onSubmit }: HypotheticalDevelopmen
               step="0.01"
               value={formData.building_cost}
               onChange={(e) => handleInputChange('building_cost', e.target.value)}
-              required
-            />
-          </div>
-          <div className="space-y-2">
-            <Label htmlFor="financing_cost">Financing Cost ($)</Label>
-            <Input
-              id="financing_cost"
-              type="number"
-              step="0.01"
-              value={formData.financing_cost}
-              onChange={(e) => handleInputChange('financing_cost', e.target.value)}
               required
             />
           </div>
@@ -192,18 +242,18 @@ export function HypotheticalDevelopmentForm({ onSubmit }: HypotheticalDevelopmen
             Financial Parameters
           </CardTitle>
           <CardDescription>
-            Set profit margins, interest rates, and risk adjustments
+            Set profit margins, interest rates, and construction timeline
           </CardDescription>
         </CardHeader>
-        <CardContent className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <CardContent className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <div className="space-y-2">
-            <Label htmlFor="profit_margin">Profit Margin (%)</Label>
+            <Label htmlFor="developer_profit_rate">Developer Profit Rate (%)</Label>
             <Input
-              id="profit_margin"
+              id="developer_profit_rate"
               type="number"
               step="0.01"
-              value={formData.profit_margin}
-              onChange={(e) => handleInputChange('profit_margin', e.target.value)}
+              value={formData.developer_profit_rate}
+              onChange={(e) => handleInputChange('developer_profit_rate', e.target.value)}
               required
             />
           </div>
@@ -228,22 +278,11 @@ export function HypotheticalDevelopmentForm({ onSubmit }: HypotheticalDevelopmen
               required
             />
           </div>
-          <div className="space-y-2">
-            <Label htmlFor="risk_factor">Risk Factor</Label>
-            <Input
-              id="risk_factor"
-              type="number"
-              step="0.01"
-              value={formData.risk_factor}
-              onChange={(e) => handleInputChange('risk_factor', e.target.value)}
-              required
-            />
-          </div>
         </CardContent>
       </Card>
 
       <Button type="submit" className="w-full">
-        Calculate Hypothetical Development Value
+        Calculate {approach === 'esd' ? 'ESD' : 'Conventional'} Development Value
       </Button>
     </form>
   );

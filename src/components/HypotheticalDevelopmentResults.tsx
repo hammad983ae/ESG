@@ -3,15 +3,16 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
-import { Building2, DollarSign, TrendingUp, AlertTriangle, FileText } from 'lucide-react';
+import { Building2, DollarSign, TrendingUp, AlertTriangle, FileText, Leaf } from 'lucide-react';
 import { HypotheticalDevelopmentResult } from '@/utils/hypotheticalDevelopmentCalculations';
 
 interface HypotheticalDevelopmentResultsProps {
   results: HypotheticalDevelopmentResult;
+  approach: 'conventional' | 'esd';
   onNewCalculation: () => void;
 }
 
-export function HypotheticalDevelopmentResults({ results, onNewCalculation }: HypotheticalDevelopmentResultsProps) {
+export function HypotheticalDevelopmentResults({ results, approach, onNewCalculation }: HypotheticalDevelopmentResultsProps) {
   const formatCurrency = (value: number) => {
     return new Intl.NumberFormat('en-AU', {
       style: 'currency',
@@ -28,63 +29,51 @@ export function HypotheticalDevelopmentResults({ results, onNewCalculation }: Hy
   };
 
   const residualStatus = getValueStatus(results.residual_land_value);
-  const adjustedStatus = getValueStatus(results.adjusted_value);
 
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h2 className="text-2xl font-bold">Hypothetical Development Results</h2>
-          <p className="text-muted-foreground">Residual land value analysis based on development feasibility</p>
+          <h2 className="text-2xl font-bold flex items-center gap-2">
+            {approach === 'esd' ? <Leaf className="w-6 h-6 text-green-600" /> : <Building2 className="w-6 h-6" />}
+            {approach === 'esd' ? 'ESD' : 'Conventional'} Development Results
+          </h2>
+          <p className="text-muted-foreground">
+            Residual land value analysis based on {approach === 'esd' ? 'sustainable' : 'conventional'} development feasibility
+          </p>
         </div>
         <Button onClick={onNewCalculation} variant="outline">
           New Calculation
         </Button>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <Card className="border-2">
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <Building2 className="w-5 h-5" />
-              Residual Land Value
-            </CardTitle>
-            <CardDescription>
-              Value before risk adjustment
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="text-3xl font-bold text-primary mb-2">
-              {formatCurrency(results.residual_land_value)}
+      <Card className="border-2">
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <Building2 className="w-5 h-5" />
+            Residual Land Value
+          </CardTitle>
+          <CardDescription>
+            Final calculated land value for {approach === 'esd' ? 'ESD' : 'conventional'} development
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div className="text-4xl font-bold text-primary mb-2">
+            {formatCurrency(results.residual_land_value)}
+          </div>
+          <Badge variant={residualStatus.variant} className="mb-4">
+            <residualStatus.icon className="w-3 h-3 mr-1" />
+            {residualStatus.status}
+          </Badge>
+          {approach === 'esd' && (
+            <div className="mt-4 p-3 bg-green-50 dark:bg-green-950 rounded-lg">
+              <p className="text-sm text-green-700 dark:text-green-300">
+                ✓ ESD development benefits: Lower financing costs, reduced risk profile, and sustainability incentives
+              </p>
             </div>
-            <Badge variant={residualStatus.variant} className="mb-4">
-              <residualStatus.icon className="w-3 h-3 mr-1" />
-              {residualStatus.status}
-            </Badge>
-          </CardContent>
-        </Card>
-
-        <Card className="border-2">
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <TrendingUp className="w-5 h-5" />
-              Risk Adjusted Value
-            </CardTitle>
-            <CardDescription>
-              Final value after risk factor ({results.risk_factor})
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="text-3xl font-bold text-primary mb-2">
-              {formatCurrency(results.adjusted_value)}
-            </div>
-            <Badge variant={adjustedStatus.variant} className="mb-4">
-              <adjustedStatus.icon className="w-3 h-3 mr-1" />
-              {adjustedStatus.status}
-            </Badge>
-          </CardContent>
-        </Card>
-      </div>
+          )}
+        </CardContent>
+      </Card>
 
       <Card>
         <CardHeader>
@@ -93,7 +82,7 @@ export function HypotheticalDevelopmentResults({ results, onNewCalculation }: Hy
             Development Analysis Breakdown
           </CardTitle>
           <CardDescription>
-            Detailed calculation components for the hypothetical development
+            Detailed calculation components for the {approach === 'esd' ? 'sustainable' : 'conventional'} development
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -111,8 +100,8 @@ export function HypotheticalDevelopmentResults({ results, onNewCalculation }: Hy
                 </div>
                 <Separator />
                 <div className="flex justify-between font-semibold">
-                  <span>Capitalized Value:</span>
-                  <span>{formatCurrency(results.capitalized_value)}</span>
+                  <span>Capital Value:</span>
+                  <span>{formatCurrency(results.capital_value)}</span>
                 </div>
               </div>
             </div>
@@ -128,9 +117,13 @@ export function HypotheticalDevelopmentResults({ results, onNewCalculation }: Hy
                   <span className="text-muted-foreground">Interest During Construction:</span>
                   <span className="font-medium">{formatCurrency(results.interest_cost)}</span>
                 </div>
+                <div className="flex justify-between">
+                  <span className="text-muted-foreground">Developer's Profit:</span>
+                  <span className="font-medium">{formatCurrency(results.profit)}</span>
+                </div>
                 <Separator />
                 <div className="flex justify-between font-semibold">
-                  <span>Total Project Costs:</span>
+                  <span>Total Development Costs:</span>
                   <span>{formatCurrency(results.total_costs)}</span>
                 </div>
               </div>
@@ -139,17 +132,18 @@ export function HypotheticalDevelopmentResults({ results, onNewCalculation }: Hy
 
           <Separator className="my-6" />
 
-          <div className="bg-muted/50 p-4 rounded-lg">
+          <div className={`p-4 rounded-lg ${approach === 'esd' ? 'bg-green-50 dark:bg-green-950' : 'bg-muted/50'}`}>
             <h4 className="font-semibold mb-2">Development Feasibility Summary</h4>
             <p className="text-sm text-muted-foreground mb-3">
-              The hypothetical development approach determines the residual land value by calculating the difference 
-              between the completed development's value and all development costs including profit margin.
+              The {approach === 'esd' ? 'ESD ' : ''}development approach determines the residual land value by calculating the difference 
+              between the completed development's capital value and all development costs including profit margin.
+              {approach === 'esd' && ' ESD developments typically benefit from lower interest rates and profit margins due to reduced risk and sustainability incentives.'}
             </p>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
               <div>
-                <span className="font-medium">Gross Development Value:</span>
+                <span className="font-medium">Capital Value:</span>
                 <div className="text-lg font-semibold text-primary">
-                  {formatCurrency(results.capitalized_value)}
+                  {formatCurrency(results.capital_value)}
                 </div>
               </div>
               <div>
@@ -159,9 +153,9 @@ export function HypotheticalDevelopmentResults({ results, onNewCalculation }: Hy
                 </div>
               </div>
               <div>
-                <span className="font-medium">Land Value (Residual):</span>
+                <span className="font-medium">Residual Land Value:</span>
                 <div className="text-lg font-semibold text-primary">
-                  {formatCurrency(results.adjusted_value)}
+                  {formatCurrency(results.residual_land_value)}
                 </div>
               </div>
             </div>
@@ -185,15 +179,17 @@ export function HypotheticalDevelopmentResults({ results, onNewCalculation }: Hy
                 <li>• Market-driven approach</li>
                 <li>• Considers all development costs</li>
                 <li>• Includes profit margin requirements</li>
+                {approach === 'esd' && <li>• Incorporates sustainability benefits</li>}
               </ul>
             </div>
             <div>
               <h5 className="font-medium mb-2">Important Notes:</h5>
               <ul className="space-y-1 text-muted-foreground">
-                <li>• Based on hypothetical development scenario</li>
-                <li>• Sensitive to cost and revenue assumptions</li>
+                <li>• Based on development scenario assumptions</li>
+                <li>• Sensitive to cost and revenue inputs</li>
                 <li>• Market conditions may vary</li>
                 <li>• Professional validation recommended</li>
+                {approach === 'esd' && <li>• ESD incentives may vary by location</li>}
               </ul>
             </div>
           </div>

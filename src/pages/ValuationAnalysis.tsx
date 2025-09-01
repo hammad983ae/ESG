@@ -72,7 +72,8 @@ import {
 import {
   HypotheticalDevelopmentParams,
   HypotheticalDevelopmentResult,
-  performHypotheticalDevelopmentValuation
+  performConventionalValuation,
+  performESDValuation
 } from "@/utils/hypotheticalDevelopmentCalculations";
 
 export default function ValuationAnalysis() {
@@ -115,7 +116,7 @@ export default function ValuationAnalysis() {
   // Hypothetical Development States
   const [hypotheticalInputs, setHypotheticalInputs] = useState<HypotheticalDevelopmentParams | null>(null);
   const [hypotheticalResults, setHypotheticalResults] = useState<HypotheticalDevelopmentResult | null>(null);
-  const [hypotheticalRiskFactor, setHypotheticalRiskFactor] = useState<number>(1.0);
+  const [hypotheticalApproach, setHypotheticalApproach] = useState<'conventional' | 'esd'>('conventional');
 
   const handleARYSubmit = (inputs: ARYInputs) => {
     try {
@@ -224,7 +225,7 @@ export default function ValuationAnalysis() {
       case 'hypotheticaldevelopment':
         setHypotheticalInputs(null);
         setHypotheticalResults(null);
-        setHypotheticalRiskFactor(1.0);
+        setHypotheticalApproach('conventional');
         break;
     }
   };
@@ -267,13 +268,15 @@ export default function ValuationAnalysis() {
     }
   };
 
-  const handleHypotheticalDevelopmentSubmit = (params: HypotheticalDevelopmentParams, riskFactor: number) => {
+  const handleHypotheticalDevelopmentSubmit = (params: HypotheticalDevelopmentParams, approach: 'conventional' | 'esd') => {
     try {
-      const calculatedResults = performHypotheticalDevelopmentValuation(params, riskFactor);
+      const calculatedResults = approach === 'esd' 
+        ? performESDValuation(params) 
+        : performConventionalValuation(params);
       setHypotheticalInputs(params);
       setHypotheticalResults(calculatedResults);
-      setHypotheticalRiskFactor(riskFactor);
-      toast.success("Hypothetical development valuation completed!");
+      setHypotheticalApproach(approach);
+      toast.success(`${approach === 'esd' ? 'ESD' : 'Conventional'} development valuation completed!`);
     } catch (error) {
       toast.error(`Hypothetical development analysis error: ${error instanceof Error ? error.message : 'Unknown error'}`);
     }
@@ -850,6 +853,7 @@ export default function ValuationAnalysis() {
             ) : (
               <HypotheticalDevelopmentResults 
                 results={hypotheticalResults} 
+                approach={hypotheticalApproach}
                 onNewCalculation={() => handleReset('hypotheticaldevelopment')} 
               />
             )}
