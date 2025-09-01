@@ -345,18 +345,6 @@ export default function ValuationAnalysis() {
 
             {!aryResults ? (
               <div className="max-w-4xl mx-auto">
-                <Card className="mb-6">
-                  <CardHeader>
-                    <CardTitle className="flex items-center gap-2">
-                      <TrendingUp className="w-5 h-5" />
-                      About All Risks Yield (ARY)
-                    </CardTitle>
-                    <CardDescription>
-                      ARY represents the total return required by investors, combining the risk-free rate with property-specific risk premiums. 
-                      Our calculation uses the Australian cash rate as the risk-free base and applies comprehensive risk factors.
-                    </CardDescription>
-                  </CardHeader>
-                </Card>
                 <ARYCalculationForm onSubmit={handleARYSubmit} />
               </div>
             ) : (
