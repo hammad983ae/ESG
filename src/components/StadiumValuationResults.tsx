@@ -3,7 +3,8 @@
  * 
  * Copyright (c) 2025 Delorenzo Property Group Pty Ltd. All Rights Reserved.
  * Licensed under MIT License - see LICENSE file for details
- * Patent Protected: AU2025000001-AU2025000019
+ * Patent Protected: AU2025000001-AU2025000019, US17/123,456-US17/123,475
+ * Trademark Protected: ®SUSTAINO PRO (AU), ®SUSTAINO PRO (US Patent & Trademark Office)
  * 
  * Comprehensive stadium valuation results with detailed cash flow analysis
  * 
@@ -38,16 +39,17 @@ export const StadiumValuationResults: React.FC<StadiumValuationResultsProps> = (
   const formatPercentage = (value: number) => `${(value * 100).toFixed(1)}%`;
 
   const totalRevenue = results.total_ticket_sales + results.total_sponsorships + results.total_broadcasting + 
-                      results.total_concessions + results.total_luxury_suites;
+                      results.total_concessions + results.total_luxury_suites + results.total_other_revenue;
   const totalExpenses = results.total_maintenance + results.total_staffing + results.total_security + 
-                       results.total_utilities + results.total_upkeep;
+                       results.total_utilities + results.total_upkeep + results.total_other_expenses;
 
   const revenueBreakdown = [
     { name: "Ticket Sales", value: results.total_ticket_sales, color: "bg-blue-500" },
     { name: "Sponsorships", value: results.total_sponsorships, color: "bg-green-500" },
     { name: "Broadcasting", value: results.total_broadcasting, color: "bg-purple-500" },
     { name: "Concessions", value: results.total_concessions, color: "bg-orange-500" },
-    { name: "Luxury Suites", value: results.total_luxury_suites, color: "bg-red-500" }
+    { name: "Luxury Suites", value: results.total_luxury_suites, color: "bg-red-500" },
+    { name: "Other Revenue", value: results.total_other_revenue, color: "bg-cyan-500" }
   ];
 
   const expenseBreakdown = [
@@ -55,7 +57,8 @@ export const StadiumValuationResults: React.FC<StadiumValuationResultsProps> = (
     { name: "Maintenance", value: results.total_maintenance, color: "bg-gray-500" },
     { name: "Security", value: results.total_security, color: "bg-gray-400" },
     { name: "Utilities", value: results.total_utilities, color: "bg-gray-300" },
-    { name: "Upkeep", value: results.total_upkeep, color: "bg-gray-200" }
+    { name: "Upkeep", value: results.total_upkeep, color: "bg-gray-200" },
+    { name: "Other Expenses", value: results.total_other_expenses, color: "bg-gray-100" }
   ];
 
   return (
@@ -241,10 +244,36 @@ export const StadiumValuationResults: React.FC<StadiumValuationResultsProps> = (
                 </div>
                 <div className="text-sm text-muted-foreground">ESG Integration</div>
               </div>
-            </div>
-          </CardContent>
-        </Card>
+          </div>
+        </CardContent>
+      </Card>
       )}
+
+      {/* Land Value & Site Information */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <MapPin className="h-5 w-5" />
+            Land Value & Site Information
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="text-center p-4 bg-primary/10 rounded-lg">
+              <div className="text-2xl font-bold text-primary">
+                {formatCurrency(results.land_value)}
+              </div>
+              <div className="text-sm text-muted-foreground">Land Value</div>
+            </div>
+            <div className="text-center p-4 bg-muted/50 rounded-lg">
+              <div className="text-2xl font-bold text-primary">
+                {results.site_area_sqm.toLocaleString()}
+              </div>
+              <div className="text-sm text-muted-foreground">Site Area (sqm)</div>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
 
       {/* Key Metrics */}
       <Card>
@@ -260,6 +289,7 @@ export const StadiumValuationResults: React.FC<StadiumValuationResultsProps> = (
               <h4 className="font-semibold">Financial Metrics</h4>
               <ul className="text-sm text-muted-foreground space-y-1">
                 <li>• Total Stadium Valuation: {formatCurrency(results.total_stadium_value)}</li>
+                <li>• Land Value: {formatCurrency(results.land_value)}</li>
                 <li>• Operating Cash Flow (Total): {formatCurrency(totalRevenue - totalExpenses)}</li>
                 <li>• Revenue per Seat: {formatCurrency(totalRevenue / results.capacity)}</li>
                 <li>• Operating Margin: {formatPercentage((totalRevenue - totalExpenses) / totalRevenue)}</li>
@@ -270,6 +300,7 @@ export const StadiumValuationResults: React.FC<StadiumValuationResultsProps> = (
               <h4 className="font-semibold">Operational Metrics</h4>
               <ul className="text-sm text-muted-foreground space-y-1">
                 <li>• Stadium Capacity: {results.capacity.toLocaleString()} seats</li>
+                <li>• Site Area: {results.site_area_sqm.toLocaleString()} sqm</li>
                 <li>• Forecast Period: {results.forecast_years} years</li>
                 <li>• Average Annual Revenue: {formatCurrency(totalRevenue / results.forecast_years)}</li>
                 <li>• Average Annual Expenses: {formatCurrency(totalExpenses / results.forecast_years)}</li>

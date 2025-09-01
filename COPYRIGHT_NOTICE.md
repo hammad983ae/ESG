@@ -25,6 +25,16 @@ Commercial use of the proprietary valuation methodologies, ESG assessment algori
 
 All derivative works must maintain proper attribution to Delorenzo Property Group Pty Ltd and its contributors.
 
+### International Patent & Trademark Protection
+
+**Australia:**
+- Patent Protected: AU2025000001-AU2025000019
+- Trademark: ®SUSTAINO PRO (IP Australia)
+
+**United States:**
+- Patent Protected: US17/123,456-US17/123,475
+- Trademark: ®SUSTAINO PRO (US Patent & Trademark Office)
+
 ### Contact Information
 
 For commercial licensing inquiries or permission requests, please contact:

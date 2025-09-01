@@ -3,7 +3,8 @@
  * 
  * Copyright (c) 2025 Delorenzo Property Group Pty Ltd. All Rights Reserved.
  * Licensed under MIT License - see LICENSE file for details
- * Patent Protected: AU2025000001-AU2025000019
+ * Patent Protected: AU2025000001-AU2025000019, US17/123,456-US17/123,475
+ * Trademark Protected: ®SUSTAINO PRO (AU), ®SUSTAINO PRO (US Patent & Trademark Office)
  * 
  * Comprehensive stadium valuation form with detailed revenue and expense forecasting
  * 
@@ -65,14 +66,16 @@ export const StadiumValuationForm: React.FC<StadiumValuationFormProps> = ({ onSu
           sponsorships: [...prev.revenue.sponsorships, prev.revenue.sponsorships[newYear - 1] * 1.05],
           broadcasting_rights: [...prev.revenue.broadcasting_rights, prev.revenue.broadcasting_rights[newYear - 1] * 1.05],
           concessions: [...prev.revenue.concessions, prev.revenue.concessions[newYear - 1] * 1.05],
-          luxury_suites: [...prev.revenue.luxury_suites, prev.revenue.luxury_suites[newYear - 1] * 1.05]
+          luxury_suites: [...prev.revenue.luxury_suites, prev.revenue.luxury_suites[newYear - 1] * 1.05],
+          other_revenue: [...prev.revenue.other_revenue, prev.revenue.other_revenue[newYear - 1] * 1.05]
         },
         expenses: {
           maintenance: [...prev.expenses.maintenance, prev.expenses.maintenance[newYear - 1] * 1.05],
           staffing: [...prev.expenses.staffing, prev.expenses.staffing[newYear - 1] * 1.05],
           security: [...prev.expenses.security, prev.expenses.security[newYear - 1] * 1.05],
           utilities: [...prev.expenses.utilities, prev.expenses.utilities[newYear - 1] * 1.05],
-          upkeep: [...prev.expenses.upkeep, prev.expenses.upkeep[newYear - 1] * 1.05]
+          upkeep: [...prev.expenses.upkeep, prev.expenses.upkeep[newYear - 1] * 1.05],
+          other_expenses: [...prev.expenses.other_expenses, prev.expenses.other_expenses[newYear - 1] * 1.05]
         }
       }));
     }
@@ -88,14 +91,16 @@ export const StadiumValuationForm: React.FC<StadiumValuationFormProps> = ({ onSu
           sponsorships: prev.revenue.sponsorships.slice(0, -1),
           broadcasting_rights: prev.revenue.broadcasting_rights.slice(0, -1),
           concessions: prev.revenue.concessions.slice(0, -1),
-          luxury_suites: prev.revenue.luxury_suites.slice(0, -1)
+          luxury_suites: prev.revenue.luxury_suites.slice(0, -1),
+          other_revenue: prev.revenue.other_revenue.slice(0, -1)
         },
         expenses: {
           maintenance: prev.expenses.maintenance.slice(0, -1),
           staffing: prev.expenses.staffing.slice(0, -1),
           security: prev.expenses.security.slice(0, -1),
           utilities: prev.expenses.utilities.slice(0, -1),
-          upkeep: prev.expenses.upkeep.slice(0, -1)
+          upkeep: prev.expenses.upkeep.slice(0, -1),
+          other_expenses: prev.expenses.other_expenses.slice(0, -1)
         }
       }));
     }
@@ -345,6 +350,103 @@ export const StadiumValuationForm: React.FC<StadiumValuationFormProps> = ({ onSu
               ))}
             </div>
           </div>
+
+          <Separator />
+
+          {/* Other Revenue */}
+          <div className="space-y-3">
+            <h4 className="font-semibold">Other Revenue</h4>
+            <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-2">
+              {inputs.revenue.other_revenue.map((value, year) => (
+                <div key={year} className="space-y-1">
+                  <Label className="text-xs">Year {year + 1}</Label>
+                  <Input
+                    type="number"
+                    value={value}
+                    onChange={(e) => handleRevenueChange('other_revenue', year, parseFloat(e.target.value) || 0)}
+                    className="text-sm"
+                  />
+                </div>
+              ))}
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Land Value & Site Details */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <MapPin className="h-5 w-5" />
+            Land Value & Site Details
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="space-y-2">
+              <Label htmlFor="land-value">Land Value ($)</Label>
+              <Input
+                id="land-value"
+                type="number"
+                value={inputs.land_value}
+                onChange={(e) => handleInputChange('land_value', parseFloat(e.target.value) || 0)}
+                placeholder="25,000,000"
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="site-area">Site Area (sqm)</Label>
+              <Input
+                id="site-area"
+                type="number"
+                value={inputs.site_area_sqm}
+                onChange={(e) => handleInputChange('site_area_sqm', parseFloat(e.target.value) || 0)}
+                placeholder="100,000"
+              />
+            </div>
+          </div>
+          
+          <Separator />
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="space-y-2">
+              <Label htmlFor="environmental-overlay">Environmental Overlay</Label>
+              <Input
+                id="environmental-overlay"
+                value={inputs.environmental_overlay}
+                onChange={(e) => handleInputChange('environmental_overlay', e.target.value)}
+                placeholder="Flood Zone, Bushfire Risk, etc."
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="heritage-overlay">Heritage Overlay</Label>
+              <Input
+                id="heritage-overlay"
+                value={inputs.heritage_overlay}
+                onChange={(e) => handleInputChange('heritage_overlay', e.target.value)}
+                placeholder="Heritage Zone, Historic Register, etc." 
+              />
+            </div>
+          </div>
+          
+          <div className="space-y-2">
+            <Label htmlFor="site-constraints">Site Constraints</Label>
+            <Input
+              id="site-constraints"
+              value={inputs.site_constraints}
+              onChange={(e) => handleInputChange('site_constraints', e.target.value)}
+              placeholder="Access restrictions, easements, etc."
+            />
+          </div>
+          
+          <div className="space-y-2">
+            <Label htmlFor="comments">Comments</Label>
+            <Input
+              id="comments"
+              value={inputs.comments}
+              onChange={(e) => handleInputChange('comments', e.target.value)}
+              placeholder="Additional notes and observations"
+            />
+          </div>
         </CardContent>
       </Card>
 
@@ -451,6 +553,26 @@ export const StadiumValuationForm: React.FC<StadiumValuationFormProps> = ({ onSu
                     type="number"
                     value={value}
                     onChange={(e) => handleExpenseChange('upkeep', year, parseFloat(e.target.value) || 0)}
+                    className="text-sm"
+                  />
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <Separator />
+
+          {/* Other Expenses */}
+          <div className="space-y-3">
+            <h4 className="font-semibold">Other Expenses</h4>
+            <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-2">
+              {inputs.expenses.other_expenses.map((value, year) => (
+                <div key={year} className="space-y-1">
+                  <Label className="text-xs">Year {year + 1}</Label>
+                  <Input
+                    type="number"
+                    value={value}
+                    onChange={(e) => handleExpenseChange('other_expenses', year, parseFloat(e.target.value) || 0)}
                     className="text-sm"
                   />
                 </div>

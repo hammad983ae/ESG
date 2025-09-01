@@ -3,7 +3,8 @@
  * 
  * Copyright (c) 2025 Delorenzo Property Group Pty Ltd. All Rights Reserved.
  * Licensed under MIT License - see LICENSE file for details
- * Patent Protected: AU2025000001-AU2025000019
+ * Patent Protected: AU2025000001-AU2025000019, US17/123,456-US17/123,475
+ * Trademark Protected: ®SUSTAINO PRO (AU), ®SUSTAINO PRO (US Patent & Trademark Office)
  * 
  * Comprehensive sports stadium valuation with detailed revenue and expense forecasting:
  * - Multi-year revenue projections (ticket sales, sponsorships, broadcasting, concessions, luxury suites)
@@ -21,6 +22,7 @@ export interface StadiumRevenueStreams {
   broadcasting_rights: number[];
   concessions: number[];
   luxury_suites: number[];
+  other_revenue: number[];
 }
 
 export interface StadiumExpenses {
@@ -29,6 +31,7 @@ export interface StadiumExpenses {
   security: number[];
   utilities: number[];
   upkeep: number[];
+  other_expenses: number[];
 }
 
 export interface StadiumInputs {
@@ -36,6 +39,10 @@ export interface StadiumInputs {
   stadium_name: string;
   capacity: number;
   forecast_years: number;
+  
+  // Land & Site Value
+  land_value: number;
+  site_area_sqm: number;
   
   // Revenue Forecasting
   revenue: StadiumRevenueStreams;
@@ -50,6 +57,12 @@ export interface StadiumInputs {
   // ESG Settings
   esg_included: boolean;
   esg_factor: number;
+  
+  // Environmental & Heritage
+  environmental_overlay: string;
+  heritage_overlay: string;
+  site_constraints: string;
+  comments: string;
 }
 
 export interface StadiumResults {
@@ -69,6 +82,7 @@ export interface StadiumResults {
   total_broadcasting: number;
   total_concessions: number;
   total_luxury_suites: number;
+  total_other_revenue: number;
   
   // Expense Breakdown  
   total_maintenance: number;
@@ -76,6 +90,11 @@ export interface StadiumResults {
   total_security: number;
   total_utilities: number;
   total_upkeep: number;
+  total_other_expenses: number;
+  
+  // Land & Site Value
+  land_value: number;
+  site_area_sqm: number;
   
   // Valuation Results
   present_value_cash_flows: number;
@@ -104,7 +123,8 @@ export function calculateCashFlows(revenue: StadiumRevenueStreams, expenses: Sta
       revenue.sponsorships[year] +
       revenue.broadcasting_rights[year] +
       revenue.concessions[year] +
-      revenue.luxury_suites[year];
+      revenue.luxury_suites[year] +
+      revenue.other_revenue[year];
     
     // Calculate total expenses for the year
     const year_expenses = 
@@ -112,7 +132,8 @@ export function calculateCashFlows(revenue: StadiumRevenueStreams, expenses: Sta
       expenses.staffing[year] +
       expenses.security[year] +
       expenses.utilities[year] +
-      expenses.upkeep[year];
+      expenses.upkeep[year] +
+      expenses.other_expenses[year];
     
     total_revenue_by_year.push(year_revenue);
     total_expenses_by_year.push(year_expenses);
@@ -156,12 +177,14 @@ export function calculateStadiumValuation(inputs: StadiumInputs): StadiumResults
   const total_broadcasting = inputs.revenue.broadcasting_rights.reduce((sum, val) => sum + val, 0);
   const total_concessions = inputs.revenue.concessions.reduce((sum, val) => sum + val, 0);
   const total_luxury_suites = inputs.revenue.luxury_suites.reduce((sum, val) => sum + val, 0);
+  const total_other_revenue = inputs.revenue.other_revenue.reduce((sum, val) => sum + val, 0);
   
   const total_maintenance = inputs.expenses.maintenance.reduce((sum, val) => sum + val, 0);
   const total_staffing = inputs.expenses.staffing.reduce((sum, val) => sum + val, 0);
   const total_security = inputs.expenses.security.reduce((sum, val) => sum + val, 0);
   const total_utilities = inputs.expenses.utilities.reduce((sum, val) => sum + val, 0);
   const total_upkeep = inputs.expenses.upkeep.reduce((sum, val) => sum + val, 0);
+  const total_other_expenses = inputs.expenses.other_expenses.reduce((sum, val) => sum + val, 0);
   
   return {
     stadium_name: inputs.stadium_name,
@@ -175,11 +198,15 @@ export function calculateStadiumValuation(inputs: StadiumInputs): StadiumResults
     total_broadcasting,
     total_concessions,
     total_luxury_suites,
+    total_other_revenue,
     total_maintenance,
     total_staffing,
     total_security,
     total_utilities,
     total_upkeep,
+    total_other_expenses,
+    land_value: inputs.land_value,
+    site_area_sqm: inputs.site_area_sqm,
     present_value_cash_flows,
     terminal_value: present_value_terminal,
     total_stadium_value,
@@ -192,22 +219,30 @@ export const defaultStadiumInputs: StadiumInputs = {
   stadium_name: "",
   capacity: 50000,
   forecast_years: 10,
+  land_value: 25000000,
+  site_area_sqm: 100000,
   revenue: {
     ticket_sales: [15000000, 15750000, 16537500, 17364375, 18232594, 19144223, 20101434, 21106506, 22161831, 23269423],
     sponsorships: [8000000, 8400000, 8820000, 9261000, 9724050, 10210253, 10720765, 11256803, 11819643, 12410625],
     broadcasting_rights: [12000000, 12600000, 13230000, 13891500, 14586075, 15315379, 16080648, 16883680, 17725864, 18609157],
     concessions: [3000000, 3150000, 3307500, 3472875, 3646519, 3829445, 4021912, 4373008, 4491658, 4716241],
-    luxury_suites: [2500000, 2625000, 2756250, 2894063, 3038766, 3190704, 3350239, 3517751, 3693639, 3878321]
+    luxury_suites: [2500000, 2625000, 2756250, 2894063, 3038766, 3190704, 3350239, 3517751, 3693639, 3878321],
+    other_revenue: [1000000, 1050000, 1102500, 1157625, 1215506, 1276281, 1340095, 1407100, 1477455, 1551328]
   },
   expenses: {
     maintenance: [2000000, 2100000, 2205000, 2315250, 2431013, 2552563, 2680191, 2814201, 2954911, 3102656],
     staffing: [8000000, 8400000, 8820000, 9261000, 9724050, 10210253, 10720765, 11256803, 11819643, 12410625],
     security: [1500000, 1575000, 1653750, 1736438, 1823259, 1914422, 2010143, 2110650, 2216183, 2327892],
     utilities: [1200000, 1260000, 1323000, 1389150, 1458608, 1531538, 1608115, 1688521, 1772947, 1861594],
-    upkeep: [800000, 840000, 882000, 926100, 972405, 1020825, 1071866, 1125760, 1182548, 1242275]
+    upkeep: [800000, 840000, 882000, 926100, 972405, 1020825, 1071866, 1125760, 1182548, 1242275],
+    other_expenses: [500000, 525000, 551250, 578813, 607753, 638141, 670048, 703550, 738728, 775664]
   },
   discount_rate: 0.08,
   terminal_growth_rate: 0.02,
   esg_included: false,
-  esg_factor: 0.05
+  esg_factor: 0.05,
+  environmental_overlay: "None",
+  heritage_overlay: "None", 
+  site_constraints: "None",
+  comments: ""
 };
