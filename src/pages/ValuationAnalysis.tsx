@@ -1269,10 +1269,62 @@ export default function ValuationAnalysis() {
 
             {!stadiumResults ? (
               <div className="max-w-6xl mx-auto">
-                <StadiumValuationForm onSubmit={handleStadiumSubmit} />
+                <Card>
+                  <CardHeader>
+                    <CardTitle>Stadium Valuation Form</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <p>Stadium valuation form will be loaded here.</p>
+                    <Button onClick={() => {
+                      console.log("Test stadium form");
+                      const testResults = {
+                        capacity: 50000,
+                        event_days: 25,
+                        avg_spend_per_attendee: 45,
+                        sublease_annual_income: 0,
+                        sublease_present_value: 0,
+                        sublease_enabled: false,
+                        retail_annual_income: 56250000,
+                        retail_valuation: 140625000,
+                        retail_enabled: true,
+                        turnover_annual_sales: 56250000,
+                        turnover_valuation: 101250000,
+                        turnover_enabled: true,
+                        valuation_average: 120937500,
+                        valuation_range: { low: 101250000, high: 140625000 },
+                        esg_factor: 0,
+                        esg_included: false
+                      };
+                      setStadiumResults(testResults);
+                    }}>
+                      Test Stadium Calculation
+                    </Button>
+                  </CardContent>
+                </Card>
               </div>
             ) : (
-              <StadiumValuationResults results={stadiumResults} />
+              <div className="max-w-6xl mx-auto">
+                <Card>
+                  <CardHeader>
+                    <CardTitle>Stadium Valuation Results</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="space-y-4">
+                      <div>
+                        <h3 className="font-semibold">Stadium Overview</h3>
+                        <p>Capacity: {stadiumResults.capacity.toLocaleString()}</p>
+                        <p>Event Days: {stadiumResults.event_days}</p>
+                        <p>Avg Spend: ${stadiumResults.avg_spend_per_attendee}</p>
+                      </div>
+                      <div>
+                        <h3 className="font-semibold">Valuation Results</h3>
+                        <p>Average Valuation: ${stadiumResults.valuation_average.toLocaleString()}</p>
+                        <p>Range: ${stadiumResults.valuation_range.low.toLocaleString()} - ${stadiumResults.valuation_range.high.toLocaleString()}</p>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              </div>
             )}
           </TabsContent>
         </Tabs>
