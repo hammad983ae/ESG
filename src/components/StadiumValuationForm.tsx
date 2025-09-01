@@ -1,12 +1,11 @@
 /**
- * Sustaino Pro - ESG Property Assessment Platform - Sports Stadium Valuation Form
+ * Sustaino Pro - ESG Property Assessment Platform - Sports Stadium Comprehensive Valuation Form
  * 
  * Copyright (c) 2025 Delorenzo Property Group Pty Ltd. All Rights Reserved.
  * Licensed under MIT License - see LICENSE file for details
- * Patent Protected: AU2025000001-AU2025000018
+ * Patent Protected: AU2025000001-AU2025000019
  * 
- * Interactive form component for sports stadium property valuation
- * with multiple approaches and ESG integration
+ * Comprehensive stadium valuation form with detailed revenue and expense forecasting
  * 
  * @author Delorenzo Property Group Pty Ltd
  * @version 1.0.0
@@ -21,7 +20,7 @@ import { Switch } from "@/components/ui/switch";
 import { Slider } from "@/components/ui/slider";
 import { Separator } from "@/components/ui/separator";
 import { Badge } from "@/components/ui/badge";
-import { Building, ShoppingCart, TrendingUp, Users, DollarSign, MapPin } from "lucide-react";
+import { Plus, Trash2, MapPin, DollarSign, TrendingUp, Users, Building, Shield } from "lucide-react";
 import { StadiumInputs, defaultStadiumInputs } from "@/utils/stadiumCalculations";
 
 interface StadiumValuationFormProps {
@@ -33,6 +32,73 @@ export const StadiumValuationForm: React.FC<StadiumValuationFormProps> = ({ onSu
 
   const handleInputChange = <K extends keyof StadiumInputs>(field: K, value: StadiumInputs[K]) => {
     setInputs(prev => ({ ...prev, [field]: value }));
+  };
+
+  const handleRevenueChange = (category: keyof StadiumInputs['revenue'], year: number, value: number) => {
+    setInputs(prev => ({
+      ...prev,
+      revenue: {
+        ...prev.revenue,
+        [category]: prev.revenue[category].map((val, idx) => idx === year ? value : val)
+      }
+    }));
+  };
+
+  const handleExpenseChange = (category: keyof StadiumInputs['expenses'], year: number, value: number) => {
+    setInputs(prev => ({
+      ...prev,
+      expenses: {
+        ...prev.expenses,
+        [category]: prev.expenses[category].map((val, idx) => idx === year ? value : val)
+      }
+    }));
+  };
+
+  const addForecastYear = () => {
+    if (inputs.forecast_years < 15) {
+      const newYear = inputs.forecast_years;
+      setInputs(prev => ({
+        ...prev,
+        forecast_years: prev.forecast_years + 1,
+        revenue: {
+          ticket_sales: [...prev.revenue.ticket_sales, prev.revenue.ticket_sales[newYear - 1] * 1.05],
+          sponsorships: [...prev.revenue.sponsorships, prev.revenue.sponsorships[newYear - 1] * 1.05],
+          broadcasting_rights: [...prev.revenue.broadcasting_rights, prev.revenue.broadcasting_rights[newYear - 1] * 1.05],
+          concessions: [...prev.revenue.concessions, prev.revenue.concessions[newYear - 1] * 1.05],
+          luxury_suites: [...prev.revenue.luxury_suites, prev.revenue.luxury_suites[newYear - 1] * 1.05]
+        },
+        expenses: {
+          maintenance: [...prev.expenses.maintenance, prev.expenses.maintenance[newYear - 1] * 1.05],
+          staffing: [...prev.expenses.staffing, prev.expenses.staffing[newYear - 1] * 1.05],
+          security: [...prev.expenses.security, prev.expenses.security[newYear - 1] * 1.05],
+          utilities: [...prev.expenses.utilities, prev.expenses.utilities[newYear - 1] * 1.05],
+          upkeep: [...prev.expenses.upkeep, prev.expenses.upkeep[newYear - 1] * 1.05]
+        }
+      }));
+    }
+  };
+
+  const removeForecastYear = () => {
+    if (inputs.forecast_years > 3) {
+      setInputs(prev => ({
+        ...prev,
+        forecast_years: prev.forecast_years - 1,
+        revenue: {
+          ticket_sales: prev.revenue.ticket_sales.slice(0, -1),
+          sponsorships: prev.revenue.sponsorships.slice(0, -1),
+          broadcasting_rights: prev.revenue.broadcasting_rights.slice(0, -1),
+          concessions: prev.revenue.concessions.slice(0, -1),
+          luxury_suites: prev.revenue.luxury_suites.slice(0, -1)
+        },
+        expenses: {
+          maintenance: prev.expenses.maintenance.slice(0, -1),
+          staffing: prev.expenses.staffing.slice(0, -1),
+          security: prev.expenses.security.slice(0, -1),
+          utilities: prev.expenses.utilities.slice(0, -1),
+          upkeep: prev.expenses.upkeep.slice(0, -1)
+        }
+      }));
+    }
   };
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -50,13 +116,37 @@ export const StadiumValuationForm: React.FC<StadiumValuationFormProps> = ({ onSu
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <MapPin className="h-5 w-5" />
-            ESG Settings for Sports Stadium
+            Stadium Details & ESG Settings
           </CardTitle>
           <CardDescription>
-            Configure environmental, social, and governance factors for stadium property valuation
+            Configure stadium information and ESG sustainability factors for comprehensive valuation
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="space-y-2">
+              <Label htmlFor="stadium-name">Stadium Name</Label>
+              <Input
+                id="stadium-name"
+                value={inputs.stadium_name}
+                onChange={(e) => handleInputChange('stadium_name', e.target.value)}
+                placeholder="Enter stadium name"
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="capacity">Stadium Seating Capacity</Label>
+              <Input
+                id="capacity"
+                type="number"
+                value={inputs.capacity}
+                onChange={(e) => handleInputChange('capacity', parseInt(e.target.value) || 0)}
+                placeholder="50,000"
+              />
+            </div>
+          </div>
+
+          <Separator />
+
           <div className="flex items-center space-x-2">
             <Switch
               id="esg-included"
@@ -81,218 +171,298 @@ export const StadiumValuationForm: React.FC<StadiumValuationFormProps> = ({ onSu
         </CardContent>
       </Card>
 
-      {/* Stadium Details */}
+      {/* Forecast Period Controls */}
       <Card>
         <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Users className="h-5 w-5" />
-            Stadium Details
+          <CardTitle className="flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <TrendingUp className="h-5 w-5" />
+              Forecast Period
+            </div>
+            <Badge variant="secondary">{inputs.forecast_years} Years</Badge>
           </CardTitle>
-          <CardDescription>
-            Basic stadium capacity and event information
-          </CardDescription>
         </CardHeader>
         <CardContent>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <div className="space-y-2">
-              <Label htmlFor="capacity">Stadium Seating Capacity</Label>
-              <Input
-                id="capacity"
-                type="number"
-                value={inputs.capacity}
-                onChange={(e) => handleInputChange('capacity', parseInt(e.target.value) || 0)}
-                placeholder="50,000"
-              />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="event-days">Event Days per Year</Label>
-              <Input
-                id="event-days"
-                type="number"
-                value={inputs.event_days}
-                onChange={(e) => handleInputChange('event_days', parseInt(e.target.value) || 0)}
-                placeholder="25"
-              />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="avg-spend">Average Spend per Attendee</Label>
-              <Input
-                id="avg-spend"
-                type="number"
-                value={inputs.avg_spend_per_attendee}
-                onChange={(e) => handleInputChange('avg_spend_per_attendee', parseFloat(e.target.value) || 0)}
-                placeholder="45"
-              />
+          <div className="flex items-center gap-4">
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              onClick={removeForecastYear}
+              disabled={inputs.forecast_years <= 3}
+            >
+              <Trash2 className="h-4 w-4 mr-2" />
+              Remove Year
+            </Button>
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              onClick={addForecastYear}
+              disabled={inputs.forecast_years >= 15}
+            >
+              <Plus className="h-4 w-4 mr-2" />
+              Add Year
+            </Button>
+            <div className="grid grid-cols-2 gap-4 flex-1">
+              <div className="space-y-2">
+                <Label>Discount Rate: {formatPercentage(inputs.discount_rate)}</Label>
+                <Slider
+                  value={[inputs.discount_rate]}
+                  onValueChange={([value]) => handleInputChange('discount_rate', value)}
+                  max={0.15}
+                  min={0.03}
+                  step={0.001}
+                />
+              </div>
+              <div className="space-y-2">
+                <Label>Terminal Growth Rate: {formatPercentage(inputs.terminal_growth_rate)}</Label>
+                <Slider
+                  value={[inputs.terminal_growth_rate]}
+                  onValueChange={([value]) => handleInputChange('terminal_growth_rate', value)}
+                  max={0.05}
+                  min={0.01}
+                  step={0.001}
+                />
+              </div>
             </div>
           </div>
         </CardContent>
       </Card>
 
-      {/* Sublease Income Approach */}
+      {/* Revenue Forecasts */}
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
-            <Building className="h-5 w-5" />
-            Sublease Income Approach
+            <DollarSign className="h-5 w-5" />
+            Revenue Forecasts
           </CardTitle>
           <CardDescription>
-            Calculate present value of sublease income based on capacity utilization
+            Project annual revenue streams across all forecast years
           </CardDescription>
         </CardHeader>
-        <CardContent className="space-y-4">
-          <div className="flex items-center space-x-2">
-            <Switch
-              id="sublease-enabled"
-              checked={inputs.sublease_enabled}
-              onCheckedChange={(checked) => handleInputChange('sublease_enabled', checked)}
-            />
-            <Label htmlFor="sublease-enabled">Enable Sublease Income Valuation</Label>
-          </div>
-          
-          {inputs.sublease_enabled && (
-            <div className="space-y-4">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <Label htmlFor="rentable-area">Rentable Area (sqm)</Label>
+        <CardContent className="space-y-6">
+          {/* Ticket Sales */}
+          <div className="space-y-3">
+            <h4 className="font-semibold flex items-center gap-2">
+              <Users className="h-4 w-4" />
+              Ticket Sales Revenue
+            </h4>
+            <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-2">
+              {inputs.revenue.ticket_sales.map((value, year) => (
+                <div key={year} className="space-y-1">
+                  <Label className="text-xs">Year {year + 1}</Label>
                   <Input
-                    id="rentable-area"
                     type="number"
-                    value={inputs.rentable_area_sqm}
-                    onChange={(e) => handleInputChange('rentable_area_sqm', parseFloat(e.target.value) || 0)}
-                    placeholder="15,000"
+                    value={value}
+                    onChange={(e) => handleRevenueChange('ticket_sales', year, parseFloat(e.target.value) || 0)}
+                    className="text-sm"
                   />
                 </div>
-                <div className="space-y-2">
-                  <Label htmlFor="rent-per-sqm">Annual Rent per sqm</Label>
-                  <Input
-                    id="rent-per-sqm"
-                    type="number"
-                    value={inputs.rent_per_sqm}
-                    onChange={(e) => handleInputChange('rent_per_sqm', parseFloat(e.target.value) || 0)}
-                    placeholder="250"
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="occupancy-rate">Occupancy Rate: {formatPercentage(inputs.occupancy_rate)}</Label>
-                  <Slider
-                    id="occupancy-rate"
-                    value={[inputs.occupancy_rate]}
-                    onValueChange={([value]) => handleInputChange('occupancy_rate', value)}
-                    max={1}
-                    min={0.1}
-                    step={0.01}
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="discount-rate">Discount Rate: {formatPercentage(inputs.discount_rate)}</Label>
-                  <Slider
-                    id="discount-rate"
-                    value={[inputs.discount_rate]}
-                    onValueChange={([value]) => handleInputChange('discount_rate', value)}
-                    max={0.2}
-                    min={0.01}
-                    step={0.001}
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="forecast-years">Forecast Period (Years)</Label>
-                  <Input
-                    id="forecast-years"
-                    type="number"
-                    value={inputs.forecast_years}
-                    onChange={(e) => handleInputChange('forecast_years', parseInt(e.target.value) || 0)}
-                    placeholder="10"
-                  />
-                </div>
-              </div>
+              ))}
             </div>
-          )}
+          </div>
+
+          <Separator />
+
+          {/* Sponsorships */}
+          <div className="space-y-3">
+            <h4 className="font-semibold flex items-center gap-2">
+              <Building className="h-4 w-4" />
+              Sponsorship Revenue
+            </h4>
+            <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-2">
+              {inputs.revenue.sponsorships.map((value, year) => (
+                <div key={year} className="space-y-1">
+                  <Label className="text-xs">Year {year + 1}</Label>
+                  <Input
+                    type="number"
+                    value={value}
+                    onChange={(e) => handleRevenueChange('sponsorships', year, parseFloat(e.target.value) || 0)}
+                    className="text-sm"
+                  />
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <Separator />
+
+          {/* Broadcasting Rights */}
+          <div className="space-y-3">
+            <h4 className="font-semibold">Broadcasting Rights Revenue</h4>
+            <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-2">
+              {inputs.revenue.broadcasting_rights.map((value, year) => (
+                <div key={year} className="space-y-1">
+                  <Label className="text-xs">Year {year + 1}</Label>
+                  <Input
+                    type="number"
+                    value={value}
+                    onChange={(e) => handleRevenueChange('broadcasting_rights', year, parseFloat(e.target.value) || 0)}
+                    className="text-sm"
+                  />
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <Separator />
+
+          {/* Concessions */}
+          <div className="space-y-3">
+            <h4 className="font-semibold">Concessions Revenue</h4>
+            <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-2">
+              {inputs.revenue.concessions.map((value, year) => (
+                <div key={year} className="space-y-1">
+                  <Label className="text-xs">Year {year + 1}</Label>
+                  <Input
+                    type="number"
+                    value={value}
+                    onChange={(e) => handleRevenueChange('concessions', year, parseFloat(e.target.value) || 0)}
+                    className="text-sm"
+                  />
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <Separator />
+
+          {/* Luxury Suites */}
+          <div className="space-y-3">
+            <h4 className="font-semibold">Luxury Suites Revenue</h4>
+            <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-2">
+              {inputs.revenue.luxury_suites.map((value, year) => (
+                <div key={year} className="space-y-1">
+                  <Label className="text-xs">Year {year + 1}</Label>
+                  <Input
+                    type="number"
+                    value={value}
+                    onChange={(e) => handleRevenueChange('luxury_suites', year, parseFloat(e.target.value) || 0)}
+                    className="text-sm"
+                  />
+                </div>
+              ))}
+            </div>
+          </div>
         </CardContent>
       </Card>
 
-      {/* Retail Income Approach */}
+      {/* Operating Expenses */}
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
-            <ShoppingCart className="h-5 w-5" />
-            Retail Income Approach
+            <Shield className="h-5 w-5" />
+            Operating Expenses Forecasts
           </CardTitle>
           <CardDescription>
-            Estimate valuation based on retail income from attendee spending
+            Project annual operating expenses across all categories
           </CardDescription>
         </CardHeader>
-        <CardContent className="space-y-4">
-          <div className="flex items-center space-x-2">
-            <Switch
-              id="retail-enabled"
-              checked={inputs.retail_enabled}
-              onCheckedChange={(checked) => handleInputChange('retail_enabled', checked)}
-            />
-            <Label htmlFor="retail-enabled">Enable Retail Income Valuation</Label>
-          </div>
-          
-          {inputs.retail_enabled && (
-            <div className="space-y-2">
-              <Label htmlFor="retail-multiplier">Retail Industry Multiplier</Label>
-              <Input
-                id="retail-multiplier"
-                type="number"
-                step="0.1"
-                value={inputs.retail_multiplier}
-                onChange={(e) => handleInputChange('retail_multiplier', parseFloat(e.target.value) || 0)}
-                placeholder="2.5"
-              />
-              <div className="text-sm text-muted-foreground">
-                Typical range: 1.5 - 3.0 for sports venues
-              </div>
+        <CardContent className="space-y-6">
+          {/* Maintenance */}
+          <div className="space-y-3">
+            <h4 className="font-semibold">Maintenance Costs</h4>
+            <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-2">
+              {inputs.expenses.maintenance.map((value, year) => (
+                <div key={year} className="space-y-1">
+                  <Label className="text-xs">Year {year + 1}</Label>
+                  <Input
+                    type="number"
+                    value={value}
+                    onChange={(e) => handleExpenseChange('maintenance', year, parseFloat(e.target.value) || 0)}
+                    className="text-sm"
+                  />
+                </div>
+              ))}
             </div>
-          )}
-        </CardContent>
-      </Card>
+          </div>
 
-      {/* Turnover Method Approach */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <TrendingUp className="h-5 w-5" />
-            Turnover Method Approach
-          </CardTitle>
-          <CardDescription>
-            Calculate valuation based on turnover/sales with industry multipliers
-          </CardDescription>
-        </CardHeader>
-        <CardContent className="space-y-4">
-          <div className="flex items-center space-x-2">
-            <Switch
-              id="turnover-enabled"
-              checked={inputs.turnover_enabled}
-              onCheckedChange={(checked) => handleInputChange('turnover_enabled', checked)}
-            />
-            <Label htmlFor="turnover-enabled">Enable Turnover Method Valuation</Label>
-          </div>
-          
-          {inputs.turnover_enabled && (
-            <div className="space-y-2">
-              <Label htmlFor="industry-multiplier">Industry Multiplier</Label>
-              <Input
-                id="industry-multiplier"
-                type="number"
-                step="0.1"
-                value={inputs.industry_multiplier}
-                onChange={(e) => handleInputChange('industry_multiplier', parseFloat(e.target.value) || 0)}
-                placeholder="1.8"
-              />
-              <div className="text-sm text-muted-foreground">
-                Stadium industry multiplier based on comparable sales
-              </div>
+          <Separator />
+
+          {/* Staffing */}
+          <div className="space-y-3">
+            <h4 className="font-semibold">Staffing Costs</h4>
+            <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-2">
+              {inputs.expenses.staffing.map((value, year) => (
+                <div key={year} className="space-y-1">
+                  <Label className="text-xs">Year {year + 1}</Label>
+                  <Input
+                    type="number"
+                    value={value}
+                    onChange={(e) => handleExpenseChange('staffing', year, parseFloat(e.target.value) || 0)}
+                    className="text-sm"
+                  />
+                </div>
+              ))}
             </div>
-          )}
+          </div>
+
+          <Separator />
+
+          {/* Security */}
+          <div className="space-y-3">
+            <h4 className="font-semibold">Security Costs</h4>
+            <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-2">
+              {inputs.expenses.security.map((value, year) => (
+                <div key={year} className="space-y-1">
+                  <Label className="text-xs">Year {year + 1}</Label>
+                  <Input
+                    type="number"
+                    value={value}
+                    onChange={(e) => handleExpenseChange('security', year, parseFloat(e.target.value) || 0)}
+                    className="text-sm"
+                  />
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <Separator />
+
+          {/* Utilities */}
+          <div className="space-y-3">
+            <h4 className="font-semibold">Utilities Costs</h4>
+            <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-2">
+              {inputs.expenses.utilities.map((value, year) => (
+                <div key={year} className="space-y-1">
+                  <Label className="text-xs">Year {year + 1}</Label>
+                  <Input
+                    type="number"
+                    value={value}
+                    onChange={(e) => handleExpenseChange('utilities', year, parseFloat(e.target.value) || 0)}
+                    className="text-sm"
+                  />
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <Separator />
+
+          {/* Upkeep */}
+          <div className="space-y-3">
+            <h4 className="font-semibold">Upkeep & Miscellaneous</h4>
+            <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-2">
+              {inputs.expenses.upkeep.map((value, year) => (
+                <div key={year} className="space-y-1">
+                  <Label className="text-xs">Year {year + 1}</Label>
+                  <Input
+                    type="number"
+                    value={value}
+                    onChange={(e) => handleExpenseChange('upkeep', year, parseFloat(e.target.value) || 0)}
+                    className="text-sm"
+                  />
+                </div>
+              ))}
+            </div>
+          </div>
         </CardContent>
       </Card>
 
       <Button type="submit" size="lg" className="w-full">
         <MapPin className="h-4 w-4 mr-2" />
-        Calculate Stadium Property Valuation
+        Calculate Comprehensive Stadium Valuation
       </Button>
     </form>
   );

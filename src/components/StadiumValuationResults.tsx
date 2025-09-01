@@ -1,12 +1,11 @@
 /**
- * Sustaino Pro - ESG Property Assessment Platform - Sports Stadium Results Display
+ * Sustaino Pro - ESG Property Assessment Platform - Stadium Comprehensive Results Display
  * 
  * Copyright (c) 2025 Delorenzo Property Group Pty Ltd. All Rights Reserved.
  * Licensed under MIT License - see LICENSE file for details
- * Patent Protected: AU2025000001-AU2025000018
+ * Patent Protected: AU2025000001-AU2025000019
  * 
- * Results visualization component for sports stadium valuations
- * with comprehensive analysis and ESG impact reporting
+ * Comprehensive stadium valuation results with detailed cash flow analysis
  * 
  * @author Delorenzo Property Group Pty Ltd
  * @version 1.0.0
@@ -17,7 +16,17 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { Separator } from "@/components/ui/separator";
-import { Building, ShoppingCart, TrendingUp, Users, DollarSign, Target, TrendingDown, MapPin } from "lucide-react";
+import { 
+  MapPin, 
+  DollarSign, 
+  TrendingUp, 
+  Users, 
+  Building, 
+  Shield,
+  Target,
+  BarChart3,
+  FileText
+} from "lucide-react";
 import { StadiumResults } from "@/utils/stadiumCalculations";
 
 interface StadiumValuationResultsProps {
@@ -28,246 +37,183 @@ export const StadiumValuationResults: React.FC<StadiumValuationResultsProps> = (
   const formatCurrency = (value: number) => `$${value.toLocaleString(undefined, { maximumFractionDigits: 0 })}`;
   const formatPercentage = (value: number) => `${(value * 100).toFixed(1)}%`;
 
-  const valuationMethods = [
-    {
-      name: "Sublease Income",
-      icon: Building,
-      value: results.sublease_enabled ? results.sublease_present_value : 0,
-      enabled: results.sublease_enabled,
-      description: "Present value of sublease income over forecast period",
-      breakdown: `Annual Income: ${formatCurrency(results.sublease_annual_income)}`
-    },
-    {
-      name: "Retail Income",
-      icon: ShoppingCart,
-      value: results.retail_enabled ? results.retail_valuation : 0,
-      enabled: results.retail_enabled,
-      description: "Valuation based on retail income from attendees",
-      breakdown: `Annual Retail: ${formatCurrency(results.retail_annual_income)}`
-    },
-    {
-      name: "Turnover Method",
-      icon: TrendingUp,
-      value: results.turnover_enabled ? results.turnover_valuation : 0,
-      enabled: results.turnover_enabled,
-      description: "Valuation based on annual sales turnover",
-      breakdown: `Annual Sales: ${formatCurrency(results.turnover_annual_sales)}`
-    }
+  const totalRevenue = results.total_ticket_sales + results.total_sponsorships + results.total_broadcasting + 
+                      results.total_concessions + results.total_luxury_suites;
+  const totalExpenses = results.total_maintenance + results.total_staffing + results.total_security + 
+                       results.total_utilities + results.total_upkeep;
+
+  const revenueBreakdown = [
+    { name: "Ticket Sales", value: results.total_ticket_sales, color: "bg-blue-500" },
+    { name: "Sponsorships", value: results.total_sponsorships, color: "bg-green-500" },
+    { name: "Broadcasting", value: results.total_broadcasting, color: "bg-purple-500" },
+    { name: "Concessions", value: results.total_concessions, color: "bg-orange-500" },
+    { name: "Luxury Suites", value: results.total_luxury_suites, color: "bg-red-500" }
   ];
 
-  const activeMethodsCount = valuationMethods.filter(method => method.enabled && method.value > 0).length;
-  const valueRange = results.valuation_range.high - results.valuation_range.low;
-  const rangePercentage = results.valuation_average > 0 ? (valueRange / results.valuation_average) * 100 : 0;
+  const expenseBreakdown = [
+    { name: "Staffing", value: results.total_staffing, color: "bg-gray-600" },
+    { name: "Maintenance", value: results.total_maintenance, color: "bg-gray-500" },
+    { name: "Security", value: results.total_security, color: "bg-gray-400" },
+    { name: "Utilities", value: results.total_utilities, color: "bg-gray-300" },
+    { name: "Upkeep", value: results.total_upkeep, color: "bg-gray-200" }
+  ];
 
   return (
     <div className="space-y-6">
-      {/* Summary Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-        <Card>
-          <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium text-muted-foreground">Average Valuation</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold text-primary">{formatCurrency(results.valuation_average)}</div>
-            <div className="text-sm text-muted-foreground">
-              Based on {activeMethodsCount} methods
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium text-muted-foreground">Value Range</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="text-lg font-semibold">
-              {formatCurrency(results.valuation_range.low)} - {formatCurrency(results.valuation_range.high)}
-            </div>
-            <div className="text-sm text-muted-foreground">
-              Variance: {rangePercentage.toFixed(1)}%
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium text-muted-foreground">ESG Status</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="flex items-center gap-2">
-              <Badge variant={results.esg_included ? "default" : "secondary"}>
-                {results.esg_included ? "Enabled" : "Disabled"}
-              </Badge>
-              {results.esg_included && (
-                <span className="text-sm font-medium">
-                  {formatPercentage(results.esg_factor)}
-                </span>
-              )}
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium text-muted-foreground">Property Type</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="flex items-center gap-2">
-              <MapPin className="h-4 w-4 text-primary" />
-              <span className="font-medium">Sports Stadium</span>
-            </div>
-            <div className="text-sm text-muted-foreground">
-              Specialized valuation
-            </div>
-          </CardContent>
-        </Card>
-      </div>
-
-      {/* Stadium Overview */}
+      {/* Executive Summary */}
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
-            <Users className="h-5 w-5" />
-            Stadium Overview
+            <MapPin className="h-5 w-5" />
+            Stadium Valuation Executive Summary
           </CardTitle>
+          <CardDescription>
+            {results.stadium_name} - Comprehensive {results.forecast_years}-Year Analysis
+          </CardDescription>
         </CardHeader>
         <CardContent>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+            <div className="text-center p-4 bg-primary/10 rounded-lg">
+              <div className="text-3xl font-bold text-primary">
+                {formatCurrency(results.total_stadium_value)}
+              </div>
+              <div className="text-sm text-muted-foreground">Total Stadium Value</div>
+            </div>
+            <div className="text-center p-4 bg-muted/50 rounded-lg">
+              <div className="text-2xl font-bold text-primary">
+                {formatCurrency(results.present_value_cash_flows)}
+              </div>
+              <div className="text-sm text-muted-foreground">PV of Cash Flows</div>
+            </div>
+            <div className="text-center p-4 bg-muted/50 rounded-lg">
+              <div className="text-2xl font-bold text-primary">
+                {formatCurrency(results.terminal_value)}
+              </div>
+              <div className="text-sm text-muted-foreground">Terminal Value</div>
+            </div>
             <div className="text-center p-4 bg-muted/50 rounded-lg">
               <div className="text-2xl font-bold text-primary">
                 {results.capacity.toLocaleString()}
               </div>
-              <div className="text-sm text-muted-foreground">Seating Capacity</div>
-            </div>
-            <div className="text-center p-4 bg-muted/50 rounded-lg">
-              <div className="text-2xl font-bold text-primary">
-                {results.event_days}
-              </div>
-              <div className="text-sm text-muted-foreground">Event Days/Year</div>
-            </div>
-            <div className="text-center p-4 bg-muted/50 rounded-lg">
-              <div className="text-2xl font-bold text-primary">
-                {formatCurrency(results.avg_spend_per_attendee)}
-              </div>
-              <div className="text-sm text-muted-foreground">Avg Spend/Attendee</div>
+              <div className="text-sm text-muted-foreground">Stadium Capacity</div>
             </div>
           </div>
         </CardContent>
       </Card>
 
-      {/* Detailed Method Results */}
+      {/* Revenue Analysis */}
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
-            <MapPin className="h-5 w-5" />
-            Stadium Valuation Methods
+            <DollarSign className="h-5 w-5" />
+            Revenue Stream Analysis
           </CardTitle>
           <CardDescription>
-            Comprehensive analysis using multiple approaches for sports stadium facilities
+            Total projected revenue: {formatCurrency(totalRevenue)} over {results.forecast_years} years
           </CardDescription>
         </CardHeader>
-        <CardContent className="space-y-6">
-          {valuationMethods.map((method, index) => {
-            const Icon = method.icon;
-            const variance = results.valuation_average > 0 ? ((method.value - results.valuation_average) / results.valuation_average) * 100 : 0;
-            const isActive = method.enabled && method.value > 0;
-            
-            return (
-              <div key={index} className={`space-y-3 ${!isActive ? 'opacity-50' : ''}`}>
-                <div className="flex items-start justify-between">
-                  <div className="flex items-center gap-3">
-                    <div className={`p-2 rounded-lg ${isActive ? 'bg-primary/10' : 'bg-muted'}`}>
-                      <Icon className={`h-4 w-4 ${isActive ? 'text-primary' : 'text-muted-foreground'}`} />
-                    </div>
-                    <div>
-                      <h3 className="font-medium">{method.name}</h3>
-                      <p className="text-sm text-muted-foreground">{method.description}</p>
-                      <p className="text-xs text-muted-foreground">{method.breakdown}</p>
-                    </div>
-                  </div>
-                  <div className="text-right">
-                    <div className="text-lg font-semibold">
-                      {isActive ? formatCurrency(method.value) : 'Disabled'}
-                    </div>
-                    {isActive && results.valuation_average > 0 && (
-                      <div className="flex items-center gap-1 text-sm">
-                        {variance >= 0 ? (
-                          <TrendingUp className="h-3 w-3 text-green-500" />
-                        ) : (
-                          <TrendingDown className="h-3 w-3 text-red-500" />
-                        )}
-                        <span className={variance >= 0 ? "text-green-600" : "text-red-600"}>
-                          {variance >= 0 ? '+' : ''}{variance.toFixed(1)}%
-                        </span>
-                      </div>
-                    )}
+        <CardContent className="space-y-4">
+          {revenueBreakdown.map((item, index) => (
+            <div key={index} className="space-y-2">
+              <div className="flex justify-between items-center">
+                <span className="font-medium">{item.name}</span>
+                <div className="text-right">
+                  <div className="font-semibold">{formatCurrency(item.value)}</div>
+                  <div className="text-sm text-muted-foreground">
+                    {((item.value / totalRevenue) * 100).toFixed(1)}%
                   </div>
                 </div>
-                
-                {isActive && (
-                  <div className="space-y-2">
-                    <div className="flex justify-between text-sm">
-                      <span>Relative Value</span>
-                      <span>{((method.value / Math.max(...valuationMethods.filter(m => m.enabled).map(m => m.value))) * 100).toFixed(0)}%</span>
-                    </div>
-                    <Progress 
-                      value={(method.value / Math.max(...valuationMethods.filter(m => m.enabled).map(m => m.value))) * 100} 
-                      className="h-2"
-                    />
-                  </div>
-                )}
-                
-                {index < valuationMethods.length - 1 && <Separator />}
               </div>
-            );
-          })}
+              <Progress 
+                value={(item.value / totalRevenue) * 100} 
+                className="h-2"
+              />
+            </div>
+          ))}
         </CardContent>
       </Card>
 
-      {/* Revenue Analysis */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <Card>
-          <CardHeader>
-            <CardTitle>Revenue Streams</CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <div className="space-y-2">
-              <h4 className="font-medium">Annual Revenue Analysis</h4>
-              <ul className="text-sm text-muted-foreground space-y-1">
-                <li>• Stadium capacity: {results.capacity.toLocaleString()} seats</li>
-                <li>• Event days per year: {results.event_days}</li>
-                <li>• Annual attendees: {(results.capacity * results.event_days).toLocaleString()}</li>
-                <li>• Average spend per attendee: {formatCurrency(results.avg_spend_per_attendee)}</li>
-                <li>• Total annual spending: {formatCurrency(results.capacity * results.event_days * results.avg_spend_per_attendee)}</li>
-              </ul>
+      {/* Operating Expenses Analysis */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <Shield className="h-5 w-5" />
+            Operating Expenses Analysis
+          </CardTitle>
+          <CardDescription>
+            Total projected expenses: {formatCurrency(totalExpenses)} over {results.forecast_years} years
+          </CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          {expenseBreakdown.map((item, index) => (
+            <div key={index} className="space-y-2">
+              <div className="flex justify-between items-center">
+                <span className="font-medium">{item.name}</span>
+                <div className="text-right">
+                  <div className="font-semibold">{formatCurrency(item.value)}</div>
+                  <div className="text-sm text-muted-foreground">
+                    {((item.value / totalExpenses) * 100).toFixed(1)}%
+                  </div>
+                </div>
+              </div>
+              <Progress 
+                value={(item.value / totalExpenses) * 100} 
+                className="h-2"
+              />
             </div>
-          </CardContent>
-        </Card>
+          ))}
+        </CardContent>
+      </Card>
 
-        <Card>
-          <CardHeader>
-            <CardTitle>Valuation Summary</CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <div className="space-y-2">
-              <h4 className="font-medium">Method Breakdown</h4>
-              <ul className="text-sm text-muted-foreground space-y-1">
-                {results.sublease_enabled && (
-                  <li>• Sublease PV: {formatCurrency(results.sublease_present_value)}</li>
-                )}
-                {results.retail_enabled && (
-                  <li>• Retail valuation: {formatCurrency(results.retail_valuation)}</li>
-                )}
-                {results.turnover_enabled && (
-                  <li>• Turnover valuation: {formatCurrency(results.turnover_valuation)}</li>
-                )}
-                <li>• Average valuation: {formatCurrency(results.valuation_average)}</li>
-                <li>• Valuation range: {formatCurrency(results.valuation_range.low)} - {formatCurrency(results.valuation_range.high)}</li>
-              </ul>
+      {/* Cash Flow Summary */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <BarChart3 className="h-5 w-5" />
+            Annual Cash Flow Analysis
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="space-y-4">
+            <div className="grid grid-cols-3 gap-4 text-center">
+              <div className="p-4 bg-green-50 rounded-lg border border-green-200">
+                <div className="text-2xl font-bold text-green-600">
+                  {formatCurrency(totalRevenue)}
+                </div>
+                <div className="text-sm text-green-700">Total Revenue</div>
+              </div>
+              <div className="p-4 bg-red-50 rounded-lg border border-red-200">
+                <div className="text-2xl font-bold text-red-600">
+                  {formatCurrency(totalExpenses)}
+                </div>
+                <div className="text-sm text-red-700">Total Expenses</div>
+              </div>
+              <div className="p-4 bg-blue-50 rounded-lg border border-blue-200">
+                <div className="text-2xl font-bold text-blue-600">
+                  {formatCurrency(totalRevenue - totalExpenses)}
+                </div>
+                <div className="text-sm text-blue-700">Net Cash Flow</div>
+              </div>
             </div>
-          </CardContent>
-        </Card>
-      </div>
+
+            <Separator />
+
+            <div className="space-y-2">
+              <h4 className="font-semibold">Year-by-Year Cash Flows</h4>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-2 text-sm">
+                {results.annual_cash_flows.map((cashFlow, year) => (
+                  <div key={year} className="flex justify-between p-2 bg-muted/50 rounded">
+                    <span>Year {year + 1}:</span>
+                    <span className={`font-medium ${cashFlow >= 0 ? 'text-green-600' : 'text-red-600'}`}>
+                      {formatCurrency(cashFlow)}
+                    </span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
 
       {/* ESG Impact Summary */}
       {results.esg_included && (
@@ -291,14 +237,48 @@ export const StadiumValuationResults: React.FC<StadiumValuationResultsProps> = (
               </div>
               <div className="text-center">
                 <div className="text-lg font-semibold">
-                  Stadium
+                  Sustainable Stadium
                 </div>
-                <div className="text-sm text-muted-foreground">Sports Facility</div>
+                <div className="text-sm text-muted-foreground">ESG Integration</div>
               </div>
             </div>
           </CardContent>
         </Card>
       )}
+
+      {/* Key Metrics */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <Target className="h-5 w-5" />
+            Key Performance Metrics
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="space-y-2">
+              <h4 className="font-semibold">Financial Metrics</h4>
+              <ul className="text-sm text-muted-foreground space-y-1">
+                <li>• Total Stadium Valuation: {formatCurrency(results.total_stadium_value)}</li>
+                <li>• Operating Cash Flow (Total): {formatCurrency(totalRevenue - totalExpenses)}</li>
+                <li>• Revenue per Seat: {formatCurrency(totalRevenue / results.capacity)}</li>
+                <li>• Operating Margin: {formatPercentage((totalRevenue - totalExpenses) / totalRevenue)}</li>
+                <li>• Present Value Factor: {results.forecast_years} years @ 8% discount</li>
+              </ul>
+            </div>
+            <div className="space-y-2">
+              <h4 className="font-semibold">Operational Metrics</h4>
+              <ul className="text-sm text-muted-foreground space-y-1">
+                <li>• Stadium Capacity: {results.capacity.toLocaleString()} seats</li>
+                <li>• Forecast Period: {results.forecast_years} years</li>
+                <li>• Average Annual Revenue: {formatCurrency(totalRevenue / results.forecast_years)}</li>
+                <li>• Average Annual Expenses: {formatCurrency(totalExpenses / results.forecast_years)}</li>
+                <li>• Average Annual Cash Flow: {formatCurrency((totalRevenue - totalExpenses) / results.forecast_years)}</li>
+              </ul>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
     </div>
   );
 };
