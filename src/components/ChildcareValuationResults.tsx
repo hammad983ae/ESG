@@ -16,11 +16,11 @@ export const ChildcareValuationResults: React.FC<ChildcareValuationResultsProps>
 
   const valuationMethods = [
     {
-      name: "LCD Approach",
+      name: "LDC Approach",
       icon: Building,
-      value: results.total_lcd_value,
-      description: "Land + Construction + Development",
-      breakdown: `Land: ${formatCurrency(results.lcd_land_value)}, Construction: ${formatCurrency(results.lcd_construction_value)}`
+      value: results.total_ldc_value,
+      description: "Long Day Childcare facility development",
+      breakdown: `Land: ${formatCurrency(results.ldc_land_value)}, Development: ${formatCurrency(results.ldc_construction_value)}`
     },
     {
       name: "Direct Comparison",
@@ -125,10 +125,10 @@ export const ChildcareValuationResults: React.FC<ChildcareValuationResultsProps>
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <Baby className="h-5 w-5" />
-            Childcare Property Valuation Methods
+            Long Day Childcare Property Valuation Methods
           </CardTitle>
           <CardDescription>
-            Comprehensive analysis using multiple specialized approaches for childcare facilities
+            Comprehensive analysis using multiple specialized approaches for Long Day Childcare facilities
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-6">
@@ -197,8 +197,10 @@ export const ChildcareValuationResults: React.FC<ChildcareValuationResultsProps>
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="space-y-2">
-              <h4 className="font-medium">Childcare Market Indicators</h4>
+              <h4 className="font-medium">Long Day Childcare Indicators</h4>
               <ul className="text-sm text-muted-foreground space-y-1">
+                <li>• Total placements: {results.childcare_placements} children</li>
+                <li>• Development cost per placement: {formatCurrency(results.cost_per_placement)}</li>
                 <li>• Average price per sqm: {formatCurrency(results.price_per_sqm)}</li>
                 <li>• Typical facility size: {results.average_size.toLocaleString()} sqm</li>
                 <li>• Annual rental yield indication available</li>
@@ -252,12 +254,12 @@ export const ChildcareValuationResults: React.FC<ChildcareValuationResultsProps>
                 </div>
                 <div className="text-sm text-muted-foreground">Market Impact</div>
               </div>
-              <div className="text-center">
-                <div className="text-lg font-semibold">
-                  Sustainable
+                <div className="text-center">
+                  <div className="text-lg font-semibold">
+                    Long Day Care
+                  </div>
+                  <div className="text-sm text-muted-foreground">Childcare Focus</div>
                 </div>
-                <div className="text-sm text-muted-foreground">Childcare Focus</div>
-              </div>
             </div>
           </CardContent>
         </Card>

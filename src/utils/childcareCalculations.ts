@@ -1,7 +1,9 @@
 export interface ChildcareInputs {
-  // LCD Land & Construction
+  // LDC Long Day Childcare
   land_value: number;
   construction_cost: number;
+  childcare_placements: number;
+  cost_per_placement: number;
   esg_land_factor: number;
   esg_construction_factor: number;
   
@@ -29,10 +31,12 @@ export interface ComparisonProperty {
 }
 
 export interface ChildcareResults {
-  // LCD Results
-  lcd_land_value: number;
-  lcd_construction_value: number;
-  total_lcd_value: number;
+  // LDC Results
+  ldc_land_value: number;
+  ldc_construction_value: number;
+  total_ldc_value: number;
+  childcare_placements: number;
+  cost_per_placement: number;
   
   // Comparison Results
   average_sale_price: number;
@@ -56,22 +60,26 @@ export interface ChildcareResults {
   esg_included: boolean;
 }
 
-export function calculateLCDLandValue(land_value: number, esg_factor: number = 0): number {
+export function calculateLDCLandValue(land_value: number, esg_factor: number = 0): number {
   return land_value * (1 + esg_factor);
 }
 
-export function calculateLCDConstructionValue(construction_cost: number, esg_factor: number = 0): number {
+export function calculateLDCConstructionValue(construction_cost: number, esg_factor: number = 0): number {
   return construction_cost * (1 + esg_factor);
 }
 
-export function calculateTotalLCDValue(
+export function calculateCostPerPlacement(construction_cost: number, childcare_placements: number): number {
+  return childcare_placements > 0 ? construction_cost / childcare_placements : 0;
+}
+
+export function calculateTotalLDCValue(
   land_value: number, 
   construction_cost: number, 
   esg_land: number = 0, 
   esg_construction: number = 0
 ): number {
-  const land_adj = calculateLCDLandValue(land_value, esg_land);
-  const construction_adj = calculateLCDConstructionValue(construction_cost, esg_construction);
+  const land_adj = calculateLDCLandValue(land_value, esg_land);
+  const construction_adj = calculateLDCConstructionValue(construction_cost, esg_construction);
   return land_adj + construction_adj;
 }
 
@@ -144,10 +152,11 @@ export function calculateChildcareValuation(inputs: ChildcareInputs): ChildcareR
   const effective_land_esg = inputs.esg_included ? inputs.esg_land_factor : 0;
   const effective_construction_esg = inputs.esg_included ? inputs.esg_construction_factor : 0;
 
-  // LCD Calculations
-  const lcd_land_value = calculateLCDLandValue(inputs.land_value, effective_land_esg);
-  const lcd_construction_value = calculateLCDConstructionValue(inputs.construction_cost, effective_construction_esg);
-  const total_lcd_value = lcd_land_value + lcd_construction_value;
+  // LDC Calculations
+  const ldc_land_value = calculateLDCLandValue(inputs.land_value, effective_land_esg);
+  const ldc_construction_value = calculateLDCConstructionValue(inputs.construction_cost, effective_construction_esg);
+  const total_ldc_value = ldc_land_value + ldc_construction_value;
+  const cost_per_placement = calculateCostPerPlacement(inputs.construction_cost, inputs.childcare_placements);
 
   // Direct Comparison Calculations
   const comparison_results = calculateDirectComparisonValue(inputs.comparison_data, effective_esg_factor);
@@ -158,7 +167,7 @@ export function calculateChildcareValuation(inputs: ChildcareInputs): ChildcareR
 
   // Calculate valuation average and range
   const valuations = [
-    total_lcd_value,
+    total_ldc_value,
     comparison_results.average_sale_price,
     comparison_results.average_value,
     rent_based_value,
@@ -172,9 +181,11 @@ export function calculateChildcareValuation(inputs: ChildcareInputs): ChildcareR
   };
 
   return {
-    lcd_land_value,
-    lcd_construction_value,
-    total_lcd_value,
+    ldc_land_value,
+    ldc_construction_value,
+    total_ldc_value,
+    childcare_placements: inputs.childcare_placements,
+    cost_per_placement,
     average_sale_price: comparison_results.average_sale_price,
     average_size: comparison_results.average_size,
     average_rent: comparison_results.average_rent,
@@ -192,6 +203,8 @@ export function calculateChildcareValuation(inputs: ChildcareInputs): ChildcareR
 export const defaultChildcareInputs: ChildcareInputs = {
   land_value: 300000,
   construction_cost: 700000,
+  childcare_placements: 75,
+  cost_per_placement: 9333, // 700000 / 75
   esg_land_factor: 0.05,
   esg_construction_factor: 0.05,
   comparison_data: [

@@ -118,15 +118,15 @@ export const ChildcareValuationForm: React.FC<ChildcareValuationFormProps> = ({ 
         </CardContent>
       </Card>
 
-      {/* LCD Land & Construction */}
+      {/* LDC Long Day Childcare */}
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <Building className="h-5 w-5" />
-            Land, Construction & Development (LCD) Approach
+            Long Day Childcare (LDC) Approach
           </CardTitle>
           <CardDescription>
-            Calculate total property value based on land and construction costs
+            Calculate total property value based on land value and childcare facility development costs
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -142,7 +142,7 @@ export const ChildcareValuationForm: React.FC<ChildcareValuationFormProps> = ({ 
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="construction-cost">Construction Cost</Label>
+              <Label htmlFor="construction-cost">Childcare Facility Development Cost</Label>
               <Input
                 id="construction-cost"
                 type="number"
@@ -153,10 +153,38 @@ export const ChildcareValuationForm: React.FC<ChildcareValuationFormProps> = ({ 
             </div>
           </div>
           
+          <div className="mt-4 grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="space-y-2">
+              <Label htmlFor="childcare-placements">Number of Childcare Placements</Label>
+              <Input
+                id="childcare-placements"
+                type="number"
+                value={inputs.childcare_placements || 75}
+                onChange={(e) => handleInputChange('childcare_placements', parseInt(e.target.value) || 0)}
+                placeholder="75"
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="cost-per-placement">Development Cost per Placement</Label>
+              <Input
+                id="cost-per-placement"
+                type="number"
+                value={inputs.cost_per_placement || 0}
+                onChange={(e) => handleInputChange('cost_per_placement', parseFloat(e.target.value) || 0)}
+                placeholder="Calculated automatically"
+                disabled
+                className="bg-muted"
+              />
+            </div>
+          </div>
+          
           {inputs.esg_included && (
             <div className="mt-4 p-3 bg-muted/50 rounded-lg">
               <div className="text-sm text-muted-foreground">
-                Estimated LCD Total with ESG: {formatCurrency((inputs.land_value * (1 + inputs.esg_land_factor)) + (inputs.construction_cost * (1 + inputs.esg_construction_factor)))}
+                Estimated LDC Total with ESG: {formatCurrency((inputs.land_value * (1 + inputs.esg_land_factor)) + (inputs.construction_cost * (1 + inputs.esg_construction_factor)))}
+              </div>
+              <div className="text-sm text-muted-foreground mt-1">
+                Cost per Placement: {formatCurrency(inputs.construction_cost / (inputs.childcare_placements || 75))}
               </div>
             </div>
           )}
