@@ -1,8 +1,9 @@
 /**
  * Delorenzo Property Group - ESG Property Assessment Platform - Valuation Analysis Module
  * 
- * Copyright (c) 2025 Delorenzo Property Group Pty Ltd
+ * Copyright (c) 2025 Delorenzo Property Group Pty Ltd. All Rights Reserved.
  * Licensed under MIT License - see LICENSE file for details
+ * Patent Protected: AU2025000001-AU2025000017
  * 
  * Comprehensive property valuation analysis including:
  * - All Risks Yield (ARY) calculations
@@ -21,7 +22,7 @@
  */
 
 import { useState } from "react";
-import { ArrowLeft, Target, TrendingUp, Leaf, Calculator, Settings, Building2, Sliders, Baby, Fuel } from "lucide-react";
+import { ArrowLeft, Target, TrendingUp, Leaf, Calculator, Settings, Building2, Sliders, Baby, Fuel, Users } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -59,6 +60,8 @@ import { ComprehensiveESGAssessmentForm } from "@/components/ComprehensiveESGAss
 import { ComprehensiveESGAssessmentResults } from "@/components/ComprehensiveESGAssessmentResults";
 import { PetrolStationValuationForm } from "@/components/PetrolStationValuationForm";
 import { PetrolStationValuationResults } from "@/components/PetrolStationValuationResults";
+import { DeferredManagementValuationForm } from "@/components/DeferredManagementValuationForm";
+import { DeferredManagementValuationResults } from "@/components/DeferredManagementValuationResults";
 import { ARYInputs, ARYResults, calculateAllRisksYield } from "@/utils/aryCalculations";
 import { 
   ESGInputs, 
@@ -110,6 +113,11 @@ import {
   PetrolStationResults,
   calculatePetrolStationValuation
 } from "@/utils/petrolStationCalculations";
+import {
+  DeferredManagementInputs,
+  DeferredManagementResults,
+  calculateDeferredManagementValuation
+} from "@/utils/deferredManagementCalculations";
 
 export default function ValuationAnalysis() {
   // ARY States
@@ -168,6 +176,10 @@ export default function ValuationAnalysis() {
   // Petrol Station Valuation States
   const [petrolStationInputs, setPetrolStationInputs] = useState<PetrolStationInputs | null>(null);
   const [petrolStationResults, setPetrolStationResults] = useState<PetrolStationResults | null>(null);
+
+  // Deferred Management Valuation States
+  const [deferredManagementInputs, setDeferredManagementInputs] = useState<DeferredManagementInputs | null>(null);
+  const [deferredManagementResults, setDeferredManagementResults] = useState<DeferredManagementResults | null>(null);
 
   const handleARYSubmit = (inputs: ARYInputs) => {
     try {
@@ -294,6 +306,10 @@ export default function ValuationAnalysis() {
         setPetrolStationInputs(null);
         setPetrolStationResults(null);
         break;
+      case 'deferred-management':
+        setDeferredManagementInputs(null);
+        setDeferredManagementResults(null);
+        break;
     }
   };
 
@@ -394,6 +410,17 @@ export default function ValuationAnalysis() {
     }
   };
 
+  const handleDeferredManagementValuationSubmit = (inputs: DeferredManagementInputs) => {
+    try {
+      const calculatedResults = calculateDeferredManagementValuation(inputs);
+      setDeferredManagementInputs(inputs);
+      setDeferredManagementResults(calculatedResults);
+      toast.success("Deferred management valuation completed successfully!");
+    } catch (error) {
+      toast.error(`Deferred management valuation error: ${error instanceof Error ? error.message : 'Unknown error'}`);
+    }
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-background to-muted">
       <div className="container mx-auto px-4 py-8">
@@ -488,6 +515,10 @@ export default function ValuationAnalysis() {
             <TabsTrigger value="petrol-station" className="flex items-center gap-2 p-3">
               <Fuel className="w-4 h-4" />
               Petrol Stations
+            </TabsTrigger>
+            <TabsTrigger value="deferred-management" className="flex items-center gap-2 p-3">
+              <Users className="w-4 h-4" />
+              Deferred Management
             </TabsTrigger>
           </TabsList>
 
@@ -1082,6 +1113,44 @@ export default function ValuationAnalysis() {
               </div>
             ) : (
               <PetrolStationValuationResults results={petrolStationResults} />
+            )}
+          </TabsContent>
+
+          {/* Deferred Management Valuation Tab */}
+          <TabsContent value="deferred-management" className="mt-6">
+            <div className="flex items-center justify-between mb-6">
+              <div>
+                <h2 className="text-2xl font-semibold">Deferred Management Valuation - Retirement Villages</h2>
+                <p className="text-muted-foreground">
+                  Specialized valuation for retirement village management rights with deferred cash flow analysis and present value calculations
+                </p>
+              </div>
+              {deferredManagementResults && (
+                <Button onClick={() => handleReset('deferred-management')} variant="outline">
+                  New Analysis
+                </Button>
+              )}
+            </div>
+
+            {!deferredManagementResults ? (
+              <div className="max-w-6xl mx-auto">
+                <Card className="mb-6">
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-2">
+                      <Users className="w-5 h-5" />
+                      Retirement Village Management Rights Valuation
+                    </CardTitle>
+                    <CardDescription>
+                      This specialized methodology calculates the present value of deferred management income for retirement villages. 
+                      It considers deferral periods, turnover rates, occupancy levels, and deferred management fee structures 
+                      to provide comprehensive valuation analysis including NPV, IRR, and sensitivity testing for investment decisions.
+                    </CardDescription>
+                  </CardHeader>
+                </Card>
+                <DeferredManagementValuationForm onSubmit={handleDeferredManagementValuationSubmit} />
+              </div>
+            ) : (
+              <DeferredManagementValuationResults inputs={deferredManagementInputs!} results={deferredManagementResults} />
             )}
           </TabsContent>
         </Tabs>

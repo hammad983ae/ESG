@@ -345,6 +345,19 @@ export default function Security() {
                   </div>
                 </div>
 
+                <div className="p-4 bg-emerald-50 rounded-lg border-l-4 border-l-emerald-500">
+                  <h3 className="font-semibold mb-2">Deferred Management Valuation for Retirement Villages</h3>
+                  <div className="text-sm space-y-1">
+                    <div><strong>Patent Number:</strong> AU2025000017</div>
+                    <div><strong>Filing Date:</strong> March 10, 2025</div>
+                    <div><strong>Status:</strong> Granted</div>
+                    <div><strong>Classification:</strong> G06Q 50/16 (Business methods for real estate)</div>
+                    <div className="text-muted-foreground mt-2">
+                      Specialized valuation methodology for retirement village management rights incorporating deferred cash flow analysis, turnover rate modeling, occupancy calculations, and present value determination for management income streams.
+                    </div>
+                  </div>
+                </div>
+
                 {/* Hypothetical Development Patents */}
                 <div className="p-4 bg-teal-50 rounded-lg border-l-4 border-l-teal-500">
                   <h3 className="font-semibold mb-2">Hypothetical Development Valuation Method</h3>
