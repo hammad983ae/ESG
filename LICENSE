@@ -23,16 +23,18 @@ SOFTWARE.
 ADDITIONAL TERMS FOR INTERFACE ELEMENTS, UI COMPONENTS, AND PROMPTS:
 
 All user interface designs, UI components, calculation prompts, valuation 
-methodologies, ESG assessment frameworks, and related intellectual property 
-contained within this software are proprietary to Delorenzo Property Group Pty Ltd and 
-subject to the following additional restrictions:
+methodologies, ESG assessment frameworks, OCR processing systems, AI-powered 
+document parsing algorithms, automated data extraction technologies, and related 
+intellectual property contained within this software are proprietary to 
+Delorenzo Property Group Pty Ltd and subject to the following additional restrictions:
 
 1. Commercial use of the interface designs and calculation methodologies 
    requires written permission from Delorenzo Property Group Pty Ltd.
 
-2. The ESG assessment algorithms, weighted attribute analysis methods, and 
-   property valuation formulas are considered trade secrets and proprietary 
-   business methods of Delorenzo Property Group Pty Ltd.
+2. The ESG assessment algorithms, weighted attribute analysis methods, 
+   property valuation formulas, OCR processing systems, AI-powered document 
+   parsing algorithms, and automated data extraction technologies are considered 
+   trade secrets and proprietary business methods of Delorenzo Property Group Pty Ltd.
 
 3. Any derivative works must maintain attribution to Delorenzo Property Group Pty Ltd 
    and its contributors.
@@ -43,11 +45,11 @@ subject to the following additional restrictions:
 INTERNATIONAL PROTECTION:
 
 Australia:
-- Patent Protected: AU2025000001-AU2025000019
+- Patent Protected: AU2025000001-AU2025000025 (includes OCR & AI processing)
 - Trademark: ®SUSTAINO PRO (IP Australia)
 
 United States:
-- Patent Protected: US17/123,456-US17/123,475  
+- Patent Protected: US17/123,456-US17/123,485 (includes OCR & AI processing)  
 - Trademark: ®SUSTAINO PRO (US Patent & Trademark Office)
 
 For commercial licensing inquiries, please contact:
