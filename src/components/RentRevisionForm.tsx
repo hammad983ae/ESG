@@ -50,6 +50,7 @@ import {
   effectiveToNetRent,
   calculateTotalDeductions
 } from "@/utils/rentRevisionCalculations";
+import { OCRUpload } from "@/components/OCRUpload";
 
 interface RentRevisionFormProps {
   onSubmit: (inputs: RentRevisionInputs) => void;
@@ -201,12 +202,52 @@ export const RentRevisionForm: React.FC<RentRevisionFormProps> = ({ onSubmit }) 
     }
   };
 
+  const handleOCRDataExtracted = (data: any) => {
+    const updatedInputs: Partial<RentRevisionInputs> = { ...inputs };
+    
+    if (data.currentRent !== undefined) updatedInputs.net_rent = data.currentRent;
+    if (data.marketRent !== undefined) updatedInputs.market_rent = data.marketRent;
+    if (data.lettableArea !== undefined) updatedInputs.lettable_area = data.lettableArea;
+    if (data.landArea !== undefined) updatedInputs.land_area = data.landArea;
+    if (data.leaseStart) updatedInputs.commencement_date = data.leaseStart;
+    if (data.leaseEnd) updatedInputs.expiring_date = data.leaseEnd;
+    if (data.reviewDate) updatedInputs.review_date = data.reviewDate;
+    if (data.propertyAddress) updatedInputs.lessor = data.propertyAddress;
+    if (data.propertyType) {
+      // Map OCR property types to our form types
+      const typeMapping: Record<string, string> = {
+        'commercial': 'office',
+        'office': 'office',
+        'retail': 'retail',
+        'industrial': 'warehouse',
+        'warehouse': 'warehouse',
+        'residential': 'residential'
+      };
+      const mappedType = typeMapping[data.propertyType.toLowerCase()] || 'office';
+      updatedInputs.property_type = mappedType;
+    }
+    if (data.buildingAge !== undefined) {
+      // Could be used for notes or additional context
+    }
+    if (data.carSpaces !== undefined) {
+      // Could be added to notes or additional features
+    }
+    
+    setInputs(prev => ({ ...prev, ...updatedInputs }));
+  };
+
   const formatCurrency = (value: number) => `$${value.toLocaleString()}`;
   const currentConfig = propertyTypeConfigs[inputs.property_type];
   const IconComponent = currentConfig?.icon || Building2;
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-6">
+    <div className="space-y-6">
+      <OCRUpload
+        formType="rent-revision"
+        onDataExtracted={handleOCRDataExtracted}
+      />
+      
+      <form onSubmit={handleSubmit} className="space-y-6">
       {/* Property Type Selection */}
       <Card>
         <CardHeader>
@@ -786,6 +827,7 @@ export const RentRevisionForm: React.FC<RentRevisionFormProps> = ({ onSubmit }) 
         <TrendingUp className="h-4 w-4 mr-2" />
         Generate Professional Rent Revision Report
       </Button>
-    </form>
+      </form>
+    </div>
   );
 };

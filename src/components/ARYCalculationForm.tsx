@@ -8,6 +8,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Calculator, Info, TrendingUp } from "lucide-react";
 import { ARYInputs, validateARYInputs, getCurrentCashRate } from "@/utils/aryCalculations";
+import { OCRUpload } from "@/components/OCRUpload";
 
 interface ARYCalculationFormProps {
   onSubmit: (inputs: ARYInputs) => void;
@@ -57,17 +58,34 @@ export const ARYCalculationForm = ({ onSubmit }: ARYCalculationFormProps) => {
     setInputs(prev => ({ ...prev, cashRate: currentRate }));
   };
 
+  const handleOCRDataExtracted = (data: any) => {
+    const updatedInputs: Partial<ARYInputs> = { ...inputs };
+    
+    if (data.cashRate !== undefined) updatedInputs.cashRate = data.cashRate;
+    if (data.propertyType) updatedInputs.propertyType = data.propertyType;
+    if (data.annualRentalIncome !== undefined) updatedInputs.annualRentalIncome = data.annualRentalIncome;
+    if (data.propertyValue !== undefined) updatedInputs.propertyValue = data.propertyValue;
+    
+    setInputs(updatedInputs);
+  };
+
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle className="flex items-center gap-2">
-          <Calculator className="w-5 h-5" />
-          All Risks Yield (ARY) Calculator
-        </CardTitle>
-        <CardDescription>
-          Calculate ARY using dynamic risk-free rate and comprehensive risk assessment framework
-        </CardDescription>
-      </CardHeader>
+    <div className="space-y-6">
+      <OCRUpload
+        formType="ary"
+        onDataExtracted={handleOCRDataExtracted}
+      />
+      
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <Calculator className="w-5 h-5" />
+            All Risks Yield (ARY) Calculator
+          </CardTitle>
+          <CardDescription>
+            Calculate ARY using dynamic risk-free rate and comprehensive risk assessment framework
+          </CardDescription>
+        </CardHeader>
       <CardContent>
         <Tabs defaultValue="required" className="w-full">
           <TabsList className="grid w-full grid-cols-2">
@@ -209,5 +227,6 @@ export const ARYCalculationForm = ({ onSubmit }: ARYCalculationFormProps) => {
         </div>
       </CardContent>
     </Card>
+    </div>
   );
 };

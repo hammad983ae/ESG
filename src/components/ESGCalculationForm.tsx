@@ -7,6 +7,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Slider } from "@/components/ui/slider";
 import { Leaf, Calculator } from "lucide-react";
 import { ESGInputs } from "@/utils/esgCalculations";
+import { OCRUpload } from "@/components/OCRUpload";
 
 interface ESGCalculationFormProps {
   onSubmit: (inputs: ESGInputs) => void;
@@ -37,17 +38,33 @@ export const ESGCalculationForm = ({ onSubmit }: ESGCalculationFormProps) => {
     onSubmit(inputs);
   };
 
+  const handleOCRDataExtracted = (data: any) => {
+    if (data.cashRate !== undefined) setCashRate((data.cashRate * 100).toString());
+    if (data.propertyType) setPropertyType(data.propertyType);
+    if (data.energyRating !== undefined) setEnergyRating([data.energyRating]);
+    if (data.waterEfficiency !== undefined) setWaterEfficiency([data.waterEfficiency]);
+    if (data.wasteReduction !== undefined) setWasteReduction([data.wasteReduction]);
+    if (data.sustainableMaterials !== undefined) setSustainableMaterials([data.sustainableMaterials]);
+    if (data.carbonFootprint !== undefined) setCarbonFootprint([data.carbonFootprint]);
+  };
+
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle className="flex items-center gap-2">
-          <Leaf className="w-5 h-5 text-green-600" />
-          ESG All Risks Yield Calculator
-        </CardTitle>
-        <CardDescription>
-          Calculate ESG-adjusted All Risks Yield incorporating sustainability factors
-        </CardDescription>
-      </CardHeader>
+    <div className="space-y-6">
+      <OCRUpload
+        formType="esg"
+        onDataExtracted={handleOCRDataExtracted}
+      />
+      
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <Leaf className="w-5 h-5 text-green-600" />
+            ESG All Risks Yield Calculator
+          </CardTitle>
+          <CardDescription>
+            Calculate ESG-adjusted All Risks Yield incorporating sustainability factors
+          </CardDescription>
+        </CardHeader>
       <CardContent>
         <form onSubmit={handleSubmit} className="space-y-6">
           {/* Basic Inputs */}
@@ -170,5 +187,6 @@ export const ESGCalculationForm = ({ onSubmit }: ESGCalculationFormProps) => {
         </form>
       </CardContent>
     </Card>
+    </div>
   );
 };

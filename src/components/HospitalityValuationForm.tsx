@@ -8,6 +8,7 @@ import { Slider } from "@/components/ui/slider";
 import { Separator } from "@/components/ui/separator";
 import { Building2, DollarSign, Calculator, Home, Users, Zap } from "lucide-react";
 import { HospitalityInputs, defaultHospitalityInputs } from "@/utils/hospitalityCalculations";
+import { OCRUpload } from "@/components/OCRUpload";
 
 interface HospitalityValuationFormProps {
   onSubmit: (inputs: HospitalityInputs) => void;
@@ -25,11 +26,34 @@ export const HospitalityValuationForm: React.FC<HospitalityValuationFormProps> =
     onSubmit(inputs);
   };
 
+  const handleOCRDataExtracted = (data: any) => {
+    const updatedInputs: Partial<HospitalityInputs> = { ...inputs };
+    
+    if (data.numberOfRooms !== undefined) updatedInputs.number_of_units = data.numberOfRooms;
+    if (data.averageDailyRate !== undefined) {
+      // Convert ADR to room revenue (assuming 365 days and full occupancy for base)
+      updatedInputs.room_revenue = data.averageDailyRate * 365 * (updatedInputs.number_of_units || inputs.number_of_units);
+    }
+    if (data.grossIncome !== undefined) updatedInputs.gross_income = data.grossIncome;
+    if (data.noi !== undefined) updatedInputs.noi = data.noi;
+    if (data.operationalMetrics !== undefined) {
+      // Could parse additional operational data here
+    }
+    
+    setInputs(prev => ({ ...prev, ...updatedInputs }));
+  };
+
   const formatCurrency = (value: number) => `$${value.toLocaleString()}`;
   const formatPercentage = (value: number) => `${(value * 100).toFixed(1)}%`;
 
   return (
-    <Card className="w-full">
+    <div className="space-y-6">
+      <OCRUpload
+        formType="hospitality"
+        onDataExtracted={handleOCRDataExtracted}
+      />
+      
+      <Card className="w-full">
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
           <Building2 className="h-5 w-5" />
@@ -266,5 +290,6 @@ export const HospitalityValuationForm: React.FC<HospitalityValuationFormProps> =
         </form>
       </CardContent>
     </Card>
+    </div>
   );
 };

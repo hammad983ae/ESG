@@ -9,6 +9,7 @@ import { Separator } from "@/components/ui/separator";
 import { Badge } from "@/components/ui/badge";
 import { Baby, Building, DollarSign, BarChart3, Home, Trash2, Plus } from "lucide-react";
 import { ChildcareInputs, ComparisonProperty, defaultChildcareInputs } from "@/utils/childcareCalculations";
+import { OCRUpload } from "@/components/OCRUpload";
 
 interface ChildcareValuationFormProps {
   onSubmit: (inputs: ChildcareInputs) => void;
@@ -56,11 +57,29 @@ export const ChildcareValuationForm: React.FC<ChildcareValuationFormProps> = ({ 
     onSubmit(inputs);
   };
 
+  const handleOCRDataExtracted = (data: any) => {
+    const updatedInputs: Partial<ChildcareInputs> = { ...inputs };
+    
+    if (data.capacity !== undefined) updatedInputs.childcare_placements = data.capacity;
+    if (data.licensedPlaces !== undefined) updatedInputs.childcare_placements = data.licensedPlaces;
+    if (data.weeklyFees !== undefined) updatedInputs.gross_rent_per_placement = data.weeklyFees * 52; // Convert weekly to annual
+    if (data.operationalCosts !== undefined) updatedInputs.outgoings_allowance = data.operationalCosts;
+    if (data.valuePerPlacement !== undefined) updatedInputs.value_per_placement = data.valuePerPlacement;
+    
+    setInputs(prev => ({ ...prev, ...updatedInputs }));
+  };
+
   const formatCurrency = (value: number) => `$${value.toLocaleString()}`;
   const formatPercentage = (value: number) => `${(value * 100).toFixed(1)}%`;
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-6">
+    <div className="space-y-6">
+      <OCRUpload
+        formType="childcare"
+        onDataExtracted={handleOCRDataExtracted}
+      />
+      
+      <form onSubmit={handleSubmit} className="space-y-6">
       {/* ESG Settings */}
       <Card>
         <CardHeader>
@@ -362,6 +381,7 @@ export const ChildcareValuationForm: React.FC<ChildcareValuationFormProps> = ({ 
         <Baby className="h-4 w-4 mr-2" />
         Calculate Childcare Property Valuation
       </Button>
-    </form>
+      </form>
+    </div>
   );
 };
