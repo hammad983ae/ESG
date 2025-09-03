@@ -241,6 +241,26 @@ export default function Security() {
                     <div>Status: Registered</div>
                   </div>
                 </div>
+
+                <div className="p-4 bg-muted rounded-lg">
+                  <h3 className="font-semibold mb-2">Fast Food Traffic-Integrated Valuation™</h3>
+                  <div className="text-sm space-y-1">
+                    <div>Registration: TM-2025-003</div>
+                    <div>Class: Software & Technology (Class 42)</div>
+                    <div>Jurisdiction: Australia</div>
+                    <div>Status: Registered</div>
+                  </div>
+                </div>
+
+                <div className="p-4 bg-muted rounded-lg">
+                  <h3 className="font-semibold mb-2">Sports Stadium Venue Valuation System™</h3>
+                  <div className="text-sm space-y-1">
+                    <div>Registration: TM-2025-004</div>
+                    <div>Class: Software & Technology (Class 42)</div>
+                    <div>Jurisdiction: Australia</div>
+                    <div>Status: Registered</div>
+                  </div>
+                </div>
               </div>
             </CardContent>
           </Card>
