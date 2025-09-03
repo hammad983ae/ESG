@@ -441,31 +441,31 @@ export const ClientPresentation = () => {
     if (!printWindow) return;
 
     const printContent = slides.map((slide, index) => `
-      <div style="page-break-after: always; min-height: 100vh; background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%); font-family: 'Arial', 'Helvetica', sans-serif; padding: 80px; box-sizing: border-box; display: flex; flex-direction: column;">
+      <div style="page-break-after: ${index === slides.length - 1 ? 'auto' : 'always'}; width: 210mm; height: 297mm; background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%); font-family: 'Arial', 'Helvetica', sans-serif; padding: 20mm; box-sizing: border-box; display: flex; flex-direction: column; position: relative;">
         <!-- Header -->
-        <div style="text-align: center; margin-bottom: 60px; border-bottom: 3px solid #1e40af; padding-bottom: 40px;">
-          <div style="display: flex; align-items: center; justify-content: center; gap: 20px; margin-bottom: 20px;">
-            <div style="width: 80px; height: 80px; background: linear-gradient(135deg, #1e40af, #3b82f6); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-size: 40px; font-weight: bold;">
+        <div style="text-align: center; margin-bottom: 15mm; border-bottom: 2px solid #1e40af; padding-bottom: 10mm;">
+          <div style="display: flex; align-items: center; justify-content: center; gap: 5mm; margin-bottom: 5mm;">
+            <div style="width: 20mm; height: 20mm; background: linear-gradient(135deg, #1e40af, #3b82f6); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-size: 12pt; font-weight: bold;">
               DPG
             </div>
           </div>
-          <h1 style="font-size: 48px; font-weight: bold; color: #1e40af; margin: 0 0 15px 0; line-height: 1.2;">
+          <h1 style="font-size: 24pt; font-weight: bold; color: #1e40af; margin: 0 0 3mm 0; line-height: 1.2;">
             ${slide.title}
           </h1>
-          <h2 style="font-size: 32px; color: #64748b; margin: 0; font-weight: 300;">
+          <h2 style="font-size: 16pt; color: #64748b; margin: 0; font-weight: 300;">
             ${slide.subtitle}
           </h2>
         </div>
 
         <!-- Content -->
-        <div style="flex: 1; display: flex; align-items: center; justify-content: center;">
-          <div style="width: 100%;">
+        <div style="flex: 1; display: flex; align-items: flex-start; justify-content: center; max-height: 180mm; overflow: hidden;">
+          <div style="width: 100%; max-width: 170mm;">
             ${getProfessionalPrintContent(slide, index)}
           </div>
         </div>
 
         <!-- Footer -->
-        <div style="display: flex; justify-content: space-between; align-items: center; padding-top: 40px; border-top: 2px solid #e2e8f0; margin-top: 40px; font-size: 24px; color: #64748b;">
+        <div style="display: flex; justify-content: space-between; align-items: center; padding-top: 5mm; border-top: 1px solid #e2e8f0; margin-top: 5mm; font-size: 9pt; color: #64748b; position: absolute; bottom: 20mm; left: 20mm; right: 20mm;">
           <div>
             <strong>Delorenzo Property Group Pty Ltd</strong><br>
             ESG Property Assessment Platform™
@@ -483,23 +483,59 @@ export const ClientPresentation = () => {
       <html>
         <head>
           <title>Delorenzo Property Group - Client Presentation</title>
+          <meta charset="UTF-8">
           <style>
+            * {
+              box-sizing: border-box;
+              margin: 0;
+              padding: 0;
+            }
             body { 
               margin: 0; 
               font-family: 'Arial', 'Helvetica', sans-serif;
               background: white;
+              font-size: 12pt;
+              line-height: 1.4;
+            }
+            @media screen {
+              body {
+                background: #f5f5f5;
+                padding: 20px;
+              }
             }
             @media print {
               @page { 
                 margin: 0; 
-                size: A4 landscape;
+                size: A4 portrait;
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
               }
-              .no-print { display: none; }
-              * { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+              body {
+                margin: 0;
+                padding: 0;
+                background: white !important;
+              }
+              .no-print { 
+                display: none !important; 
+              }
+              * { 
+                -webkit-print-color-adjust: exact !important; 
+                print-color-adjust: exact !important; 
+                color-adjust: exact !important;
+              }
+            }
+            @media screen and (max-width: 768px) {
+              body {
+                padding: 10px;
+              }
             }
           </style>
         </head>
         <body>
+          <div class="no-print" style="position: fixed; top: 20px; right: 20px; z-index: 1000; background: white; padding: 10px; border-radius: 5px; box-shadow: 0 2px 10px rgba(0,0,0,0.2);">
+            <button onclick="window.print()" style="background: #1e40af; color: white; border: none; padding: 8px 16px; border-radius: 4px; cursor: pointer; margin-right: 8px;">Print PDF</button>
+            <button onclick="window.close()" style="background: #64748b; color: white; border: none; padding: 8px 16px; border-radius: 4px; cursor: pointer;">Close</button>
+          </div>
           ${printContent}
         </body>
       </html>
@@ -508,8 +544,11 @@ export const ClientPresentation = () => {
     printWindow.document.close();
     printWindow.focus();
     setTimeout(() => {
-      printWindow.print();
-    }, 500);
+      // Auto-print after a short delay to ensure content is loaded
+      if (confirm('Ready to print/save as PDF? Click OK to open print dialog or Cancel to review first.')) {
+        printWindow.print();
+      }
+    }, 1000);
   };
 
   const getProfessionalPrintContent = (slide: any, slideIndex: number) => {
@@ -517,87 +556,97 @@ export const ClientPresentation = () => {
       case 0: // Welcome
         return `
           <div style="text-align: center;">
-            <div style="width: 200px; height: 200px; background: linear-gradient(135deg, #1e40af, #3b82f6); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 60px; box-shadow: 0 20px 40px rgba(30, 64, 175, 0.3);">
-              <svg style="width: 100px; height: 100px; color: white;" viewBox="0 0 24 24" fill="currentColor">
-                <path d="M3 21h18l-9-18-9 18z M12 9v6 M12 17h.01"></path>
+            <div style="width: 40mm; height: 40mm; background: linear-gradient(135deg, #1e40af, #3b82f6); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 15mm; box-shadow: 0 5mm 10mm rgba(30, 64, 175, 0.3);">
+              <svg style="width: 20mm; height: 20mm; color: white;" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M12 2L2 7L12 12L22 7L12 2Z"></path>
+                <path d="M2 17L12 22L22 17"></path>
+                <path d="M2 12L12 17L22 12"></path>
               </svg>
             </div>
-            <h3 style="font-size: 42px; font-weight: bold; margin-bottom: 40px; color: #1e293b;">Welcome to the Future of Property Valuation</h3>
-            <p style="font-size: 24px; color: #64748b; max-width: 800px; margin: 0 auto 60px; line-height: 1.6;">
+            <h3 style="font-size: 18pt; font-weight: bold; margin-bottom: 8mm; color: #1e293b;">Welcome to the Future of Property Valuation</h3>
+            <p style="font-size: 12pt; color: #64748b; max-width: 120mm; margin: 0 auto 15mm; line-height: 1.5;">
               Comprehensive ESG-integrated platform combining traditional valuation methods with cutting-edge environmental, social, and governance assessment tools.
             </p>
-            <div style="display: flex; justify-content: center; gap: 30px; flex-wrap: wrap;">
-              <span style="background: #dbeafe; color: #1e40af; padding: 15px 30px; border-radius: 25px; font-size: 18px; font-weight: 600;">Patent Protected</span>
-              <span style="background: #f0fdf4; color: #166534; padding: 15px 30px; border-radius: 25px; font-size: 18px; font-weight: 600;">ISO Compliant</span>
-              <span style="background: #fef3c7; color: #d97706; padding: 15px 30px; border-radius: 25px; font-size: 18px; font-weight: 600;">Industry Leading</span>
+            <div style="display: flex; justify-content: center; gap: 8mm; flex-wrap: wrap;">
+              <span style="background: #dbeafe; color: #1e40af; padding: 3mm 6mm; border-radius: 6mm; font-size: 10pt; font-weight: 600;">Patent Protected</span>
+              <span style="background: #f0fdf4; color: #166534; padding: 3mm 6mm; border-radius: 6mm; font-size: 10pt; font-weight: 600;">ISO Compliant</span>
+              <span style="background: #fef3c7; color: #d97706; padding: 3mm 6mm; border-radius: 6mm; font-size: 10pt; font-weight: 600;">Industry Leading</span>
             </div>
           </div>
         `;
       
       case 1: // Platform Overview
         return `
-          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 60px;">
-            <div style="background: white; border: 3px solid #dbeafe; border-radius: 20px; padding: 40px; box-shadow: 0 10px 30px rgba(0,0,0,0.1);">
-              <h3 style="font-size: 28px; font-weight: bold; color: #1e40af; margin-bottom: 30px; display: flex; align-items: center; gap: 15px;">
-                <span style="width: 40px; height: 40px; background: #1e40af; border-radius: 8px; display: flex; align-items: center; justify-content: center; color: white;">🏢</span>
-                Property Hub
-              </h3>
-              <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; font-size: 16px;">
-                <div style="display: flex; align-items: center; gap: 10px;">
-                  <div style="width: 8px; height: 8px; background: #1e40af; border-radius: 50%;"></div>
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15mm;">
+            <div style="background: white; border: 2px solid #dbeafe; border-radius: 5mm; padding: 12mm; box-shadow: 0 2mm 6mm rgba(0,0,0,0.1);">
+              <div style="display: flex; align-items: center; gap: 5mm; margin-bottom: 8mm;">
+                <div style="width: 12mm; height: 12mm; background: #1e40af; border-radius: 3mm; display: flex; align-items: center; justify-content: center;">
+                  <svg style="width: 6mm; height: 6mm; color: white;" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M12 2L2 7L12 12L22 7L12 2Z"></path>
+                  </svg>
+                </div>
+                <h3 style="font-size: 14pt; font-weight: bold; color: #1e40af; margin: 0;">Property Hub</h3>
+              </div>
+              <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 4mm; font-size: 9pt;">
+                <div style="display: flex; align-items: center; gap: 3mm;">
+                  <div style="width: 2mm; height: 2mm; background: #1e40af; border-radius: 50%;"></div>
                   <span>Commercial Properties</span>
                 </div>
-                <div style="display: flex; align-items: center; gap: 10px;">
-                  <div style="width: 8px; height: 8px; background: #1e40af; border-radius: 50%;"></div>
+                <div style="display: flex; align-items: center; gap: 3mm;">
+                  <div style="width: 2mm; height: 2mm; background: #1e40af; border-radius: 50%;"></div>
                   <span>Residential Assets</span>
                 </div>
-                <div style="display: flex; align-items: center; gap: 10px;">
-                  <div style="width: 8px; height: 8px; background: #1e40af; border-radius: 50%;"></div>
+                <div style="display: flex; align-items: center; gap: 3mm;">
+                  <div style="width: 2mm; height: 2mm; background: #1e40af; border-radius: 50%;"></div>
                   <span>Industrial Facilities</span>
                 </div>
-                <div style="display: flex; align-items: center; gap: 10px;">
-                  <div style="width: 8px; height: 8px; background: #1e40af; border-radius: 50%;"></div>
+                <div style="display: flex; align-items: center; gap: 3mm;">
+                  <div style="width: 2mm; height: 2mm; background: #1e40af; border-radius: 50%;"></div>
                   <span>Sports Stadiums</span>
                 </div>
-                <div style="display: flex; align-items: center; gap: 10px;">
-                  <div style="width: 8px; height: 8px; background: #1e40af; border-radius: 50%;"></div>
+                <div style="display: flex; align-items: center; gap: 3mm;">
+                  <div style="width: 2mm; height: 2mm; background: #1e40af; border-radius: 50%;"></div>
                   <span>Fast Food Outlets</span>
                 </div>
-                <div style="display: flex; align-items: center; gap: 10px;">
-                  <div style="width: 8px; height: 8px; background: #1e40af; border-radius: 50%;"></div>
+                <div style="display: flex; align-items: center; gap: 3mm;">
+                  <div style="width: 2mm; height: 2mm; background: #1e40af; border-radius: 50%;"></div>
                   <span>Healthcare Properties</span>
                 </div>
               </div>
             </div>
             
-            <div style="background: white; border: 3px solid #dcfce7; border-radius: 20px; padding: 40px; box-shadow: 0 10px 30px rgba(0,0,0,0.1);">
-              <h3 style="font-size: 28px; font-weight: bold; color: #16a34a; margin-bottom: 30px; display: flex; align-items: center; gap: 15px;">
-                <span style="width: 40px; height: 40px; background: #16a34a; border-radius: 8px; display: flex; align-items: center; justify-content: center; color: white;">🌱</span>
-                Agricultural Hub
-              </h3>
-              <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; font-size: 16px;">
-                <div style="display: flex; align-items: center; gap: 10px;">
-                  <div style="width: 8px; height: 8px; background: #16a34a; border-radius: 50%;"></div>
+            <div style="background: white; border: 2px solid #dcfce7; border-radius: 5mm; padding: 12mm; box-shadow: 0 2mm 6mm rgba(0,0,0,0.1);">
+              <div style="display: flex; align-items: center; gap: 5mm; margin-bottom: 8mm;">
+                <div style="width: 12mm; height: 12mm; background: #16a34a; border-radius: 3mm; display: flex; align-items: center; justify-content: center;">
+                  <svg style="width: 6mm; height: 6mm; color: white;" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M12 2L13.09 8.26L22 9L13.09 9.74L12 16L10.91 9.74L2 9L10.91 8.26L12 2Z"></path>
+                  </svg>
+                </div>
+                <h3 style="font-size: 14pt; font-weight: bold; color: #16a34a; margin: 0;">Agricultural Hub</h3>
+              </div>
+              <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 4mm; font-size: 9pt;">
+                <div style="display: flex; align-items: center; gap: 3mm;">
+                  <div style="width: 2mm; height: 2mm; background: #16a34a; border-radius: 50%;"></div>
                   <span>Crop Valuation</span>
                 </div>
-                <div style="display: flex; align-items: center; gap: 10px;">
-                  <div style="width: 8px; height: 8px; background: #16a34a; border-radius: 50%;"></div>
+                <div style="display: flex; align-items: center; gap: 3mm;">
+                  <div style="width: 2mm; height: 2mm; background: #16a34a; border-radius: 50%;"></div>
                   <span>Orchard Management</span>
                 </div>
-                <div style="display: flex; align-items: center; gap: 10px;">
-                  <div style="width: 8px; height: 8px; background: #16a34a; border-radius: 50%;"></div>
+                <div style="display: flex; align-items: center; gap: 3mm;">
+                  <div style="width: 2mm; height: 2mm; background: #16a34a; border-radius: 50%;"></div>
                   <span>Vineyard Assessment</span>
                 </div>
-                <div style="display: flex; align-items: center; gap: 10px;">
-                  <div style="width: 8px; height: 8px; background: #16a34a; border-radius: 50%;"></div>
+                <div style="display: flex; align-items: center; gap: 3mm;">
+                  <div style="width: 2mm; height: 2mm; background: #16a34a; border-radius: 50%;"></div>
                   <span>Pasture Evaluation</span>
                 </div>
-                <div style="display: flex; align-items: center; gap: 10px;">
-                  <div style="width: 8px; height: 8px; background: #16a34a; border-radius: 50%;"></div>
+                <div style="display: flex; align-items: center; gap: 3mm;">
+                  <div style="width: 2mm; height: 2mm; background: #16a34a; border-radius: 50%;"></div>
                   <span>Mixed Farm Analysis</span>
                 </div>
-                <div style="display: flex; align-items: center; gap: 10px;">
-                  <div style="width: 8px; height: 8px; background: #16a34a; border-radius: 50%;"></div>
+                <div style="display: flex; align-items: center; gap: 3mm;">
+                  <div style="width: 2mm; height: 2mm; background: #16a34a; border-radius: 50%;"></div>
                   <span>Management Diary</span>
                 </div>
               </div>
@@ -607,84 +656,129 @@ export const ClientPresentation = () => {
 
       case 2: // Key Features
         return `
-          <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 40px;">
-            <div style="background: white; border-radius: 15px; padding: 35px; text-align: center; box-shadow: 0 8px 25px rgba(0,0,0,0.1); border: 2px solid #dbeafe;">
-              <div style="font-size: 40px; margin-bottom: 20px;">🧮</div>
-              <h3 style="font-size: 24px; font-weight: bold; color: #1e40af; margin-bottom: 25px;">Advanced Calculations</h3>
-              <ul style="text-align: left; font-size: 14px; color: #64748b; list-style: none; padding: 0;">
-                <li style="margin-bottom: 10px;">• DCF Analysis</li>
-                <li style="margin-bottom: 10px;">• Capitalization Methods</li>
-                <li style="margin-bottom: 10px;">• Direct Comparison</li>
-                <li style="margin-bottom: 10px;">• Summation Approach</li>
-                <li>• Rent Revision Tools</li>
+          <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 12mm;">
+            <div style="background: white; border-radius: 5mm; padding: 10mm; text-align: center; box-shadow: 0 2mm 6mm rgba(0,0,0,0.1); border: 2px solid #dbeafe;">
+              <div style="width: 20mm; height: 20mm; background: linear-gradient(135deg, #1e40af, #3b82f6); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 6mm;">
+                <svg style="width: 10mm; height: 10mm; color: white;" viewBox="0 0 24 24" fill="currentColor">
+                  <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                  <line x1="16" y1="2" x2="16" y2="6"></line>
+                  <line x1="8" y1="2" x2="8" y2="6"></line>
+                  <line x1="3" y1="10" x2="21" y2="10"></line>
+                </svg>
+              </div>
+              <h3 style="font-size: 12pt; font-weight: bold; color: #1e40af; margin-bottom: 6mm;">Advanced Calculations</h3>
+              <ul style="text-align: left; font-size: 9pt; color: #64748b; list-style: none; padding: 0;">
+                <li style="margin-bottom: 2mm; display: flex; align-items: center;">
+                  <span style="color: #1e40af; margin-right: 3mm;">•</span> DCF Analysis
+                </li>
+                <li style="margin-bottom: 2mm; display: flex; align-items: center;">
+                  <span style="color: #1e40af; margin-right: 3mm;">•</span> Capitalization Methods
+                </li>
+                <li style="margin-bottom: 2mm; display: flex; align-items: center;">
+                  <span style="color: #1e40af; margin-right: 3mm;">•</span> Direct Comparison
+                </li>
+                <li style="margin-bottom: 2mm; display: flex; align-items: center;">
+                  <span style="color: #1e40af; margin-right: 3mm;">•</span> Summation Approach
+                </li>
+                <li style="display: flex; align-items: center;">
+                  <span style="color: #1e40af; margin-right: 3mm;">•</span> Rent Revision Tools
+                </li>
               </ul>
             </div>
 
-            <div style="background: white; border-radius: 15px; padding: 35px; text-align: center; box-shadow: 0 8px 25px rgba(0,0,0,0.1); border: 2px solid #dcfce7;">
-              <div style="font-size: 40px; margin-bottom: 20px;">🌱</div>
-              <h3 style="font-size: 24px; font-weight: bold; color: #16a34a; margin-bottom: 25px;">ESG Integration</h3>
-              <ul style="text-align: left; font-size: 14px; color: #64748b; list-style: none; padding: 0;">
-                <li style="margin-bottom: 10px;">• Environmental Impact</li>
-                <li style="margin-bottom: 10px;">• Social Responsibility</li>
-                <li style="margin-bottom: 10px;">• Governance Metrics</li>
-                <li style="margin-bottom: 10px;">• Sustainability Scoring</li>
-                <li>• Climate Risk Assessment</li>
+            <div style="background: white; border-radius: 5mm; padding: 10mm; text-align: center; box-shadow: 0 2mm 6mm rgba(0,0,0,0.1); border: 2px solid #dcfce7;">
+              <div style="width: 20mm; height: 20mm; background: linear-gradient(135deg, #16a34a, #22c55e); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 6mm;">
+                <svg style="width: 10mm; height: 10mm; color: white;" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M12 2L13.09 8.26L22 9L13.09 9.74L12 16L10.91 9.74L2 9L10.91 8.26L12 2Z"></path>
+                </svg>
+              </div>
+              <h3 style="font-size: 12pt; font-weight: bold; color: #16a34a; margin-bottom: 6mm;">ESG Integration</h3>
+              <ul style="text-align: left; font-size: 9pt; color: #64748b; list-style: none; padding: 0;">
+                <li style="margin-bottom: 2mm; display: flex; align-items: center;">
+                  <span style="color: #16a34a; margin-right: 3mm;">•</span> Environmental Impact
+                </li>
+                <li style="margin-bottom: 2mm; display: flex; align-items: center;">
+                  <span style="color: #16a34a; margin-right: 3mm;">•</span> Social Responsibility
+                </li>
+                <li style="margin-bottom: 2mm; display: flex; align-items: center;">
+                  <span style="color: #16a34a; margin-right: 3mm;">•</span> Governance Metrics
+                </li>
+                <li style="margin-bottom: 2mm; display: flex; align-items: center;">
+                  <span style="color: #16a34a; margin-right: 3mm;">•</span> Sustainability Scoring
+                </li>
+                <li style="display: flex; align-items: center;">
+                  <span style="color: #16a34a; margin-right: 3mm;">•</span> Climate Risk Assessment
+                </li>
               </ul>
             </div>
 
-            <div style="background: white; border-radius: 15px; padding: 35px; text-align: center; box-shadow: 0 8px 25px rgba(0,0,0,0.1); border: 2px solid #dbeafe;">
-              <div style="font-size: 40px; margin-bottom: 20px;">🛡️</div>
-              <h3 style="font-size: 24px; font-weight: bold; color: #2563eb; margin-bottom: 25px;">Security & Compliance</h3>
-              <ul style="text-align: left; font-size: 14px; color: #64748b; list-style: none; padding: 0;">
-                <li style="margin-bottom: 10px;">• Patent Protected</li>
-                <li style="margin-bottom: 10px;">• ISO 27001 Compliant</li>
-                <li style="margin-bottom: 10px;">• SOC 2 Type II</li>
-                <li style="margin-bottom: 10px;">• Enterprise Grade Security</li>
-                <li>• Data Encryption</li>
+            <div style="background: white; border-radius: 5mm; padding: 10mm; text-align: center; box-shadow: 0 2mm 6mm rgba(0,0,0,0.1); border: 2px solid #dbeafe;">
+              <div style="width: 20mm; height: 20mm; background: linear-gradient(135deg, #2563eb, #3b82f6); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 6mm;">
+                <svg style="width: 10mm; height: 10mm; color: white;" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+                </svg>
+              </div>
+              <h3 style="font-size: 12pt; font-weight: bold; color: #2563eb; margin-bottom: 6mm;">Security & Compliance</h3>
+              <ul style="text-align: left; font-size: 9pt; color: #64748b; list-style: none; padding: 0;">
+                <li style="margin-bottom: 2mm; display: flex; align-items: center;">
+                  <span style="color: #2563eb; margin-right: 3mm;">•</span> Patent Protected
+                </li>
+                <li style="margin-bottom: 2mm; display: flex; align-items: center;">
+                  <span style="color: #2563eb; margin-right: 3mm;">•</span> ISO 27001 Compliant
+                </li>
+                <li style="margin-bottom: 2mm; display: flex; align-items: center;">
+                  <span style="color: #2563eb; margin-right: 3mm;">•</span> SOC 2 Type II
+                </li>
+                <li style="margin-bottom: 2mm; display: flex; align-items: center;">
+                  <span style="color: #2563eb; margin-right: 3mm;">•</span> Enterprise Grade Security
+                </li>
+                <li style="display: flex; align-items: center;">
+                  <span style="color: #2563eb; margin-right: 3mm;">•</span> Data Encryption
+                </li>
               </ul>
             </div>
           </div>
         `;
 
-      case 3: // Agricultural Specialization
+      case 3: // Agricultural Focus
         return `
-          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 60px;">
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12mm;">
             <div>
-              <h3 style="font-size: 32px; font-weight: bold; margin-bottom: 30px; color: #16a34a; display: flex; align-items: center; gap: 15px;">
+              <h3 style="font-size: 14pt; font-weight: bold; margin-bottom: 6mm; color: #16a34a; display: flex; align-items: center; gap: 3mm;">
                 📊 Valuation Methods
               </h3>
-              <div style="display: flex; flex-direction: column; gap: 20px;">
-                <div style="padding: 20px; background: #f8fafc; border-radius: 12px; border-left: 4px solid #16a34a;">
-                  <div style="font-weight: 600; font-size: 18px; margin-bottom: 8px;">Crop Yield Analysis</div>
-                  <div style="font-size: 14px; color: #64748b;">Per acre/hectare productivity assessment</div>
+              <div style="display: flex; flex-direction: column; gap: 4mm;">
+                <div style="padding: 4mm; background: #f8fafc; border-radius: 3mm; border-left: 3px solid #16a34a;">
+                  <div style="font-weight: 600; font-size: 10pt; margin-bottom: 1mm;">Crop Yield Analysis</div>
+                  <div style="font-size: 8pt; color: #64748b;">Per acre/hectare productivity assessment</div>
                 </div>
-                <div style="padding: 20px; background: #f8fafc; border-radius: 12px; border-left: 4px solid #16a34a;">
-                  <div style="font-weight: 600; font-size: 18px; margin-bottom: 8px;">Commodity Market Integration</div>
-                  <div style="font-size: 14px; color: #64748b;">Real-time pricing and forecast analysis</div>
+                <div style="padding: 4mm; background: #f8fafc; border-radius: 3mm; border-left: 3px solid #16a34a;">
+                  <div style="font-weight: 600; font-size: 10pt; margin-bottom: 1mm;">Commodity Market Integration</div>
+                  <div style="font-size: 8pt; color: #64748b;">Real-time pricing and forecast analysis</div>
                 </div>
-                <div style="padding: 20px; background: #f8fafc; border-radius: 12px; border-left: 4px solid #16a34a;">
-                  <div style="font-weight: 600; font-size: 18px; margin-bottom: 8px;">Infrastructure Assessment</div>
-                  <div style="font-size: 14px; color: #64748b;">Irrigation, storage, and processing facilities</div>
+                <div style="padding: 4mm; background: #f8fafc; border-radius: 3mm; border-left: 3px solid #16a34a;">
+                  <div style="font-weight: 600; font-size: 10pt; margin-bottom: 1mm;">Infrastructure Assessment</div>
+                  <div style="font-size: 8pt; color: #64748b;">Irrigation, storage, and processing facilities</div>
                 </div>
               </div>
             </div>
             
             <div>
-              <h3 style="font-size: 32px; font-weight: bold; margin-bottom: 30px; color: #16a34a; display: flex; align-items: center; gap: 15px;">
+              <h3 style="font-size: 14pt; font-weight: bold; margin-bottom: 6mm; color: #16a34a; display: flex; align-items: center; gap: 3mm;">
                 🎯 Management Tools
               </h3>
-              <div style="display: flex; flex-direction: column; gap: 20px;">
-                <div style="padding: 20px; background: #f8fafc; border-radius: 12px; border-left: 4px solid #16a34a;">
-                  <div style="font-weight: 600; font-size: 18px; margin-bottom: 8px;">Spray Program Tracking</div>
-                  <div style="font-size: 14px; color: #64748b;">Chemical applications and schedules</div>
+              <div style="display: flex; flex-direction: column; gap: 4mm;">
+                <div style="padding: 4mm; background: #f8fafc; border-radius: 3mm; border-left: 3px solid #16a34a;">
+                  <div style="font-weight: 600; font-size: 10pt; margin-bottom: 1mm;">Spray Program Tracking</div>
+                  <div style="font-size: 8pt; color: #64748b;">Chemical applications and schedules</div>
                 </div>
-                <div style="padding: 20px; background: #f8fafc; border-radius: 12px; border-left: 4px solid #16a34a;">
-                  <div style="font-weight: 600; font-size: 18px; margin-bottom: 8px;">Labor Cost Calculator</div>
-                  <div style="font-size: 14px; color: #64748b;">Workforce planning and wage analysis</div>
+                <div style="padding: 4mm; background: #f8fafc; border-radius: 3mm; border-left: 3px solid #16a34a;">
+                  <div style="font-weight: 600; font-size: 10pt; margin-bottom: 1mm;">Labor Cost Calculator</div>
+                  <div style="font-size: 8pt; color: #64748b;">Workforce planning and wage analysis</div>
                 </div>
-                <div style="padding: 20px; background: #f8fafc; border-radius: 12px; border-left: 4px solid #16a34a;">
-                  <div style="font-weight: 600; font-size: 18px; margin-bottom: 8px;">Expense Management</div>
-                  <div style="font-size: 14px; color: #64748b;">Operational cost tracking and optimization</div>
+                <div style="padding: 4mm; background: #f8fafc; border-radius: 3mm; border-left: 3px solid #16a34a;">
+                  <div style="font-weight: 600; font-size: 10pt; margin-bottom: 1mm;">Expense Management</div>
+                  <div style="font-size: 8pt; color: #64748b;">Operational cost tracking and optimization</div>
                 </div>
               </div>
             </div>
@@ -693,107 +787,107 @@ export const ClientPresentation = () => {
 
       case 4: // Technology & Innovation
         return `
-          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 60px;">
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12mm;">
             <div>
-              <h3 style="font-size: 32px; font-weight: bold; margin-bottom: 30px; color: #1e40af;">⚡ Platform Capabilities</h3>
-              <div style="display: flex; flex-direction: column; gap: 25px;">
-                <div style="display: flex; align-items: start; gap: 20px;">
-                  <div style="width: 40px; height: 40px; background: #dbeafe; border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">🌐</div>
+              <h3 style="font-size: 14pt; font-weight: bold; margin-bottom: 6mm; color: #1e40af;">⚡ Platform Capabilities</h3>
+              <div style="display: flex; flex-direction: column; gap: 5mm;">
+                <div style="display: flex; align-items: start; gap: 4mm;">
+                  <div style="width: 8mm; height: 8mm; background: #dbeafe; border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0; font-size: 8pt;">🌐</div>
                   <div>
-                    <div style="font-weight: 600; font-size: 18px; margin-bottom: 8px;">OCR Document Processing</div>
-                    <div style="font-size: 14px; color: #64748b;">Automated data extraction from property documents</div>
+                    <div style="font-weight: 600; font-size: 10pt; margin-bottom: 1mm;">OCR Document Processing</div>
+                    <div style="font-size: 8pt; color: #64748b;">Automated data extraction from property documents</div>
                   </div>
                 </div>
                 
-                <div style="display: flex; align-items: start; gap: 20px;">
-                  <div style="width: 40px; height: 40px; background: #dbeafe; border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">📍</div>
+                <div style="display: flex; align-items: start; gap: 4mm;">
+                  <div style="width: 8mm; height: 8mm; background: #dbeafe; border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0; font-size: 8pt;">📍</div>
                   <div>
-                    <div style="font-weight: 600; font-size: 18px; margin-bottom: 8px;">Geographic Integration</div>
-                    <div style="font-size: 14px; color: #64748b;">Location-based analysis and comparable sales</div>
+                    <div style="font-weight: 600; font-size: 10pt; margin-bottom: 1mm;">Geographic Integration</div>
+                    <div style="font-size: 8pt; color: #64748b;">Location-based analysis and comparable sales</div>
                   </div>
                 </div>
                 
-                <div style="display: flex; align-items: start; gap: 20px;">
-                  <div style="width: 40px; height: 40px; background: #dbeafe; border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">📈</div>
+                <div style="display: flex; align-items: start; gap: 4mm;">
+                  <div style="width: 8mm; height: 8mm; background: #dbeafe; border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0; font-size: 8pt;">📈</div>
                   <div>
-                    <div style="font-weight: 600; font-size: 18px; margin-bottom: 8px;">Market Analytics</div>
-                    <div style="font-size: 14px; color: #64748b;">Real-time market data and trend analysis</div>
+                    <div style="font-weight: 600; font-size: 10pt; margin-bottom: 1mm;">Market Analytics</div>
+                    <div style="font-size: 8pt; color: #64748b;">Real-time market data and trend analysis</div>
                   </div>
                 </div>
               </div>
             </div>
             
             <div>
-              <h3 style="font-size: 32px; font-weight: bold; margin-bottom: 30px; color: #2563eb;">🔒 Security Features</h3>
-              <div style="display: flex; flex-direction: column; gap: 20px;">
-                <div style="padding: 25px; background: linear-gradient(135deg, #eff6ff, #dbeafe); border-radius: 12px; border: 2px solid #3b82f6;">
-                  <div style="font-weight: 600; color: #1e40af; font-size: 18px; margin-bottom: 8px;">Enterprise Security</div>
-                  <div style="font-size: 14px; color: #1e40af;">End-to-end encryption, secure authentication, audit trails</div>
+              <h3 style="font-size: 14pt; font-weight: bold; margin-bottom: 6mm; color: #2563eb;">🔒 Security Features</h3>
+              <div style="display: flex; flex-direction: column; gap: 4mm;">
+                <div style="padding: 5mm; background: linear-gradient(135deg, #eff6ff, #dbeafe); border-radius: 3mm; border: 1px solid #3b82f6;">
+                  <div style="font-weight: 600; color: #1e40af; font-size: 10pt; margin-bottom: 1mm;">Enterprise Security</div>
+                  <div style="font-size: 8pt; color: #1e40af;">End-to-end encryption, secure authentication, audit trails</div>
                 </div>
                 
-                <div style="padding: 25px; background: linear-gradient(135deg, #f0fdf4, #dcfce7); border-radius: 12px; border: 2px solid #22c55e;">
-                  <div style="font-weight: 600; color: #15803d; font-size: 18px; margin-bottom: 8px;">Data Protection</div>
-                  <div style="font-size: 14px; color: #15803d;">GDPR compliant, secure cloud infrastructure, backup systems</div>
+                <div style="padding: 5mm; background: linear-gradient(135deg, #f0fdf4, #dcfce7); border-radius: 3mm; border: 1px solid #22c55e;">
+                  <div style="font-weight: 600; color: #15803d; font-size: 10pt; margin-bottom: 1mm;">Data Protection</div>
+                  <div style="font-size: 8pt; color: #15803d;">GDPR compliant, secure cloud infrastructure, backup systems</div>
                 </div>
                 
-                <div style="padding: 25px; background: linear-gradient(135deg, #fff7ed, #fed7aa); border-radius: 12px; border: 2px solid #f97316;">
-                  <div style="font-weight: 600; color: #ea580c; font-size: 18px; margin-bottom: 8px;">Compliance Standards</div>
-                  <div style="font-size: 14px; color: #ea580c;">ISO 27001, SOC 2 Type II, industry best practices</div>
+                <div style="padding: 5mm; background: linear-gradient(135deg, #fff7ed, #fed7aa); border-radius: 3mm; border: 1px solid #f97316;">
+                  <div style="font-weight: 600; color: #ea580c; font-size: 10pt; margin-bottom: 1mm;">Compliance Standards</div>
+                  <div style="font-size: 8pt; color: #ea580c;">ISO 27001, SOC 2 Type II, industry best practices</div>
                 </div>
               </div>
             </div>
           </div>
         `;
 
-      case 5: // Client Benefits
+      case 5: // Benefits
         return `
-          <div style="display: grid; grid-template-columns: 1fr 1.5fr; gap: 60px;">
-            <div style="display: grid; grid-template-rows: repeat(3, 1fr); gap: 30px;">
-              <div style="text-align: center; background: white; border-radius: 15px; padding: 30px; box-shadow: 0 8px 25px rgba(0,0,0,0.1);">
-                <div style="font-size: 50px; margin-bottom: 15px;">🏆</div>
-                <h3 style="font-size: 36px; font-weight: bold; color: #1e40af; margin: 0 0 10px 0;">95%</h3>
-                <p style="color: #64748b; font-size: 16px; margin: 0;">Accuracy in Valuations</p>
+          <div style="display: grid; grid-template-columns: 1fr 1.5fr; gap: 12mm;">
+            <div style="display: grid; grid-template-rows: repeat(3, 1fr); gap: 6mm;">
+              <div style="text-align: center; background: white; border-radius: 4mm; padding: 6mm; box-shadow: 0 2mm 6mm rgba(0,0,0,0.1);">
+                <div style="font-size: 20pt; margin-bottom: 3mm;">🏆</div>
+                <h3 style="font-size: 16pt; font-weight: bold; color: #1e40af; margin: 0 0 2mm 0;">95%</h3>
+                <p style="color: #64748b; font-size: 8pt; margin: 0;">Accuracy in Valuations</p>
               </div>
               
-              <div style="text-align: center; background: white; border-radius: 15px; padding: 30px; box-shadow: 0 8px 25px rgba(0,0,0,0.1);">
-                <div style="font-size: 50px; margin-bottom: 15px;">👥</div>
-                <h3 style="font-size: 36px; font-weight: bold; color: #16a34a; margin: 0 0 10px 0;">500+</h3>
-                <p style="color: #64748b; font-size: 16px; margin: 0;">Properties Assessed</p>
+              <div style="text-align: center; background: white; border-radius: 4mm; padding: 6mm; box-shadow: 0 2mm 6mm rgba(0,0,0,0.1);">
+                <div style="font-size: 20pt; margin-bottom: 3mm;">👥</div>
+                <h3 style="font-size: 16pt; font-weight: bold; color: #16a34a; margin: 0 0 2mm 0;">500+</h3>
+                <p style="color: #64748b; font-size: 8pt; margin: 0;">Properties Assessed</p>
               </div>
               
-              <div style="text-align: center; background: white; border-radius: 15px; padding: 30px; box-shadow: 0 8px 25px rgba(0,0,0,0.1);">
-                <div style="font-size: 50px; margin-bottom: 15px;">📈</div>
-                <h3 style="font-size: 36px; font-weight: bold; color: #2563eb; margin: 0 0 10px 0;">60%</h3>
-                <p style="color: #64748b; font-size: 16px; margin: 0;">Time Savings</p>
+              <div style="text-align: center; background: white; border-radius: 4mm; padding: 6mm; box-shadow: 0 2mm 6mm rgba(0,0,0,0.1);">
+                <div style="font-size: 20pt; margin-bottom: 3mm;">📈</div>
+                <h3 style="font-size: 16pt; font-weight: bold; color: #2563eb; margin: 0 0 2mm 0;">60%</h3>
+                <p style="color: #64748b; font-size: 8pt; margin: 0;">Time Savings</p>
               </div>
             </div>
             
             <div>
-              <h3 style="font-size: 32px; font-weight: bold; margin-bottom: 30px; color: #1e293b;">Key Advantages</h3>
-              <div style="display: flex; flex-direction: column; gap: 15px;">
-                <div style="display: flex; align-items: center; gap: 15px; padding: 20px; background: linear-gradient(135deg, #f0fdf4, #dcfce7); border-radius: 12px; border: 2px solid #22c55e;">
-                  <div style="width: 8px; height: 8px; background: #16a34a; border-radius: 50%;"></div>
-                  <span style="font-size: 18px; font-weight: 600; color: #1e293b;">Comprehensive ESG Integration</span>
+              <h3 style="font-size: 14pt; font-weight: bold; margin-bottom: 6mm; color: #1e293b;">Key Advantages</h3>
+              <div style="display: flex; flex-direction: column; gap: 3mm;">
+                <div style="display: flex; align-items: center; gap: 3mm; padding: 4mm; background: linear-gradient(135deg, #f0fdf4, #dcfce7); border-radius: 3mm; border: 1px solid #22c55e;">
+                  <div style="width: 2mm; height: 2mm; background: #16a34a; border-radius: 50%;"></div>
+                  <span style="font-size: 9pt; font-weight: 600; color: #1e293b;">Comprehensive ESG Integration</span>
                 </div>
                 
-                <div style="display: flex; align-items: center; gap: 15px; padding: 20px; background: linear-gradient(135deg, #eff6ff, #dbeafe); border-radius: 12px; border: 2px solid #3b82f6;">
-                  <div style="width: 8px; height: 8px; background: #2563eb; border-radius: 50%;"></div>
-                  <span style="font-size: 18px; font-weight: 600; color: #1e293b;">Automated Document Processing</span>
+                <div style="display: flex; align-items: center; gap: 3mm; padding: 4mm; background: linear-gradient(135deg, #eff6ff, #dbeafe); border-radius: 3mm; border: 1px solid #3b82f6;">
+                  <div style="width: 2mm; height: 2mm; background: #2563eb; border-radius: 50%;"></div>
+                  <span style="font-size: 9pt; font-weight: 600; color: #1e293b;">Automated Document Processing</span>
                 </div>
                 
-                <div style="display: flex; align-items: center; gap: 15px; padding: 20px; background: linear-gradient(135deg, #faf5ff, #f3e8ff); border-radius: 12px; border: 2px solid #a855f7;">
-                  <div style="width: 8px; height: 8px; background: #9333ea; border-radius: 50%;"></div>
-                  <span style="font-size: 18px; font-weight: 600; color: #1e293b;">Real-time Market Data</span>
+                <div style="display: flex; align-items: center; gap: 3mm; padding: 4mm; background: linear-gradient(135deg, #faf5ff, #f3e8ff); border-radius: 3mm; border: 1px solid #a855f7;">
+                  <div style="width: 2mm; height: 2mm; background: #9333ea; border-radius: 50%;"></div>
+                  <span style="font-size: 9pt; font-weight: 600; color: #1e293b;">Real-time Market Data</span>
                 </div>
                 
-                <div style="display: flex; align-items: center; gap: 15px; padding: 20px; background: linear-gradient(135deg, #fff7ed, #fed7aa); border-radius: 12px; border: 2px solid #f97316;">
-                  <div style="width: 8px; height: 8px; background: #ea580c; border-radius: 50%;"></div>
-                  <span style="font-size: 18px; font-weight: 600; color: #1e293b;">Industry-Leading Security</span>
+                <div style="display: flex; align-items: center; gap: 3mm; padding: 4mm; background: linear-gradient(135deg, #fff7ed, #fed7aa); border-radius: 3mm; border: 1px solid #f97316;">
+                  <div style="width: 2mm; height: 2mm; background: #ea580c; border-radius: 50%;"></div>
+                  <span style="font-size: 9pt; font-weight: 600; color: #1e293b;">Industry-Leading Security</span>
                 </div>
                 
-                <div style="display: flex; align-items: center; gap: 15px; padding: 20px; background: linear-gradient(135deg, #f0fdfa, #ccfbf1); border-radius: 12px; border: 2px solid #14b8a6;">
-                  <div style="width: 8px; height: 8px; background: #0d9488; border-radius: 50%;"></div>
-                  <span style="font-size: 18px; font-weight: 600; color: #1e293b;">Specialized Agricultural Tools</span>
+                <div style="display: flex; align-items: center; gap: 3mm; padding: 4mm; background: linear-gradient(135deg, #f0fdfa, #ccfbf1); border-radius: 3mm; border: 1px solid #14b8a6;">
+                  <div style="width: 2mm; height: 2mm; background: #0d9488; border-radius: 50%;"></div>
+                  <span style="font-size: 9pt; font-weight: 600; color: #1e293b;">Specialized Agricultural Tools</span>
                 </div>
               </div>
             </div>
@@ -803,38 +897,38 @@ export const ClientPresentation = () => {
       case 6: // Next Steps
         return `
           <div style="text-align: center;">
-            <div style="margin-bottom: 60px;">
-              <h3 style="font-size: 36px; font-weight: bold; margin-bottom: 30px; color: #1e293b;">Ready to Transform Your Property Assessments?</h3>
-              <p style="font-size: 20px; color: #64748b; line-height: 1.6; max-width: 800px; margin: 0 auto;">
+            <div style="margin-bottom: 12mm;">
+              <h3 style="font-size: 16pt; font-weight: bold; margin-bottom: 6mm; color: #1e293b;">Ready to Transform Your Property Assessments?</h3>
+              <p style="font-size: 10pt; color: #64748b; line-height: 1.5; max-width: 120mm; margin: 0 auto;">
                 Join the leading property professionals who trust our platform for accurate, comprehensive, and ESG-integrated valuations.
               </p>
             </div>
             
-            <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 40px; margin-bottom: 60px;">
-              <div style="background: white; padding: 40px 30px; text-align: center; border: 2px solid #dbeafe; border-radius: 15px; box-shadow: 0 8px 25px rgba(0,0,0,0.1);">
-                <div style="font-size: 60px; margin-bottom: 20px;">📞</div>
-                <h4 style="font-size: 24px; font-weight: bold; margin-bottom: 15px; color: #1e293b;">Schedule Demo</h4>
-                <p style="font-size: 16px; color: #64748b;">Book a personalized platform demonstration</p>
+            <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 8mm; margin-bottom: 12mm;">
+              <div style="background: white; padding: 8mm 6mm; text-align: center; border: 1px solid #dbeafe; border-radius: 4mm; box-shadow: 0 2mm 6mm rgba(0,0,0,0.1);">
+                <div style="font-size: 24pt; margin-bottom: 4mm;">📞</div>
+                <h4 style="font-size: 11pt; font-weight: bold; margin-bottom: 3mm; color: #1e293b;">Schedule Demo</h4>
+                <p style="font-size: 8pt; color: #64748b;">Book a personalized platform demonstration</p>
               </div>
               
-              <div style="background: white; padding: 40px 30px; text-align: center; border: 2px solid #dcfce7; border-radius: 15px; box-shadow: 0 8px 25px rgba(0,0,0,0.1);">
-                <div style="font-size: 60px; margin-bottom: 20px;">🚀</div>
-                <h4 style="font-size: 24px; font-weight: bold; margin-bottom: 15px; color: #1e293b;">Trial Access</h4>
-                <p style="font-size: 16px; color: #64748b;">Start with a 30-day free trial</p>
+              <div style="background: white; padding: 8mm 6mm; text-align: center; border: 1px solid #dcfce7; border-radius: 4mm; box-shadow: 0 2mm 6mm rgba(0,0,0,0.1);">
+                <div style="font-size: 24pt; margin-bottom: 4mm;">🚀</div>
+                <h4 style="font-size: 11pt; font-weight: bold; margin-bottom: 3mm; color: #1e293b;">Trial Access</h4>
+                <p style="font-size: 8pt; color: #64748b;">Start with a 30-day free trial</p>
               </div>
               
-              <div style="background: white; padding: 40px 30px; text-align: center; border: 2px solid #dbeafe; border-radius: 15px; box-shadow: 0 8px 25px rgba(0,0,0,0.1);">
-                <div style="font-size: 60px; margin-bottom: 20px;">🤝</div>
-                <h4 style="font-size: 24px; font-weight: bold; margin-bottom: 15px; color: #1e293b;">Partnership</h4>
-                <p style="font-size: 16px; color: #64748b;">Explore enterprise partnership opportunities</p>
+              <div style="background: white; padding: 8mm 6mm; text-align: center; border: 1px solid #dbeafe; border-radius: 4mm; box-shadow: 0 2mm 6mm rgba(0,0,0,0.1);">
+                <div style="font-size: 24pt; margin-bottom: 4mm;">🤝</div>
+                <h4 style="font-size: 11pt; font-weight: bold; margin-bottom: 3mm; color: #1e293b;">Partnership</h4>
+                <p style="font-size: 8pt; color: #64748b;">Explore enterprise partnership opportunities</p>
               </div>
             </div>
             
-            <div style="display: flex; justify-content: center; gap: 30px;">
-              <div style="background: linear-gradient(135deg, #1e40af, #3b82f6); color: white; padding: 15px 40px; border-radius: 12px; font-size: 20px; font-weight: 600; box-shadow: 0 8px 25px rgba(30, 64, 175, 0.3);">
+            <div style="display: flex; justify-content: center; gap: 6mm;">
+              <div style="background: linear-gradient(135deg, #1e40af, #3b82f6); color: white; padding: 3mm 8mm; border-radius: 3mm; font-size: 10pt; font-weight: 600; box-shadow: 0 2mm 6mm rgba(30, 64, 175, 0.3);">
                 Schedule Demo
               </div>
-              <div style="background: white; color: #1e40af; border: 2px solid #1e40af; padding: 15px 40px; border-radius: 12px; font-size: 20px; font-weight: 600;">
+              <div style="background: white; color: #1e40af; border: 1px solid #1e40af; padding: 3mm 8mm; border-radius: 3mm; font-size: 10pt; font-weight: 600;">
                 Contact Sales
               </div>
             </div>
@@ -843,7 +937,7 @@ export const ClientPresentation = () => {
 
       default:
         return `
-          <div style="text-align: center; padding: 80px; font-size: 20px; color: #64748b;">
+          <div style="text-align: center; padding: 20mm; font-size: 10pt; color: #64748b;">
             Professional content for ${slide.title}
           </div>
         `;
