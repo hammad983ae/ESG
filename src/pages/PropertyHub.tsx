@@ -32,6 +32,7 @@ import { toast } from "sonner";
 import { ChildcareValuationForm } from "@/components/ChildcareValuationForm";
 import { HospitalityValuationForm } from "@/components/HospitalityValuationForm";
 import { PetrolStationValuationForm } from "@/components/PetrolStationValuationForm";
+import { IPProtectionNotice } from "@/components/IPProtectionNotice";
 
 export default function PropertyHub() {
   const navigate = useNavigate();
@@ -180,19 +181,24 @@ export default function PropertyHub() {
           
           {/* Quick Stats */}
           <div className="flex flex-wrap justify-center gap-4 mb-8">
-            <Badge variant="secondary" className="text-sm py-2 px-4">
+            <Badge variant="secondary" className="text-sm py-2 px-4 touch-manipulation">
               <Building2 className="h-4 w-4 mr-2" />
               {propertyTypes.length} Property Types
             </Badge>
-            <Badge variant="secondary" className="text-sm py-2 px-4">
+            <Badge variant="secondary" className="text-sm py-2 px-4 touch-manipulation">
               <TrendingUp className="h-4 w-4 mr-2" />
               Advanced Valuations
             </Badge>
-            <Badge variant="secondary" className="text-sm py-2 px-4">
+            <Badge variant="secondary" className="text-sm py-2 px-4 touch-manipulation">
               <Shield className="h-4 w-4 mr-2" />
               ESG Assessments
             </Badge>
           </div>
+        </div>
+
+        {/* IP Protection Notice */}
+        <div className="mb-8">
+          <IPProtectionNotice />
         </div>
 
         {/* Category Filter Tabs */}
