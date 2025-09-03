@@ -18,6 +18,8 @@ import { OrchardValuationForm } from "./OrchardValuationForm";
 import { VineyardValuationForm } from "./VineyardValuationForm";
 import { PastureValuationForm } from "./PastureValuationForm";
 import { HorticultureValuationForm } from "./HorticultureValuationForm";
+import { IrrigationManager } from "@/components/IrrigationManager";
+import { SoilTypeManager } from "@/components/SoilTypeManager";
 import { toast } from "sonner";
 
 interface MixedFarmProperty {

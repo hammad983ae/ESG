@@ -52,7 +52,12 @@ const defaultVarieties = {
       // New SNFL Red Seedless Varieties
       "Navsel 3", "Sunrise Red (Sheegene 8)", "Navsel 20", "Navsel 21",
       "Carlita (Sheegene 25)", "Krissy (Sheegene 12)", "Timco (Sheegene 13)",
-      "Allison (Sheegene 20)"
+      "Allison (Sheegene 20)",
+      // SNFL Green Seedless Varieties
+      "Kelly (Sheegene 18)", "Navsel 6", "Navsel 5", "Ivory (Sheegene 21)",
+      "Timpson (Sheegene 2)", "Great Green (Sheegene 17)", "Navsel 1",
+      // SNFL Black Seedless Varieties
+      "Sheegene 105", "Sheegene 101", "Sheegene 104"
     ],
     dried: [
       "Sultana (Thompson Seedless)", "Currants (Black Corinth)", "Muscat Gordo Blanco",
