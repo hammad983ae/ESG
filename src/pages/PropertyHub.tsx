@@ -34,6 +34,15 @@ import { HospitalityValuationForm } from "@/components/HospitalityValuationForm"
 import { PetrolStationValuationForm } from "@/components/PetrolStationValuationForm";
 import { StadiumValuationForm } from "@/components/StadiumValuationForm";
 import { IPProtectionNotice } from "@/components/IPProtectionNotice";
+import { CapitalizationNetIncomeForm } from "@/components/CapitalizationNetIncomeForm";
+import { SummationApproachForm } from "@/components/SummationApproachForm";
+import { ValuationDirectComparisonForm } from "@/components/ValuationDirectComparisonForm";
+import { PropertyBuilder } from "@/components/PropertyBuilder";
+import { AddressFinder } from "@/components/AddressFinder";
+import { ForecastingGrowthFunctions } from "@/components/ForecastingGrowthFunctions";
+import { WeightPortfolioSection } from "@/components/WeightPortfolioSection";
+import { ComparableAssetForecast } from "@/components/ComparableAssetForecast";
+import { RateGrowthAnalysis } from "@/components/RateGrowthAnalysis";
 
 export default function PropertyHub() {
   const navigate = useNavigate();
@@ -320,9 +329,61 @@ export default function PropertyHub() {
               <StadiumValuationForm onSubmit={(data) => handlePropertySubmit(data, 'Stadium')} />
             </TabsContent>
 
+            {/* Advanced Analysis Tools */}
+            <TabsContent value="overview" className="space-y-6">
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <PropertyBuilder onSave={(profile) => toast.success(`Property profile saved: ${profile.name}`)} />
+                <Card>
+                  <CardHeader>
+                    <CardTitle>Address Finder</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <AddressFinder onAddressSelect={(data) => toast.success(`Selected: ${data.address}`)} />
+                  </CardContent>
+                </Card>
+              </div>
+              
+              <ForecastingGrowthFunctions onForecastComplete={(results) => toast.success("Forecast completed!")} />
+              <WeightPortfolioSection onOptimizationComplete={(allocations, metrics) => toast.success("Portfolio optimized!")} />
+              <ComparableAssetForecast onForecastComplete={(results) => toast.success("Asset forecast completed!")} />
+              <RateGrowthAnalysis onAnalysisComplete={(results) => toast.success("Rate analysis completed!")} />
+            </TabsContent>
+
+            {/* Property-specific valuation approaches */}
+            <TabsContent value="commercial-office">
+              <div className="space-y-6">
+                <CapitalizationNetIncomeForm onSubmit={(data) => handlePropertySubmit(data, 'Commercial Office - Cap Income')} />
+                <SummationApproachForm onSubmit={(data) => handlePropertySubmit(data, 'Commercial Office - Summation')} />
+                <ValuationDirectComparisonForm onSubmit={(data) => handlePropertySubmit(data, 'Commercial Office - Direct Comparison')} />
+              </div>
+            </TabsContent>
+
+            <TabsContent value="industrial">
+              <div className="space-y-6">
+                <CapitalizationNetIncomeForm onSubmit={(data) => handlePropertySubmit(data, 'Industrial - Cap Income')} />
+                <SummationApproachForm onSubmit={(data) => handlePropertySubmit(data, 'Industrial - Summation')} />
+                <ValuationDirectComparisonForm onSubmit={(data) => handlePropertySubmit(data, 'Industrial - Direct Comparison')} />
+              </div>
+            </TabsContent>
+
+            <TabsContent value="residential">
+              <div className="space-y-6">
+                <SummationApproachForm onSubmit={(data) => handlePropertySubmit(data, 'Residential - Summation')} />
+                <ValuationDirectComparisonForm onSubmit={(data) => handlePropertySubmit(data, 'Residential - Direct Comparison')} />
+              </div>
+            </TabsContent>
+
+            <TabsContent value="big-box">
+              <div className="space-y-6">
+                <CapitalizationNetIncomeForm onSubmit={(data) => handlePropertySubmit(data, 'Big Box - Cap Income')} />
+                <SummationApproachForm onSubmit={(data) => handlePropertySubmit(data, 'Big Box - Summation')} />
+                <ValuationDirectComparisonForm onSubmit={(data) => handlePropertySubmit(data, 'Big Box - Direct Comparison')} />
+              </div>
+            </TabsContent>
+
             {/* Placeholder for other property types */}
             {propertyTypes
-              .filter(p => !['childcare', 'hospitality', 'petrol-station', 'sporting-stadiums'].includes(p.id))
+              .filter(p => !['childcare', 'hospitality', 'petrol-station', 'sporting-stadiums', 'commercial-office', 'industrial', 'residential', 'big-box'].includes(p.id))
               .map((property) => (
                 <TabsContent key={property.id} value={property.id}>
                   <Card>
