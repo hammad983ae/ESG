@@ -232,7 +232,13 @@ export function MixedFarmForm() {
                   </div>
                 </CardHeader>
                 <CardContent>
-                  <p className="text-muted-foreground">Form integration coming soon...</p>
+                  {addingBlockType === 'vineyard' ? (
+                    <div className="text-center py-8">
+                      <p className="text-muted-foreground">Improved variety manager coming soon...</p>
+                    </div>
+                  ) : (
+                    <p className="text-muted-foreground">Form integration coming soon...</p>
+                  )}
                 </CardContent>
               </Card>
             )}
