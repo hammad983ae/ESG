@@ -10,7 +10,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
-import { Cow, Plus, Trash2, MapPin } from "lucide-react";
+import { Tractor, Plus, Trash2, MapPin } from "lucide-react";
 import { toast } from "sonner";
 import { convertAcreToHectare } from "@/utils/conversionUtils";
 
@@ -179,7 +179,7 @@ export const ImprovedPastureManager = ({ onPropertiesChange }: ImprovedPastureMa
       <Card className="touch-manipulation">
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
-            <Cow className="h-5 w-5" />
+            <Tractor className="h-5 w-5" />
             Pasture & Livestock
           </CardTitle>
         </CardHeader>
@@ -482,7 +482,7 @@ export const ImprovedPastureManager = ({ onPropertiesChange }: ImprovedPastureMa
       {/* Empty State */}
       {properties.length === 0 && currentProperty.pastures.length === 0 && (
         <div className="text-center py-8 text-muted-foreground">
-          <Cow className="h-12 w-12 mx-auto mb-4 opacity-50" />
+          <Tractor className="h-12 w-12 mx-auto mb-4 opacity-50" />
           <p>No pastures selected yet</p>
           <p className="text-sm">Use the dropdown selects above to choose pasture types</p>
         </div>
