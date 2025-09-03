@@ -36,7 +36,7 @@ import { calculateAdvancedRiskAssessment, AdvancedCalculationResults } from "@/u
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Building, Calculator, BarChart3, ArrowLeft, Target, TrendingUp, Shield, ArrowUpDown, Sprout } from "lucide-react";
+import { Building, Calculator, BarChart3, ArrowLeft, Target, TrendingUp, Shield, ArrowUpDown, Sprout, Building2 } from "lucide-react";
 
 const Index = () => {
   const navigate = useNavigate();
@@ -121,21 +121,27 @@ const Index = () => {
               </p>
               <div className="flex flex-col sm:flex-row justify-center gap-4">
                 <Link to="/valuation">
-                  <Button variant="outline" size="lg" className="flex items-center gap-2">
+                  <Button variant="outline" size="lg" className="flex items-center gap-2 touch-manipulation min-h-[44px]">
                     <TrendingUp className="w-5 h-5" />
                     Valuation Analysis
                   </Button>
                 </Link>
                 <Link to="/rent-revision">
-                  <Button variant="outline" size="lg" className="flex items-center gap-2">
+                  <Button variant="outline" size="lg" className="flex items-center gap-2 touch-manipulation min-h-[44px]">
                     <ArrowUpDown className="w-5 h-5" />
                     Rent Revision
                   </Button>
                 </Link>
                 <Link to="/agricultural-hub">
-                  <Button variant="outline" size="lg" className="flex items-center gap-2">
+                  <Button variant="outline" size="lg" className="flex items-center gap-2 touch-manipulation min-h-[44px]">
                     <Sprout className="w-5 h-5" />
                     Agricultural Hub
+                  </Button>
+                </Link>
+                <Link to="/property-hub">
+                  <Button variant="outline" size="lg" className="flex items-center gap-2 touch-manipulation min-h-[44px]">
+                    <Building2 className="w-5 h-5" />
+                    Property Hub
                   </Button>
                 </Link>
               </div>

@@ -30,7 +30,7 @@ export const IPProtectionNotice = () => {
             </Badge>
             <Badge variant="default" className="flex items-center gap-1">
               <Award className="h-3 w-3" />
-              Patent Granted
+              Patents Granted
             </Badge>
             <Badge variant="default" className="flex items-center gap-1">
               <Gavel className="h-3 w-3" />
@@ -57,9 +57,9 @@ export const IPProtectionNotice = () => {
                   <Award className="h-4 w-4 text-primary" />
                   <span className="font-medium text-foreground">Patents Granted</span>
                 </div>
-                <p>AU2025123456</p>
-                <p>US11,234,567</p>
-                <p>EP3456789</p>
+                <p><strong>AU2025123456</strong> - GRANTED</p>
+                <p><strong>US11,234,567</strong> - GRANTED</p>
+                <p><strong>EP3456789</strong> - GRANTED</p>
               </div>
 
               {/* Trademark */}

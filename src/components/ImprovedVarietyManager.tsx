@@ -1,6 +1,6 @@
 /**
- * Improved Variety Manager with Dropdown Selections
- * Clean interface for selecting grape varieties and custom additions
+ * Improved Variety Manager with Clean Dropdown Selections
+ * Clean interface like the reference image provided
  */
 
 import { useState } from "react";
@@ -10,7 +10,6 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
-import { Textarea } from "@/components/ui/textarea";
 import { Grape, Plus, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 import { convertAcreToHectare } from "@/utils/conversionUtils";
@@ -54,15 +53,12 @@ export const ImprovedVarietyManager = ({ onVarietiesChange }: ImprovedVarietyMan
       'Jack Salute', 'Red Globe', 'Thompson Seedless', 'Flame Seedless',
       'Ruby Seedless', 'Princess', 'Crimson Seedless', 'Autumn Royal',
       'Sugraone', 'Black Beauty', 'Italia', 'Cardinal',
-      // SNFL Red Seedless Varieties
+      // SNFL Varieties
       'Navsel 3', 'Sunrise Red (Sheegene 8)', 'Navsel 20', 'Navsel 21',
       'Carlita (Sheegene 25)', 'Krissy (Sheegene 12)', 'Timco (Sheegene 13)',
-      'Allison (Sheegene 20)',
-      // SNFL Green Seedless Varieties
-      'Kelly (Sheegene 18)', 'Navsel 6', 'Navsel 5', 'Ivory (Sheegene 21)',
-      'Timpson (Sheegene 2)', 'Great Green (Sheegene 17)', 'Navsel 1',
-      // SNFL Black Seedless Varieties
-      'Sheegene 105', 'Sheegene 101', 'Sheegene 104'
+      'Allison (Sheegene 20)', 'Kelly (Sheegene 18)', 'Navsel 6', 'Navsel 5',
+      'Ivory (Sheegene 21)', 'Timpson (Sheegene 2)', 'Great Green (Sheegene 17)',
+      'Navsel 1', 'Sheegene 105', 'Sheegene 101', 'Sheegene 104'
     ],
     dried: [
       'Sultana (Thompson Seedless)', 'Currants (Black Corinth)', 'Muscat Gordo Blanco',
@@ -72,8 +68,8 @@ export const ImprovedVarietyManager = ({ onVarietiesChange }: ImprovedVarietyMan
   };
 
   const addVariety = () => {
-    if (!newVariety.category || !newVariety.variety || !newVariety.acres) {
-      toast.error('Please fill in required fields');
+    if (!newVariety.variety || !newVariety.acres) {
+      toast.error('Please select variety and enter area');
       return;
     }
 
@@ -139,192 +135,193 @@ export const ImprovedVarietyManager = ({ onVarietiesChange }: ImprovedVarietyMan
   };
 
   return (
-    <Card>
+    <Card className="touch-manipulation">
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
           <Grape className="h-5 w-5" />
-          Grape Varieties
+          Vineyard Details
         </CardTitle>
         <p className="text-sm text-muted-foreground">
-          Select and configure grape varieties for your vineyard operations
+          Grape Varieties
         </p>
       </CardHeader>
       <CardContent className="space-y-6">
-        {/* Available Varieties - Add Section */}
+        {/* Available Varieties Categories */}
         <div className="space-y-4">
           <div className="flex items-center justify-between">
             <h4 className="font-medium">Available Varieties</h4>
-            <Button variant="outline" size="sm">
+            <Button variant="outline" size="sm" className="touch-manipulation min-h-[44px]">
               <Plus className="h-4 w-4 mr-1" />
               Add Custom
             </Button>
           </div>
 
-          {/* Add New Variety Form */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 p-3 sm:p-4 border rounded-lg bg-muted/30 touch-manipulation">
-            <div className="space-y-2">
-              <Label>Grape Category *</Label>
-              <Select 
-                value={newVariety.category} 
-                onValueChange={(value) => setNewVariety({...newVariety, category: value, variety: ''})}
-              >
-                <SelectTrigger className="bg-background z-50 min-h-[44px] touch-manipulation">
-                  <SelectValue placeholder="Select category" />
+          {/* Category Cards */}
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            <Card className="p-4 bg-purple-50 border-purple-200">
+              <div className="flex items-center gap-2 mb-3">
+                <span className="text-purple-600">🍷</span>
+                <span className="font-medium">Wine Grapes</span>
+                <Badge variant="secondary">{grapeVarieties.wine.length}</Badge>
+              </div>
+              <Select onValueChange={(value) => {
+                setNewVariety({...newVariety, category: 'wine', variety: value});
+              }}>
+                <SelectTrigger className="bg-background min-h-[44px] touch-manipulation">
+                  <SelectValue placeholder="Select wine grape" />
                 </SelectTrigger>
-                <SelectContent className="bg-background border shadow-lg z-50 max-h-[50vh] overflow-y-auto">
-                  <SelectItem value="wine">🍷 Wine Grapes</SelectItem>
-                  <SelectItem value="table">🍇 Table Grapes</SelectItem>
-                  <SelectItem value="dried">🫐 Dried Fruit Grapes</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-
-            <div className="space-y-2">
-              <Label>Select Variety *</Label>
-              <Select 
-                value={newVariety.variety} 
-                onValueChange={(value) => setNewVariety({...newVariety, variety: value})}
-                disabled={!newVariety.category}
-              >
-                <SelectTrigger className="bg-background z-40 min-h-[44px] touch-manipulation">
-                  <SelectValue placeholder="Choose variety" />
-                </SelectTrigger>
-                <SelectContent className="bg-background border shadow-lg z-40 max-h-[40vh] overflow-y-auto">
-                  {newVariety.category && grapeVarieties[newVariety.category as keyof typeof grapeVarieties]?.map((variety) => (
+                <SelectContent className="bg-background border shadow-lg max-h-[40vh] overflow-y-auto">
+                  {grapeVarieties.wine.map((variety) => (
                     <SelectItem key={variety} value={variety}>{variety}</SelectItem>
                   ))}
                 </SelectContent>
               </Select>
-            </div>
+            </Card>
 
-            <div className="space-y-2">
-              <Label>Planted Area (acres) *</Label>
-              <Input
-                type="number"
-                step="0.1"
-                value={newVariety.acres}
-                onChange={(e) => setNewVariety({...newVariety, acres: e.target.value})}
-                placeholder="e.g., 10.5"
-              />
-              <div className="text-xs text-muted-foreground">
-                = {newVariety.acres ? convertAcreToHectare(parseFloat(newVariety.acres)).toFixed(2) : '0'} hectares
+            <Card className="p-4 bg-green-50 border-green-200">
+              <div className="flex items-center gap-2 mb-3">
+                <span className="text-green-600">🍇</span>
+                <span className="font-medium">Table Grapes</span>
+                <Badge variant="secondary">{grapeVarieties.table.length}</Badge>
               </div>
-            </div>
+              <Select onValueChange={(value) => {
+                setNewVariety({...newVariety, category: 'table', variety: value});
+              }}>
+                <SelectTrigger className="bg-background min-h-[44px] touch-manipulation">
+                  <SelectValue placeholder="Select table grape" />
+                </SelectTrigger>
+                <SelectContent className="bg-background border shadow-lg max-h-[40vh] overflow-y-auto">
+                  {grapeVarieties.table.map((variety) => (
+                    <SelectItem key={variety} value={variety}>{variety}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </Card>
 
-            <div className="space-y-2">
-              <Label>Hail Netting (acres)</Label>
-              <Input
-                type="number"
-                step="0.1"
-                value={newVariety.hailNettingAcres}
-                onChange={(e) => setNewVariety({...newVariety, hailNettingAcres: e.target.value})}
-                placeholder="e.g., 5.0"
-              />
-              <div className="text-xs text-muted-foreground">
-                Coverage: {newVariety.acres && newVariety.hailNettingAcres 
-                  ? Math.round((parseFloat(newVariety.hailNettingAcres) / parseFloat(newVariety.acres)) * 100) 
-                  : 0}%
+            <Card className="p-4 bg-amber-50 border-amber-200">
+              <div className="flex items-center gap-2 mb-3">
+                <span className="text-amber-600">🫐</span>
+                <span className="font-medium">Dried Fruit Grapes</span>
+                <Badge variant="secondary">{grapeVarieties.dried.length}</Badge>
               </div>
-            </div>
-
-            <div className="space-y-2">
-              <Label>Planting Year</Label>
-              <Input
-                value={newVariety.plantingYear}
-                onChange={(e) => setNewVariety({...newVariety, plantingYear: e.target.value})}
-                placeholder="e.g., 2025"
-              />
-            </div>
-
-            <div className="space-y-2">
-              <Label>Clone Selection (optional)</Label>
-              <Input
-                value={newVariety.cloneSelection}
-                onChange={(e) => setNewVariety({...newVariety, cloneSelection: e.target.value})}
-                placeholder="Enter clone selection"
-              />
-            </div>
-
-            <div className="md:col-span-2 space-y-2">
-              <Label>Notes & Comments</Label>
-              <Textarea
-                value={newVariety.notes}
-                onChange={(e) => setNewVariety({...newVariety, notes: e.target.value})}
-                placeholder="Additional notes about this variety"
-                rows={3}
-              />
-            </div>
-
-            <div className="md:col-span-2">
-              <Button onClick={addVariety} className="w-full">
-                <Plus className="h-4 w-4 mr-2" />
-                Add Variety
-              </Button>
-            </div>
+              <Select onValueChange={(value) => {
+                setNewVariety({...newVariety, category: 'dried', variety: value});
+              }}>
+                <SelectTrigger className="bg-background min-h-[44px] touch-manipulation">
+                  <SelectValue placeholder="Select dried fruit grape" />
+                </SelectTrigger>
+                <SelectContent className="bg-background border shadow-lg max-h-[40vh] overflow-y-auto">
+                  {grapeVarieties.dried.map((variety) => (
+                    <SelectItem key={variety} value={variety}>{variety}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </Card>
           </div>
+
+          {/* Quick Add Form - Only shows when variety selected */}
+          {newVariety.variety && (
+            <Card className="p-4 bg-muted/30 border-dashed">
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                <div className="space-y-2">
+                  <Label>Selected: {newVariety.variety}</Label>
+                  <div className="flex items-center gap-2">
+                    <Badge className={getCategoryColor(newVariety.category)}>
+                      {getCategoryIcon(newVariety.category)} {newVariety.category}
+                    </Badge>
+                    <Badge variant="outline">{newVariety.variety}</Badge>
+                  </div>
+                </div>
+
+                <div className="space-y-2">
+                  <Label>Planted Area (acres) *</Label>
+                  <Input
+                    type="number"
+                    step="0.1"
+                    value={newVariety.acres}
+                    onChange={(e) => setNewVariety({...newVariety, acres: e.target.value})}
+                    placeholder="e.g., 10.5"
+                    className="min-h-[44px]"
+                  />
+                  <div className="text-xs text-muted-foreground">
+                    = {newVariety.acres ? convertAcreToHectare(parseFloat(newVariety.acres)).toFixed(2) : '0'} hectares
+                  </div>
+                </div>
+
+                <div className="space-y-2">
+                  <Label>Hail Netting (acres)</Label>
+                  <Input
+                    type="number"
+                    step="0.1"
+                    value={newVariety.hailNettingAcres}
+                    onChange={(e) => setNewVariety({...newVariety, hailNettingAcres: e.target.value})}
+                    placeholder="e.g., 5.0"
+                    className="min-h-[44px]"
+                  />
+                  <div className="text-xs text-muted-foreground">
+                    Coverage: {newVariety.acres && newVariety.hailNettingAcres 
+                      ? Math.round((parseFloat(newVariety.hailNettingAcres) / parseFloat(newVariety.acres)) * 100) 
+                      : 0}%
+                  </div>
+                </div>
+
+                <div className="sm:col-span-3 grid grid-cols-1 sm:grid-cols-3 gap-4">
+                  <div className="space-y-2">
+                    <Label>Planting Year</Label>
+                    <Input
+                      value={newVariety.plantingYear}
+                      onChange={(e) => setNewVariety({...newVariety, plantingYear: e.target.value})}
+                      placeholder="2025"
+                      className="min-h-[44px]"
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label>Clone Selection</Label>
+                    <Input
+                      value={newVariety.cloneSelection}
+                      onChange={(e) => setNewVariety({...newVariety, cloneSelection: e.target.value})}
+                      placeholder="Enter clone"
+                      className="min-h-[44px]"
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label>&nbsp;</Label>
+                    <Button onClick={addVariety} className="w-full min-h-[44px] touch-manipulation">
+                      <Plus className="h-4 w-4 mr-2" />
+                      Add Variety
+                    </Button>
+                  </div>
+                </div>
+              </div>
+            </Card>
+          )}
         </div>
 
         {/* Selected Varieties */}
         {selectedVarieties.length > 0 && (
           <div className="space-y-4">
-            <h4 className="font-medium">Selected Varieties ({selectedVarieties.length})</h4>
-            <div className="space-y-3">
+            <h4 className="font-medium">Selected Varieties:</h4>
+            <div className="flex flex-wrap gap-2 mb-4">
               {selectedVarieties.map((variety) => (
-                <Card key={variety.id} className="p-4">
-                  <div className="flex items-start justify-between mb-3">
-                    <div className="flex items-center gap-3">
-                      <span className="text-2xl">{getCategoryIcon(variety.category)}</span>
-                      <div>
-                        <h5 className="font-semibold text-lg">{variety.variety}</h5>
-                        <Badge className={getCategoryColor(variety.category)} variant="secondary">
-                          {variety.category.charAt(0).toUpperCase() + variety.category.slice(1)}
-                        </Badge>
-                      </div>
-                    </div>
-                    <Button
-                      variant="destructive"
-                      size="sm"
-                      onClick={() => removeVariety(variety.id)}
-                    >
-                      <Trash2 className="h-4 w-4" />
-                    </Button>
-                  </div>
-
-                  <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
-                    <div>
-                      <span className="font-medium">Area:</span>
-                      <p>{variety.acres} acres</p>
-                      <p className="text-muted-foreground">{variety.hectares.toFixed(2)} hectares</p>
-                    </div>
-                    <div>
-                      <span className="font-medium">Hail Netting:</span>
-                      <p>{variety.hailNettingAcres} acres</p>
-                      <p className="text-muted-foreground">{variety.hailNettingCoverage.toFixed(1)}% coverage</p>
-                    </div>
-                    <div>
-                      <span className="font-medium">Planting Year:</span>
-                      <p>{variety.plantingYear || 'Not specified'}</p>
-                    </div>
-                    <div>
-                      <span className="font-medium">Clone:</span>
-                      <p>{variety.cloneSelection || 'Standard'}</p>
-                    </div>
-                  </div>
-
-                  {variety.notes && (
-                    <div className="mt-3 p-3 bg-muted/50 rounded">
-                      <span className="font-medium text-sm">Notes: </span>
-                      <span className="text-sm">{variety.notes}</span>
-                    </div>
-                  )}
-                </Card>
+                <Badge key={variety.id} variant="outline" className="flex items-center gap-2 px-3 py-1 touch-manipulation">
+                  <span>{getCategoryIcon(variety.category)}</span>
+                  <span>{variety.variety}</span>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => removeVariety(variety.id)}
+                    className="h-4 w-4 p-0 hover:bg-destructive hover:text-destructive-foreground rounded-full touch-manipulation"
+                  >
+                    ✕
+                  </Button>
+                </Badge>
               ))}
             </div>
 
             {/* Summary */}
             <div className="p-4 bg-primary/5 rounded-lg">
               <h5 className="font-semibold mb-2">Summary</h5>
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 text-sm">
                 <div>
                   <span className="font-medium">Total Area:</span>
                   <p>{selectedVarieties.reduce((sum, v) => sum + v.acres, 0).toFixed(1)} acres</p>
@@ -350,7 +347,7 @@ export const ImprovedVarietyManager = ({ onVarietiesChange }: ImprovedVarietyMan
           <div className="text-center py-8 text-muted-foreground">
             <Grape className="h-12 w-12 mx-auto mb-4 opacity-50" />
             <p>No varieties selected yet</p>
-            <p className="text-sm">Choose grape categories and varieties above to get started</p>
+            <p className="text-sm">Choose grape varieties from the categories above to get started</p>
           </div>
         )}
       </CardContent>
