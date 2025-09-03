@@ -1,5 +1,5 @@
 /**
- * Client Presentation - Property & Agricultural Hub Platform
+ * Client Presentation - One Touch™ Platform
  * 
  * Copyright (c) 2025 Delorenzo Property Group Pty Ltd
  * Licensed under MIT License - see LICENSE file for details
@@ -66,7 +66,7 @@ export const ClientPresentation = () => {
         <div style="text-align: center; margin-bottom: 60px; border-bottom: 3px solid #1e40af; padding-bottom: 40px;">
           <div style="display: flex; align-items: center; justify-content: center; gap: 20px; margin-bottom: 20px;">
             <div style="width: 80px; height: 80px; background: linear-gradient(135deg, #1e40af, #3b82f6); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-size: 40px; font-weight: bold;">
-              DPG
+              OT
             </div>
           </div>
           <h1 style="font-size: 48px; font-weight: bold; color: #1e40af; margin: 0 0 15px 0; line-height: 1.2;">
@@ -88,7 +88,7 @@ export const ClientPresentation = () => {
         <div style="display: flex; justify-content: between; align-items: center; padding-top: 40px; border-top: 2px solid #e2e8f0; margin-top: 40px; font-size: 24px; color: #64748b;">
           <div style="flex: 1;">
             <strong>Delorenzo Property Group Pty Ltd</strong><br>
-            ESG Property Assessment Platform™
+            One Touch™ Platform
           </div>
           <div style="text-align: right;">
             <strong>Slide ${slideIndex + 1} of ${slides.length}</strong><br>
@@ -111,7 +111,7 @@ export const ClientPresentation = () => {
     document.body.removeChild(slideElement);
 
     const link = document.createElement('a');
-    link.download = `DPG-Presentation-Slide-${slideIndex + 1}-${slide.id}.png`;
+    link.download = `OneTouch-Presentation-Slide-${slideIndex + 1}-${slide.id}.png`;
     link.href = canvas.toDataURL('image/png', 1.0);
     link.click();
   };
@@ -128,9 +128,9 @@ export const ClientPresentation = () => {
                 <path d="M2 12L12 17L22 12"></path>
               </svg>
             </div>
-            <h3 style="font-size: 56px; font-weight: bold; margin-bottom: 40px; color: #1e293b;">Welcome to the Future of Property Valuation</h3>
+            <h3 style="font-size: 56px; font-weight: bold; margin-bottom: 40px; color: #1e293b;">Welcome to One Touch™</h3>
             <p style="font-size: 32px; color: #64748b; max-width: 1200px; margin: 0 auto 60px; line-height: 1.6;">
-              Comprehensive ESG-integrated platform combining traditional valuation methods with cutting-edge environmental, social, and governance assessment tools.
+              One Touch™ is the comprehensive ESG-integrated platform combining traditional valuation methods with cutting-edge environmental, social, and governance assessment tools.
             </p>
             <div style="display: flex; justify-content: center; gap: 30px; flex-wrap: wrap;">
               <span style="background: #dbeafe; color: #1e40af; padding: 15px 30px; border-radius: 25px; font-size: 24px; font-weight: 600;">Patent Protected</span>
@@ -446,7 +446,7 @@ export const ClientPresentation = () => {
         <div style="text-align: center; margin-bottom: 15mm; border-bottom: 2px solid #1e40af; padding-bottom: 10mm;">
           <div style="display: flex; align-items: center; justify-content: center; gap: 5mm; margin-bottom: 5mm;">
             <div style="width: 20mm; height: 20mm; background: linear-gradient(135deg, #1e40af, #3b82f6); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-size: 12pt; font-weight: bold;">
-              DPG
+              OT
             </div>
           </div>
           <h1 style="font-size: 24pt; font-weight: bold; color: #1e40af; margin: 0 0 3mm 0; line-height: 1.2;">
@@ -468,7 +468,7 @@ export const ClientPresentation = () => {
         <div style="display: flex; justify-content: space-between; align-items: center; padding-top: 5mm; border-top: 1px solid #e2e8f0; margin-top: 5mm; font-size: 9pt; color: #64748b; position: absolute; bottom: 20mm; left: 20mm; right: 20mm;">
           <div>
             <strong>Delorenzo Property Group Pty Ltd</strong><br>
-            ESG Property Assessment Platform™
+            One Touch™ Platform
           </div>
           <div style="text-align: right;">
             <strong>Slide ${index + 1} of ${slides.length}</strong><br>
@@ -482,7 +482,7 @@ export const ClientPresentation = () => {
       <!DOCTYPE html>
       <html>
         <head>
-          <title>Delorenzo Property Group - Client Presentation</title>
+          <title>One Touch - Client Presentation by Delorenzo Property Group</title>
           <meta charset="UTF-8">
           <style>
             * {
@@ -563,9 +563,9 @@ export const ClientPresentation = () => {
                 <path d="M2 12L12 17L22 12"></path>
               </svg>
             </div>
-            <h3 style="font-size: 18pt; font-weight: bold; margin-bottom: 8mm; color: #1e293b;">Welcome to the Future of Property Valuation</h3>
+            <h3 style="font-size: 18pt; font-weight: bold; margin-bottom: 8mm; color: #1e293b;">Welcome to One Touch™</h3>
             <p style="font-size: 12pt; color: #64748b; max-width: 120mm; margin: 0 auto 15mm; line-height: 1.5;">
-              Comprehensive ESG-integrated platform combining traditional valuation methods with cutting-edge environmental, social, and governance assessment tools.
+              One Touch™ is the comprehensive ESG-integrated platform combining traditional valuation methods with cutting-edge environmental, social, and governance assessment tools.
             </p>
             <div style="display: flex; justify-content: center; gap: 8mm; flex-wrap: wrap;">
               <span style="background: #dbeafe; color: #1e40af; padding: 3mm 6mm; border-radius: 6mm; font-size: 10pt; font-weight: 600;">Patent Protected</span>
@@ -947,17 +947,17 @@ export const ClientPresentation = () => {
   const slides = [
     {
       id: "welcome",
-      title: "Delorenzo Property Group",
-      subtitle: "ESG Property Assessment Platform™",
+      title: "One Touch™",
+      subtitle: "ESG Property Assessment Platform by Delorenzo Property Group",
       content: (
         <div className="text-center space-y-8">
           <div className="mx-auto w-32 h-32 bg-gradient-to-br from-primary to-primary/60 rounded-full flex items-center justify-center">
             <Building2 className="h-16 w-16 text-white" />
           </div>
           <div>
-            <h3 className="text-2xl font-bold mb-4">Welcome to the Future of Property Valuation</h3>
+            <h3 className="text-2xl font-bold mb-4">Welcome to One Touch™</h3>
             <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-              Comprehensive ESG-integrated platform combining traditional valuation methods 
+              One Touch™ is the comprehensive ESG-integrated platform combining traditional valuation methods 
               with cutting-edge environmental, social, and governance assessment tools.
             </p>
           </div>
@@ -1354,6 +1354,9 @@ export const ClientPresentation = () => {
           </h1>
           <p className="text-xl text-muted-foreground mt-2">
             {currentSlideData.subtitle}
+          </p>
+          <p className="text-sm text-muted-foreground mt-1 opacity-75">
+            by Delorenzo Property Group Pty Ltd
           </p>
         </div>
 
