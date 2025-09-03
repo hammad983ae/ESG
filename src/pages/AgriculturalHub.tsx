@@ -93,6 +93,28 @@ const AgriculturalHub = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-green-50 to-emerald-50 dark:from-gray-900 dark:to-gray-800">
       <div className="container mx-auto px-4 py-8">
+        {/* Back to Main Dashboard Button */}
+        <div className="flex items-center justify-between mb-6">
+          <Button 
+            variant="outline" 
+            size="sm" 
+            onClick={() => navigate('/')}
+            className="flex items-center gap-2 touch-manipulation min-h-[44px]"
+          >
+            <ArrowLeft className="h-4 w-4" />
+            Back to Main Dashboard
+          </Button>
+          <Button 
+            variant="outline" 
+            size="sm" 
+            onClick={() => navigate('/property-hub')}
+            className="flex items-center gap-2 touch-manipulation min-h-[44px]"
+          >
+            <Sprout className="h-4 w-4" />
+            Property Hub
+          </Button>
+        </div>
+        
         {/* Header */}
         <div className="text-center mb-8">
           <div className="flex items-center justify-center gap-3 mb-4">

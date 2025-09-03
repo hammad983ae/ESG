@@ -1,6 +1,6 @@
 /**
- * Improved Variety Manager with Proper Dropdown Select Boxes
- * Replaces clickable buttons with actual dropdown selects
+ * Improved Crop Manager with Dropdown Selections
+ * For Annual Crops with same functionality as grape varieties
  */
 
 import { useState } from "react";
@@ -10,21 +10,20 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
-import { Textarea } from "@/components/ui/textarea";
-import { Grape, Plus, Trash2, MapPin } from "lucide-react";
+import { Wheat, Plus, Trash2, MapPin } from "lucide-react";
 import { toast } from "sonner";
 import { convertAcreToHectare } from "@/utils/conversionUtils";
 
-interface SelectedVariety {
+interface SelectedCrop {
   id: string;
-  category: 'wine' | 'table' | 'dried';
-  variety: string;
+  category: 'grain' | 'oilseed' | 'fiber' | 'legume';
+  crop: string;
   acres: number;
   hectares: number;
   hailNettingAcres: number;
   hailNettingCoverage: number;
   plantingYear: string;
-  cloneSelection: string;
+  variety: string;
   notes: string;
 }
 
@@ -32,111 +31,104 @@ interface Property {
   id: string;
   name: string;
   location: string;
-  varieties: SelectedVariety[];
+  crops: SelectedCrop[];
 }
 
-interface ImprovedVarietyManagerProps {
+interface ImprovedCropManagerProps {
   onPropertiesChange?: (properties: Property[]) => void;
 }
 
-export const ImprovedVarietyManager = ({ onPropertiesChange }: ImprovedVarietyManagerProps) => {
+export const ImprovedCropManager = ({ onPropertiesChange }: ImprovedCropManagerProps) => {
   const [properties, setProperties] = useState<Property[]>([]);
   const [currentProperty, setCurrentProperty] = useState<Property>({
     id: crypto.randomUUID(),
     name: '',
     location: '',
-    varieties: []
+    crops: []
   });
-  const [newVariety, setNewVariety] = useState({
+  const [newCrop, setNewCrop] = useState({
     category: '',
-    variety: '',
+    crop: '',
     acres: '',
     hailNettingAcres: '',
     plantingYear: '',
-    cloneSelection: '',
+    variety: '',
     notes: ''
   });
 
-  const grapeVarieties = {
-    wine: [
-      'Cabernet Sauvignon', 'Merlot', 'Pinot Noir', 'Chardonnay', 'Sauvignon Blanc',
-      'Riesling', 'Syrah/Shiraz', 'Zinfandel', 'Grenache', 'Tempranillo',
-      'Sangiovese', 'Nebbiolo', 'Malbec', 'Petit Verdot'
+  const cropTypes = {
+    grain: [
+      'Wheat', 'Barley', 'Oats', 'Rye', 'Corn (Maize)', 'Rice', 'Sorghum', 
+      'Millet', 'Triticale', 'Quinoa', 'Buckwheat'
     ],
-    table: [
-      'Jack Salute', 'Red Globe', 'Thompson Seedless', 'Flame Seedless',
-      'Ruby Seedless', 'Princess', 'Crimson Seedless', 'Autumn Royal',
-      'Sugraone', 'Black Beauty', 'Italia', 'Cardinal',
-      // SNFL Varieties
-      'Navsel 3', 'Sunrise Red (Sheegene 8)', 'Navsel 20', 'Navsel 21',
-      'Carlita (Sheegene 25)', 'Krissy (Sheegene 12)', 'Timco (Sheegene 13)',
-      'Allison (Sheegene 20)', 'Kelly (Sheegene 18)', 'Navsel 6', 'Navsel 5',
-      'Ivory (Sheegene 21)', 'Timpson (Sheegene 2)', 'Great Green (Sheegene 17)',
-      'Navsel 1', 'Sheegene 105', 'Sheegene 101', 'Sheegene 104'
+    oilseed: [
+      'Canola', 'Sunflower', 'Safflower', 'Linseed (Flax)', 'Sesame',
+      'Mustard Seed', 'Camelina', 'Crambe'
     ],
-    dried: [
-      'Sultana (Thompson Seedless)', 'Currants (Black Corinth)', 'Muscat Gordo Blanco',
-      'Carina Currants', 'Flame Seedless (Raisins)', 'Ruby Seedless (Raisins)',
-      'Sunmuscat', 'Sultana H5', 'Merbein Seedless', 'Menindee Seedless'
+    fiber: [
+      'Cotton', 'Hemp', 'Flax (Fiber)', 'Jute', 'Kenaf'
+    ],
+    legume: [
+      'Soybeans', 'Field Peas', 'Chickpeas', 'Lentils', 'Black Beans',
+      'Navy Beans', 'Pinto Beans', 'Faba Beans', 'Lupins', 'Cowpeas'
     ]
   };
 
-  const addVariety = () => {
-    if (!newVariety.category || !newVariety.variety || !newVariety.acres) {
-      toast.error('Please select variety type, variety, and enter area');
+  const addCrop = () => {
+    if (!newCrop.category || !newCrop.crop || !newCrop.acres) {
+      toast.error('Please select crop type, crop, and enter area');
       return;
     }
 
-    const acres = parseFloat(newVariety.acres);
-    const hailNettingAcres = parseFloat(newVariety.hailNettingAcres) || 0;
+    const acres = parseFloat(newCrop.acres);
+    const hailNettingAcres = parseFloat(newCrop.hailNettingAcres) || 0;
     const hectares = convertAcreToHectare(acres);
     const hailNettingCoverage = acres > 0 ? (hailNettingAcres / acres) * 100 : 0;
 
-    const variety: SelectedVariety = {
+    const crop: SelectedCrop = {
       id: crypto.randomUUID(),
-      category: newVariety.category as 'wine' | 'table' | 'dried',
-      variety: newVariety.variety,
+      category: newCrop.category as 'grain' | 'oilseed' | 'fiber' | 'legume',
+      crop: newCrop.crop,
       acres,
       hectares,
       hailNettingAcres,
       hailNettingCoverage,
-      plantingYear: newVariety.plantingYear,
-      cloneSelection: newVariety.cloneSelection,
-      notes: newVariety.notes
+      plantingYear: newCrop.plantingYear,
+      variety: newCrop.variety,
+      notes: newCrop.notes
     };
 
     const updatedProperty = {
       ...currentProperty,
-      varieties: [...currentProperty.varieties, variety]
+      crops: [...currentProperty.crops, crop]
     };
     setCurrentProperty(updatedProperty);
 
-    // Reset variety form but keep property details
-    setNewVariety({
+    setNewCrop({
       category: '',
-      variety: '',
+      crop: '',
       acres: '',
       hailNettingAcres: '',
       plantingYear: '',
-      cloneSelection: '',
+      variety: '',
       notes: ''
     });
 
-    toast.success(`${variety.variety} added to property`);
+    toast.success(`${crop.crop} added to property`);
   };
 
-  const removeVariety = (varietyId: string) => {
+  const removeCrop = (cropId: string) => {
     const updatedProperty = {
       ...currentProperty,
-      varieties: currentProperty.varieties.filter(v => v.id !== varietyId)
+      crops: currentProperty.crops.filter(c => c.id !== cropId)
     };
     setCurrentProperty(updatedProperty);
-    toast.success('Variety removed');
+    toast.success('Crop removed');
   };
 
   const addProperty = () => {
-    if (!currentProperty.name || currentProperty.varieties.length === 0) {
-      toast.error('Please enter property name and add at least one variety');
+    if (!currentProperty.name || currentProperty.crops.length === 0) {
+      toast.error('Please enter property name and add at least one crop');
       return;
     }
 
@@ -144,12 +136,11 @@ export const ImprovedVarietyManager = ({ onPropertiesChange }: ImprovedVarietyMa
     setProperties(updatedProperties);
     onPropertiesChange?.(updatedProperties);
 
-    // Reset for new property
     setCurrentProperty({
       id: crypto.randomUUID(),
       name: '',
       location: '',
-      varieties: []
+      crops: []
     });
     
     toast.success(`Property "${currentProperty.name}" added successfully`);
@@ -164,30 +155,31 @@ export const ImprovedVarietyManager = ({ onPropertiesChange }: ImprovedVarietyMa
 
   const getCategoryIcon = (category: string) => {
     switch (category) {
-      case 'wine': return '🍷';
-      case 'table': return '🍇';
-      case 'dried': return '🫐';
-      default: return '🍇';
+      case 'grain': return '🌾';
+      case 'oilseed': return '🌻';
+      case 'fiber': return '🌱';
+      case 'legume': return '🫘';
+      default: return '🌾';
     }
   };
 
   const getCategoryColor = (category: string) => {
     switch (category) {
-      case 'wine': return 'bg-purple-100 text-purple-800';
-      case 'table': return 'bg-green-100 text-green-800';
-      case 'dried': return 'bg-amber-100 text-amber-800';
+      case 'grain': return 'bg-yellow-100 text-yellow-800';
+      case 'oilseed': return 'bg-orange-100 text-orange-800';
+      case 'fiber': return 'bg-green-100 text-green-800';
+      case 'legume': return 'bg-purple-100 text-purple-800';
       default: return 'bg-gray-100 text-gray-800';
     }
   };
 
   return (
     <div className="space-y-6">
-      {/* Current Property Setup */}
       <Card className="touch-manipulation">
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
-            <Grape className="h-5 w-5" />
-            Grape Varieties
+            <Wheat className="h-5 w-5" />
+            Annual Crops
           </CardTitle>
         </CardHeader>
         <CardContent className="space-y-6">
@@ -213,84 +205,105 @@ export const ImprovedVarietyManager = ({ onPropertiesChange }: ImprovedVarietyMa
             </div>
           </div>
 
-          {/* Available Varieties with Dropdown Selects */}
+          {/* Available Crops with Dropdown Selects */}
           <div className="space-y-4">
-            <h4 className="font-medium">Available Varieties</h4>
+            <h4 className="font-medium">Available Crops</h4>
             
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-              {/* Wine Grapes Dropdown */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+              {/* Grain Crops Dropdown */}
               <div className="space-y-2">
                 <Label className="flex items-center gap-2">
-                  <span className="text-purple-600">🍷</span>
-                  Wine Grapes
-                  <Badge variant="secondary">{grapeVarieties.wine.length}</Badge>
+                  <span>🌾</span>
+                  Grain Crops
+                  <Badge variant="secondary">{cropTypes.grain.length}</Badge>
                 </Label>
                 <Select onValueChange={(value) => {
-                  setNewVariety({...newVariety, category: 'wine', variety: value});
+                  setNewCrop({...newCrop, category: 'grain', crop: value});
                 }}>
                   <SelectTrigger className="bg-background min-h-[44px] touch-manipulation">
-                    <SelectValue placeholder="Select wine grape variety" />
+                    <SelectValue placeholder="Select grain crop" />
                   </SelectTrigger>
                   <SelectContent className="bg-background border shadow-lg max-h-[40vh] overflow-y-auto">
-                    {grapeVarieties.wine.map((variety) => (
-                      <SelectItem key={variety} value={variety}>{variety}</SelectItem>
+                    {cropTypes.grain.map((crop) => (
+                      <SelectItem key={crop} value={crop}>{crop}</SelectItem>
                     ))}
                   </SelectContent>
                 </Select>
               </div>
 
-              {/* Table Grapes Dropdown */}
+              {/* Oilseed Crops Dropdown */}
               <div className="space-y-2">
                 <Label className="flex items-center gap-2">
-                  <span className="text-green-600">🍇</span>
-                  Table Grapes
-                  <Badge variant="secondary">{grapeVarieties.table.length}</Badge>
+                  <span>🌻</span>
+                  Oilseed Crops
+                  <Badge variant="secondary">{cropTypes.oilseed.length}</Badge>
                 </Label>
                 <Select onValueChange={(value) => {
-                  setNewVariety({...newVariety, category: 'table', variety: value});
+                  setNewCrop({...newCrop, category: 'oilseed', crop: value});
                 }}>
                   <SelectTrigger className="bg-background min-h-[44px] touch-manipulation">
-                    <SelectValue placeholder="Select table grape variety" />
+                    <SelectValue placeholder="Select oilseed crop" />
                   </SelectTrigger>
                   <SelectContent className="bg-background border shadow-lg max-h-[40vh] overflow-y-auto">
-                    {grapeVarieties.table.map((variety) => (
-                      <SelectItem key={variety} value={variety}>{variety}</SelectItem>
+                    {cropTypes.oilseed.map((crop) => (
+                      <SelectItem key={crop} value={crop}>{crop}</SelectItem>
                     ))}
                   </SelectContent>
                 </Select>
               </div>
 
-              {/* Dried Fruit Grapes Dropdown */}
+              {/* Fiber Crops Dropdown */}
               <div className="space-y-2">
                 <Label className="flex items-center gap-2">
-                  <span className="text-amber-600">🫐</span>
-                  Dried Fruit Grapes
-                  <Badge variant="secondary">{grapeVarieties.dried.length}</Badge>
+                  <span>🌱</span>
+                  Fiber Crops
+                  <Badge variant="secondary">{cropTypes.fiber.length}</Badge>
                 </Label>
                 <Select onValueChange={(value) => {
-                  setNewVariety({...newVariety, category: 'dried', variety: value});
+                  setNewCrop({...newCrop, category: 'fiber', crop: value});
                 }}>
                   <SelectTrigger className="bg-background min-h-[44px] touch-manipulation">
-                    <SelectValue placeholder="Select dried fruit variety" />
+                    <SelectValue placeholder="Select fiber crop" />
                   </SelectTrigger>
                   <SelectContent className="bg-background border shadow-lg max-h-[40vh] overflow-y-auto">
-                    {grapeVarieties.dried.map((variety) => (
-                      <SelectItem key={variety} value={variety}>{variety}</SelectItem>
+                    {cropTypes.fiber.map((crop) => (
+                      <SelectItem key={crop} value={crop}>{crop}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+
+              {/* Legume Crops Dropdown */}
+              <div className="space-y-2">
+                <Label className="flex items-center gap-2">
+                  <span>🫘</span>
+                  Legume Crops
+                  <Badge variant="secondary">{cropTypes.legume.length}</Badge>
+                </Label>
+                <Select onValueChange={(value) => {
+                  setNewCrop({...newCrop, category: 'legume', crop: value});
+                }}>
+                  <SelectTrigger className="bg-background min-h-[44px] touch-manipulation">
+                    <SelectValue placeholder="Select legume crop" />
+                  </SelectTrigger>
+                  <SelectContent className="bg-background border shadow-lg max-h-[40vh] overflow-y-auto">
+                    {cropTypes.legume.map((crop) => (
+                      <SelectItem key={crop} value={crop}>{crop}</SelectItem>
                     ))}
                   </SelectContent>
                 </Select>
               </div>
             </div>
 
-            {/* Variety Details Form - Shows when variety is selected */}
-            {newVariety.variety && (
+            {/* Crop Details Form */}
+            {newCrop.crop && (
               <Card className="p-4 bg-primary/5 border-dashed">
                 <div className="space-y-4">
                   <div className="flex items-center gap-2 mb-4">
-                    <Badge className={getCategoryColor(newVariety.category)}>
-                      {getCategoryIcon(newVariety.category)} {newVariety.category}
+                    <Badge className={getCategoryColor(newCrop.category)}>
+                      {getCategoryIcon(newCrop.category)} {newCrop.category}
                     </Badge>
-                    <Badge variant="outline">{newVariety.variety}</Badge>
+                    <Badge variant="outline">{newCrop.crop}</Badge>
                   </div>
 
                   <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
@@ -299,29 +312,29 @@ export const ImprovedVarietyManager = ({ onPropertiesChange }: ImprovedVarietyMa
                       <Input
                         type="number"
                         step="0.1"
-                        value={newVariety.acres}
-                        onChange={(e) => setNewVariety({...newVariety, acres: e.target.value})}
-                        placeholder="10.5"
+                        value={newCrop.acres}
+                        onChange={(e) => setNewCrop({...newCrop, acres: e.target.value})}
+                        placeholder="100"
                         className="min-h-[44px]"
                       />
                       <div className="text-xs text-muted-foreground">
-                        = {newVariety.acres ? convertAcreToHectare(parseFloat(newVariety.acres)).toFixed(2) : '0'} hectares
+                        = {newCrop.acres ? convertAcreToHectare(parseFloat(newCrop.acres)).toFixed(2) : '0'} hectares
                       </div>
                     </div>
 
                     <div className="space-y-2">
-                      <Label>Hail Netting (acres)</Label>
+                      <Label>Hail Coverage (acres)</Label>
                       <Input
                         type="number"
                         step="0.1"
-                        value={newVariety.hailNettingAcres}
-                        onChange={(e) => setNewVariety({...newVariety, hailNettingAcres: e.target.value})}
-                        placeholder="5.0"
+                        value={newCrop.hailNettingAcres}
+                        onChange={(e) => setNewCrop({...newCrop, hailNettingAcres: e.target.value})}
+                        placeholder="50"
                         className="min-h-[44px]"
                       />
                       <div className="text-xs text-muted-foreground">
-                        Coverage: {newVariety.acres && newVariety.hailNettingAcres 
-                          ? Math.round((parseFloat(newVariety.hailNettingAcres) / parseFloat(newVariety.acres)) * 100) 
+                        Coverage: {newCrop.acres && newCrop.hailNettingAcres 
+                          ? Math.round((parseFloat(newCrop.hailNettingAcres) / parseFloat(newCrop.acres)) * 100) 
                           : 0}%
                       </div>
                     </div>
@@ -329,56 +342,54 @@ export const ImprovedVarietyManager = ({ onPropertiesChange }: ImprovedVarietyMa
                     <div className="space-y-2">
                       <Label>Planting Year</Label>
                       <Input
-                        value={newVariety.plantingYear}
-                        onChange={(e) => setNewVariety({...newVariety, plantingYear: e.target.value})}
+                        value={newCrop.plantingYear}
+                        onChange={(e) => setNewCrop({...newCrop, plantingYear: e.target.value})}
                         placeholder="2025"
                         className="min-h-[44px]"
                       />
                     </div>
 
                     <div className="space-y-2">
-                      <Label>Clone Selection</Label>
+                      <Label>Variety</Label>
                       <Input
-                        value={newVariety.cloneSelection}
-                        onChange={(e) => setNewVariety({...newVariety, cloneSelection: e.target.value})}
-                        placeholder="Enter clone"
+                        value={newCrop.variety}
+                        onChange={(e) => setNewCrop({...newCrop, variety: e.target.value})}
+                        placeholder="Enter variety"
                         className="min-h-[44px]"
                       />
                     </div>
                   </div>
 
-                  <div className="flex gap-4">
-                    <Button onClick={addVariety} className="flex-1 min-h-[44px] touch-manipulation">
-                      <Plus className="h-4 w-4 mr-2" />
-                      Add Variety to Property
-                    </Button>
-                  </div>
+                  <Button onClick={addCrop} className="w-full min-h-[44px] touch-manipulation">
+                    <Plus className="h-4 w-4 mr-2" />
+                    Add Crop to Property
+                  </Button>
                 </div>
               </Card>
             )}
           </div>
 
-          {/* Current Property Varieties */}
-          {currentProperty.varieties.length > 0 && (
+          {/* Current Property Crops */}
+          {currentProperty.crops.length > 0 && (
             <div className="space-y-4">
-              <h4 className="font-medium">Current Property Varieties:</h4>
+              <h4 className="font-medium">Current Property Crops:</h4>
               <div className="space-y-2">
-                {currentProperty.varieties.map((variety) => (
-                  <div key={variety.id} className="flex items-center justify-between p-3 bg-muted/50 rounded-lg">
+                {currentProperty.crops.map((crop) => (
+                  <div key={crop.id} className="flex items-center justify-between p-3 bg-muted/50 rounded-lg">
                     <div className="flex items-center gap-3">
-                      <span>{getCategoryIcon(variety.category)}</span>
+                      <span>{getCategoryIcon(crop.category)}</span>
                       <div>
-                        <span className="font-medium">{variety.variety}</span>
+                        <span className="font-medium">{crop.crop}</span>
                         <div className="text-sm text-muted-foreground">
-                          {variety.acres} acres • {variety.hailNettingCoverage.toFixed(1)}% hail netting
-                          {variety.plantingYear && ` • Planted ${variety.plantingYear}`}
+                          {crop.acres} acres • {crop.hailNettingCoverage.toFixed(1)}% coverage
+                          {crop.plantingYear && ` • ${crop.plantingYear}`}
                         </div>
                       </div>
                     </div>
                     <Button
                       variant="destructive"
                       size="sm"
-                      onClick={() => removeVariety(variety.id)}
+                      onClick={() => removeCrop(crop.id)}
                       className="touch-manipulation min-h-[44px] min-w-[44px]"
                     >
                       <Trash2 className="h-4 w-4" />
@@ -389,7 +400,7 @@ export const ImprovedVarietyManager = ({ onPropertiesChange }: ImprovedVarietyMa
 
               <Button onClick={addProperty} className="w-full min-h-[44px] touch-manipulation" size="lg">
                 <Plus className="h-4 w-4 mr-2" />
-                Add Property ({currentProperty.varieties.length} varieties)
+                Add Property ({currentProperty.crops.length} crops)
               </Button>
             </div>
           )}
@@ -426,16 +437,16 @@ export const ImprovedVarietyManager = ({ onPropertiesChange }: ImprovedVarietyMa
                 </div>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
-                  {property.varieties.map((variety) => (
-                    <div key={variety.id} className="p-3 bg-muted/50 rounded-lg">
+                  {property.crops.map((crop) => (
+                    <div key={crop.id} className="p-3 bg-muted/50 rounded-lg">
                       <div className="flex items-center gap-2 mb-2">
-                        <span>{getCategoryIcon(variety.category)}</span>
-                        <span className="font-medium text-sm">{variety.variety}</span>
+                        <span>{getCategoryIcon(crop.category)}</span>
+                        <span className="font-medium text-sm">{crop.crop}</span>
                       </div>
                       <div className="text-xs text-muted-foreground space-y-1">
-                        <div>{variety.acres} acres ({variety.hectares.toFixed(2)} ha)</div>
-                        <div>Hail: {variety.hailNettingCoverage.toFixed(1)}%</div>
-                        {variety.plantingYear && <div>Planted: {variety.plantingYear}</div>}
+                        <div>{crop.acres} acres ({crop.hectares.toFixed(2)} ha)</div>
+                        <div>Coverage: {crop.hailNettingCoverage.toFixed(1)}%</div>
+                        {crop.plantingYear && <div>Year: {crop.plantingYear}</div>}
                       </div>
                     </div>
                   ))}
@@ -445,19 +456,19 @@ export const ImprovedVarietyManager = ({ onPropertiesChange }: ImprovedVarietyMa
                   <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 text-sm">
                     <div>
                       <span className="font-medium">Total Area:</span>
-                      <p>{property.varieties.reduce((sum, v) => sum + v.acres, 0).toFixed(1)} acres</p>
+                      <p>{property.crops.reduce((sum, c) => sum + c.acres, 0).toFixed(1)} acres</p>
                     </div>
                     <div>
-                      <span className="font-medium">Varieties:</span>
-                      <p>{property.varieties.length}</p>
+                      <span className="font-medium">Crops:</span>
+                      <p>{property.crops.length}</p>
                     </div>
                     <div>
-                      <span className="font-medium">Wine Grapes:</span>
-                      <p>{property.varieties.filter(v => v.category === 'wine').length}</p>
+                      <span className="font-medium">Grain Crops:</span>
+                      <p>{property.crops.filter(c => c.category === 'grain').length}</p>
                     </div>
                     <div>
-                      <span className="font-medium">Table/Dried:</span>
-                      <p>{property.varieties.filter(v => v.category !== 'wine').length}</p>
+                      <span className="font-medium">Other Types:</span>
+                      <p>{property.crops.filter(c => c.category !== 'grain').length}</p>
                     </div>
                   </div>
                 </div>
@@ -468,11 +479,11 @@ export const ImprovedVarietyManager = ({ onPropertiesChange }: ImprovedVarietyMa
       )}
 
       {/* Empty State */}
-      {properties.length === 0 && currentProperty.varieties.length === 0 && (
+      {properties.length === 0 && currentProperty.crops.length === 0 && (
         <div className="text-center py-8 text-muted-foreground">
-          <Grape className="h-12 w-12 mx-auto mb-4 opacity-50" />
-          <p>No varieties selected yet</p>
-          <p className="text-sm">Use the dropdown selects above to choose grape varieties</p>
+          <Wheat className="h-12 w-12 mx-auto mb-4 opacity-50" />
+          <p>No crops selected yet</p>
+          <p className="text-sm">Use the dropdown selects above to choose crop types</p>
         </div>
       )}
     </div>
