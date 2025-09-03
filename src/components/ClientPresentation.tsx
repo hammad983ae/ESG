@@ -40,20 +40,386 @@ export const ClientPresentation = () => {
     // Import html2canvas dynamically
     const html2canvas = (await import('html2canvas')).default;
     
-    const element = slideRef.current;
-    if (!element) return;
+    // Create a professional presentation slide element
+    const slideElement = document.createElement('div');
+    slideElement.style.cssText = `
+      width: 1920px;
+      height: 1080px;
+      background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+      font-family: 'Arial', 'Helvetica', sans-serif;
+      position: fixed;
+      top: -10000px;
+      left: 0;
+      z-index: -1;
+      padding: 80px;
+      box-sizing: border-box;
+      display: flex;
+      flex-direction: column;
+    `;
 
-    const canvas = await html2canvas(element, {
+    const slide = slides[slideIndex];
+    
+    // Create professional slide content
+    slideElement.innerHTML = `
+      <div style="display: flex; flex-direction: column; height: 100%;">
+        <!-- Header -->
+        <div style="text-align: center; margin-bottom: 60px; border-bottom: 3px solid #1e40af; padding-bottom: 40px;">
+          <div style="display: flex; align-items: center; justify-content: center; gap: 20px; margin-bottom: 20px;">
+            <div style="width: 80px; height: 80px; background: linear-gradient(135deg, #1e40af, #3b82f6); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-size: 40px; font-weight: bold;">
+              DPG
+            </div>
+          </div>
+          <h1 style="font-size: 48px; font-weight: bold; color: #1e40af; margin: 0 0 15px 0; line-height: 1.2;">
+            ${slide.title}
+          </h1>
+          <h2 style="font-size: 32px; color: #64748b; margin: 0; font-weight: 300;">
+            ${slide.subtitle}
+          </h2>
+        </div>
+
+        <!-- Content -->
+        <div style="flex: 1; display: flex; align-items: center; justify-content: center;">
+          <div style="width: 100%; max-width: 1600px;">
+            ${getProfessionalSlideContent(slide, slideIndex)}
+          </div>
+        </div>
+
+        <!-- Footer -->
+        <div style="display: flex; justify-content: between; align-items: center; padding-top: 40px; border-top: 2px solid #e2e8f0; margin-top: 40px; font-size: 24px; color: #64748b;">
+          <div style="flex: 1;">
+            <strong>Delorenzo Property Group Pty Ltd</strong><br>
+            ESG Property Assessment Platform™
+          </div>
+          <div style="text-align: right;">
+            <strong>Slide ${slideIndex + 1} of ${slides.length}</strong><br>
+            Patent Protected • ISO Compliant
+          </div>
+        </div>
+      </div>
+    `;
+
+    document.body.appendChild(slideElement);
+
+    const canvas = await html2canvas(slideElement, {
       backgroundColor: '#ffffff',
-      scale: 2,
+      scale: 1,
       width: 1920,
-      height: 1080
+      height: 1080,
+      useCORS: true
     });
 
+    document.body.removeChild(slideElement);
+
     const link = document.createElement('a');
-    link.download = `slide-${slideIndex + 1}-${slides[slideIndex].id}.png`;
-    link.href = canvas.toDataURL('image/png');
+    link.download = `DPG-Presentation-Slide-${slideIndex + 1}-${slide.id}.png`;
+    link.href = canvas.toDataURL('image/png', 1.0);
     link.click();
+  };
+
+  const getProfessionalSlideContent = (slide: any, slideIndex: number) => {
+    switch (slideIndex) {
+      case 0: // Welcome
+        return `
+          <div style="text-align: center;">
+            <div style="width: 200px; height: 200px; background: linear-gradient(135deg, #1e40af, #3b82f6); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 60px; box-shadow: 0 20px 40px rgba(30, 64, 175, 0.3);">
+              <svg style="width: 100px; height: 100px; color: white;" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M12 2L2 7L12 12L22 7L12 2Z"></path>
+                <path d="M2 17L12 22L22 17"></path>
+                <path d="M2 12L12 17L22 12"></path>
+              </svg>
+            </div>
+            <h3 style="font-size: 56px; font-weight: bold; margin-bottom: 40px; color: #1e293b;">Welcome to the Future of Property Valuation</h3>
+            <p style="font-size: 32px; color: #64748b; max-width: 1200px; margin: 0 auto 60px; line-height: 1.6;">
+              Comprehensive ESG-integrated platform combining traditional valuation methods with cutting-edge environmental, social, and governance assessment tools.
+            </p>
+            <div style="display: flex; justify-content: center; gap: 30px; flex-wrap: wrap;">
+              <span style="background: #dbeafe; color: #1e40af; padding: 15px 30px; border-radius: 25px; font-size: 24px; font-weight: 600;">Patent Protected</span>
+              <span style="background: #f0fdf4; color: #166534; padding: 15px 30px; border-radius: 25px; font-size: 24px; font-weight: 600;">ISO Compliant</span>
+              <span style="background: #fef3c7; color: #d97706; padding: 15px 30px; border-radius: 25px; font-size: 24px; font-weight: 600;">Industry Leading</span>
+            </div>
+          </div>
+        `;
+      
+      case 1: // Platform Overview
+        return `
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 80px;">
+            <div style="background: white; border: 3px solid #dbeafe; border-radius: 20px; padding: 60px; box-shadow: 0 10px 30px rgba(0,0,0,0.1);">
+              <div style="display: flex; align-items: center; gap: 20px; margin-bottom: 40px;">
+                <div style="width: 60px; height: 60px; background: #1e40af; border-radius: 12px; display: flex; align-items: center; justify-content: center;">
+                  <svg style="width: 30px; height: 30px; color: white;" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M12 2L2 7L12 12L22 7L12 2Z"></path>
+                  </svg>
+                </div>
+                <h3 style="font-size: 40px; font-weight: bold; color: #1e40af; margin: 0;">Property Hub</h3>
+              </div>
+              <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; font-size: 22px;">
+                <div style="display: flex; align-items: center; gap: 15px;">
+                  <div style="width: 12px; height: 12px; background: #1e40af; border-radius: 50%;"></div>
+                  <span>Commercial Properties</span>
+                </div>
+                <div style="display: flex; align-items: center; gap: 15px;">
+                  <div style="width: 12px; height: 12px; background: #1e40af; border-radius: 50%;"></div>
+                  <span>Residential Assets</span>
+                </div>
+                <div style="display: flex; align-items: center; gap: 15px;">
+                  <div style="width: 12px; height: 12px; background: #1e40af; border-radius: 50%;"></div>
+                  <span>Industrial Facilities</span>
+                </div>
+                <div style="display: flex; align-items: center; gap: 15px;">
+                  <div style="width: 12px; height: 12px; background: #1e40af; border-radius: 50%;"></div>
+                  <span>Sports Stadiums</span>
+                </div>
+                <div style="display: flex; align-items: center; gap: 15px;">
+                  <div style="width: 12px; height: 12px; background: #1e40af; border-radius: 50%;"></div>
+                  <span>Fast Food Outlets</span>
+                </div>
+                <div style="display: flex; align-items: center; gap: 15px;">
+                  <div style="width: 12px; height: 12px; background: #1e40af; border-radius: 50%;"></div>
+                  <span>Healthcare Properties</span>
+                </div>
+              </div>
+            </div>
+            
+            <div style="background: white; border: 3px solid #dcfce7; border-radius: 20px; padding: 60px; box-shadow: 0 10px 30px rgba(0,0,0,0.1);">
+              <div style="display: flex; align-items: center; gap: 20px; margin-bottom: 40px;">
+                <div style="width: 60px; height: 60px; background: #16a34a; border-radius: 12px; display: flex; align-items: center; justify-content: center;">
+                  <svg style="width: 30px; height: 30px; color: white;" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M12 2L13.09 8.26L22 9L13.09 9.74L12 16L10.91 9.74L2 9L10.91 8.26L12 2Z"></path>
+                  </svg>
+                </div>
+                <h3 style="font-size: 40px; font-weight: bold; color: #16a34a; margin: 0;">Agricultural Hub</h3>
+              </div>
+              <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; font-size: 22px;">
+                <div style="display: flex; align-items: center; gap: 15px;">
+                  <div style="width: 12px; height: 12px; background: #16a34a; border-radius: 50%;"></div>
+                  <span>Crop Valuation</span>
+                </div>
+                <div style="display: flex; align-items: center; gap: 15px;">
+                  <div style="width: 12px; height: 12px; background: #16a34a; border-radius: 50%;"></div>
+                  <span>Orchard Management</span>
+                </div>
+                <div style="display: flex; align-items: center; gap: 15px;">
+                  <div style="width: 12px; height: 12px; background: #16a34a; border-radius: 50%;"></div>
+                  <span>Vineyard Assessment</span>
+                </div>
+                <div style="display: flex; align-items: center; gap: 15px;">
+                  <div style="width: 12px; height: 12px; background: #16a34a; border-radius: 50%;"></div>
+                  <span>Pasture Evaluation</span>
+                </div>
+                <div style="display: flex; align-items: center; gap: 15px;">
+                  <div style="width: 12px; height: 12px; background: #16a34a; border-radius: 50%;"></div>
+                  <span>Mixed Farm Analysis</span>
+                </div>
+                <div style="display: flex; align-items: center; gap: 15px;">
+                  <div style="width: 12px; height: 12px; background: #16a34a; border-radius: 50%;"></div>
+                  <span>Management Diary</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        `;
+
+      case 2: // Key Features
+        return `
+          <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 60px;">
+            <div style="background: white; border-radius: 20px; padding: 50px; text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.1); border: 3px solid #dbeafe;">
+              <div style="width: 100px; height: 100px; background: linear-gradient(135deg, #1e40af, #3b82f6); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 30px;">
+                <svg style="width: 50px; height: 50px; color: white;" viewBox="0 0 24 24" fill="currentColor">
+                  <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                  <line x1="16" y1="2" x2="16" y2="6"></line>
+                  <line x1="8" y1="2" x2="8" y2="6"></line>
+                  <line x1="3" y1="10" x2="21" y2="10"></line>
+                </svg>
+              </div>
+              <h3 style="font-size: 32px; font-weight: bold; color: #1e40af; margin-bottom: 30px;">Advanced Calculations</h3>
+              <ul style="text-align: left; font-size: 20px; color: #64748b; list-style: none; padding: 0;">
+                <li style="margin-bottom: 15px; display: flex; align-items: center;">
+                  <span style="color: #1e40af; margin-right: 15px;">•</span> DCF Analysis
+                </li>
+                <li style="margin-bottom: 15px; display: flex; align-items: center;">
+                  <span style="color: #1e40af; margin-right: 15px;">•</span> Capitalization Methods
+                </li>
+                <li style="margin-bottom: 15px; display: flex; align-items: center;">
+                  <span style="color: #1e40af; margin-right: 15px;">•</span> Direct Comparison
+                </li>
+                <li style="margin-bottom: 15px; display: flex; align-items: center;">
+                  <span style="color: #1e40af; margin-right: 15px;">•</span> Summation Approach
+                </li>
+                <li style="display: flex; align-items: center;">
+                  <span style="color: #1e40af; margin-right: 15px;">•</span> Rent Revision Tools
+                </li>
+              </ul>
+            </div>
+
+            <div style="background: white; border-radius: 20px; padding: 50px; text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.1); border: 3px solid #dcfce7;">
+              <div style="width: 100px; height: 100px; background: linear-gradient(135deg, #16a34a, #22c55e); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 30px;">
+                <svg style="width: 50px; height: 50px; color: white;" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M12 2L13.09 8.26L22 9L13.09 9.74L12 16L10.91 9.74L2 9L10.91 8.26L12 2Z"></path>
+                </svg>
+              </div>
+              <h3 style="font-size: 32px; font-weight: bold; color: #16a34a; margin-bottom: 30px;">ESG Integration</h3>
+              <ul style="text-align: left; font-size: 20px; color: #64748b; list-style: none; padding: 0;">
+                <li style="margin-bottom: 15px; display: flex; align-items: center;">
+                  <span style="color: #16a34a; margin-right: 15px;">•</span> Environmental Impact
+                </li>
+                <li style="margin-bottom: 15px; display: flex; align-items: center;">
+                  <span style="color: #16a34a; margin-right: 15px;">•</span> Social Responsibility
+                </li>
+                <li style="margin-bottom: 15px; display: flex; align-items: center;">
+                  <span style="color: #16a34a; margin-right: 15px;">•</span> Governance Metrics
+                </li>
+                <li style="margin-bottom: 15px; display: flex; align-items: center;">
+                  <span style="color: #16a34a; margin-right: 15px;">•</span> Sustainability Scoring
+                </li>
+                <li style="display: flex; align-items: center;">
+                  <span style="color: #16a34a; margin-right: 15px;">•</span> Climate Risk Assessment
+                </li>
+              </ul>
+            </div>
+
+            <div style="background: white; border-radius: 20px; padding: 50px; text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.1); border: 3px solid #dbeafe;">
+              <div style="width: 100px; height: 100px; background: linear-gradient(135deg, #2563eb, #3b82f6); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 30px;">
+                <svg style="width: 50px; height: 50px; color: white;" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+                </svg>
+              </div>
+              <h3 style="font-size: 32px; font-weight: bold; color: #2563eb; margin-bottom: 30px;">Security & Compliance</h3>
+              <ul style="text-align: left; font-size: 20px; color: #64748b; list-style: none; padding: 0;">
+                <li style="margin-bottom: 15px; display: flex; align-items: center;">
+                  <span style="color: #2563eb; margin-right: 15px;">•</span> Patent Protected
+                </li>
+                <li style="margin-bottom: 15px; display: flex; align-items: center;">
+                  <span style="color: #2563eb; margin-right: 15px;">•</span> ISO 27001 Compliant
+                </li>
+                <li style="margin-bottom: 15px; display: flex; align-items: center;">
+                  <span style="color: #2563eb; margin-right: 15px;">•</span> SOC 2 Type II
+                </li>
+                <li style="margin-bottom: 15px; display: flex; align-items: center;">
+                  <span style="color: #2563eb; margin-right: 15px;">•</span> Enterprise Grade Security
+                </li>
+                <li style="display: flex; align-items: center;">
+                  <span style="color: #2563eb; margin-right: 15px;">•</span> Data Encryption
+                </li>
+              </ul>
+            </div>
+          </div>
+        `;
+
+      case 5: // Benefits
+        return `
+          <div style="display: grid; grid-template-columns: 1fr 1.5fr; gap: 80px;">
+            <div style="display: grid; grid-template-rows: repeat(3, 1fr); gap: 40px;">
+              <div style="text-align: center; background: white; border-radius: 20px; padding: 40px; box-shadow: 0 10px 30px rgba(0,0,0,0.1);">
+                <div style="width: 80px; height: 80px; background: linear-gradient(135deg, #1e40af, #3b82f6); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px;">
+                  <svg style="width: 40px; height: 40px; color: white;" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M9 12L11 14L15 10M21 12C21 16.9706 16.9706 21 12 21C7.02944 21 3 16.9706 3 12C3 7.02944 7.02944 3 12 3C16.9706 3 21 7.02944 21 12Z"></path>
+                  </svg>
+                </div>
+                <h3 style="font-size: 48px; font-weight: bold; color: #1e40af; margin: 0 0 10px 0;">95%</h3>
+                <p style="color: #64748b; font-size: 20px; margin: 0;">Accuracy in Valuations</p>
+              </div>
+              
+              <div style="text-align: center; background: white; border-radius: 20px; padding: 40px; box-shadow: 0 10px 30px rgba(0,0,0,0.1);">
+                <div style="width: 80px; height: 80px; background: linear-gradient(135deg, #16a34a, #22c55e); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px;">
+                  <svg style="width: 40px; height: 40px; color: white;" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M16 21V19C16 16.7909 14.2091 15 12 15H5C2.79086 15 1 16.7909 1 19V21M12.5 7C12.5 9.48528 10.4853 11.5 8 11.5C5.51472 11.5 3.5 9.48528 3.5 7C3.5 4.51472 5.51472 2.5 8 2.5C10.4853 2.5 12.5 4.51472 12.5 7ZM20.5 8L22 9.5L17 14.5L15 12.5"></path>
+                  </svg>
+                </div>
+                <h3 style="font-size: 48px; font-weight: bold; color: #16a34a; margin: 0 0 10px 0;">500+</h3>
+                <p style="color: #64748b; font-size: 20px; margin: 0;">Properties Assessed</p>
+              </div>
+              
+              <div style="text-align: center; background: white; border-radius: 20px; padding: 40px; box-shadow: 0 10px 30px rgba(0,0,0,0.1);">
+                <div style="width: 80px; height: 80px; background: linear-gradient(135deg, #2563eb, #3b82f6); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px;">
+                  <svg style="width: 40px; height: 40px; color: white;" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M22 12L18 8V11H3V13H18V16L22 12Z"></path>
+                  </svg>
+                </div>
+                <h3 style="font-size: 48px; font-weight: bold; color: #2563eb; margin: 0 0 10px 0;">60%</h3>
+                <p style="color: #64748b; font-size: 20px; margin: 0;">Time Savings</p>
+              </div>
+            </div>
+            
+            <div>
+              <h3 style="font-size: 40px; font-weight: bold; margin-bottom: 40px; color: #1e293b;">Key Advantages</h3>
+              <div style="display: flex; flex-direction: column; gap: 20px;">
+                <div style="display: flex; align-items: center; gap: 20px; padding: 25px; background: linear-gradient(135deg, #f0fdf4, #dcfce7); border-radius: 15px; border: 2px solid #22c55e;">
+                  <div style="width: 12px; height: 12px; background: #16a34a; border-radius: 50%;"></div>
+                  <span style="font-size: 24px; font-weight: 600; color: #1e293b;">Comprehensive ESG Integration</span>
+                </div>
+                
+                <div style="display: flex; align-items: center; gap: 20px; padding: 25px; background: linear-gradient(135deg, #eff6ff, #dbeafe); border-radius: 15px; border: 2px solid #3b82f6;">
+                  <div style="width: 12px; height: 12px; background: #2563eb; border-radius: 50%;"></div>
+                  <span style="font-size: 24px; font-weight: 600; color: #1e293b;">Automated Document Processing</span>
+                </div>
+                
+                <div style="display: flex; align-items: center; gap: 20px; padding: 25px; background: linear-gradient(135deg, #faf5ff, #f3e8ff); border-radius: 15px; border: 2px solid #a855f7;">
+                  <div style="width: 12px; height: 12px; background: #9333ea; border-radius: 50%;"></div>
+                  <span style="font-size: 24px; font-weight: 600; color: #1e293b;">Real-time Market Data</span>
+                </div>
+                
+                <div style="display: flex; align-items: center; gap: 20px; padding: 25px; background: linear-gradient(135deg, #fff7ed, #fed7aa); border-radius: 15px; border: 2px solid #f97316;">
+                  <div style="width: 12px; height: 12px; background: #ea580c; border-radius: 50%;"></div>
+                  <span style="font-size: 24px; font-weight: 600; color: #1e293b;">Industry-Leading Security</span>
+                </div>
+                
+                <div style="display: flex; align-items: center; gap: 20px; padding: 25px; background: linear-gradient(135deg, #f0fdfa, #ccfbf1); border-radius: 15px; border: 2px solid #14b8a6;">
+                  <div style="width: 12px; height: 12px; background: #0d9488; border-radius: 50%;"></div>
+                  <span style="font-size: 24px; font-weight: 600; color: #1e293b;">Specialized Agricultural Tools</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        `;
+
+      case 6: // Next Steps
+        return `
+          <div style="text-align: center;">
+            <div style="max-width: 1000px; margin: 0 auto 80px;">
+              <h3 style="font-size: 48px; font-weight: bold; margin-bottom: 40px; color: #1e293b;">Ready to Transform Your Property Assessments?</h3>
+              <p style="font-size: 28px; color: #64748b; line-height: 1.6;">
+                Join the leading property professionals who trust our platform for accurate, comprehensive, and ESG-integrated valuations.
+              </p>
+            </div>
+            
+            <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 60px; max-width: 1400px; margin: 0 auto 80px;">
+              <div style="background: white; padding: 60px 40px; text-align: center; border: 3px solid #dbeafe; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.1);">
+                <div style="font-size: 80px; margin-bottom: 30px;">📞</div>
+                <h4 style="font-size: 32px; font-weight: bold; margin-bottom: 20px; color: #1e293b;">Schedule Demo</h4>
+                <p style="font-size: 20px; color: #64748b;">Book a personalized platform demonstration</p>
+              </div>
+              
+              <div style="background: white; padding: 60px 40px; text-align: center; border: 3px solid #dcfce7; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.1);">
+                <div style="font-size: 80px; margin-bottom: 30px;">🚀</div>
+                <h4 style="font-size: 32px; font-weight: bold; margin-bottom: 20px; color: #1e293b;">Trial Access</h4>
+                <p style="font-size: 20px; color: #64748b;">Start with a 30-day free trial</p>
+              </div>
+              
+              <div style="background: white; padding: 60px 40px; text-align: center; border: 3px solid #dbeafe; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.1);">
+                <div style="font-size: 80px; margin-bottom: 30px;">🤝</div>
+                <h4 style="font-size: 32px; font-weight: bold; margin-bottom: 20px; color: #1e293b;">Partnership</h4>
+                <p style="font-size: 20px; color: #64748b;">Explore enterprise partnership opportunities</p>
+              </div>
+            </div>
+            
+            <div style="display: flex; justify-content: center; gap: 40px;">
+              <div style="background: linear-gradient(135deg, #1e40af, #3b82f6); color: white; padding: 20px 60px; border-radius: 15px; font-size: 28px; font-weight: 600; box-shadow: 0 10px 30px rgba(30, 64, 175, 0.3);">
+                Schedule Demo
+              </div>
+              <div style="background: white; color: #1e40af; border: 3px solid #1e40af; padding: 20px 60px; border-radius: 15px; font-size: 28px; font-weight: 600;">
+                Contact Sales
+              </div>
+            </div>
+          </div>
+        `;
+
+      default:
+        return `
+          <div style="text-align: center; padding: 100px; font-size: 24px; color: #64748b;">
+            Professional slide content for ${slide.title}
+          </div>
+        `;
+    }
   };
 
   const downloadAllSlides = async () => {
