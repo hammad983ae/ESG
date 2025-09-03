@@ -5,7 +5,7 @@
  * Licensed under MIT License - see LICENSE file for details
  */
 
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -26,11 +26,96 @@ import {
   MapPin,
   Target,
   Zap,
-  Lock
+  Lock,
+  Download,
+  FileText,
+  Printer
 } from "lucide-react";
 
 export const ClientPresentation = () => {
   const [currentSlide, setCurrentSlide] = useState(0);
+  const slideRef = useRef<HTMLDivElement>(null);
+
+  const downloadSlideAsImage = async (slideIndex: number) => {
+    // Import html2canvas dynamically
+    const html2canvas = (await import('html2canvas')).default;
+    
+    const element = slideRef.current;
+    if (!element) return;
+
+    const canvas = await html2canvas(element, {
+      backgroundColor: '#ffffff',
+      scale: 2,
+      width: 1920,
+      height: 1080
+    });
+
+    const link = document.createElement('a');
+    link.download = `slide-${slideIndex + 1}-${slides[slideIndex].id}.png`;
+    link.href = canvas.toDataURL('image/png');
+    link.click();
+  };
+
+  const downloadAllSlides = async () => {
+    const originalSlide = currentSlide;
+    
+    for (let i = 0; i < slides.length; i++) {
+      setCurrentSlide(i);
+      // Wait for render
+      await new Promise(resolve => setTimeout(resolve, 500));
+      await downloadSlideAsImage(i);
+    }
+    
+    setCurrentSlide(originalSlide);
+  };
+
+  const downloadPresentationPDF = () => {
+    // Create a print-friendly version
+    const printWindow = window.open('', '_blank');
+    if (!printWindow) return;
+
+    const printContent = slides.map((slide, index) => `
+      <div style="page-break-after: always; padding: 40px; min-height: 100vh; display: flex; flex-direction: column;">
+        <div style="text-align: center; margin-bottom: 40px;">
+          <h1 style="font-size: 2.5rem; font-weight: bold; color: #1e40af; margin-bottom: 10px;">
+            ${slide.title}
+          </h1>
+          <p style="font-size: 1.25rem; color: #6b7280;">
+            ${slide.subtitle}
+          </p>
+        </div>
+        <div style="flex: 1;">
+          ${slide.content.props.children || ''}
+        </div>
+        <div style="text-align: center; margin-top: 40px; font-size: 0.875rem; color: #9ca3af;">
+          Slide ${index + 1} of ${slides.length} | Delorenzo Property Group
+        </div>
+      </div>
+    `).join('');
+
+    printWindow.document.write(`
+      <!DOCTYPE html>
+      <html>
+        <head>
+          <title>Delorenzo Property Group - Client Presentation</title>
+          <style>
+            body { margin: 0; font-family: system-ui, -apple-system, sans-serif; }
+            @media print {
+              @page { margin: 20mm; }
+              .no-print { display: none; }
+            }
+          </style>
+        </head>
+        <body>
+          ${printContent}
+        </body>
+      </html>
+    `);
+    
+    printWindow.document.close();
+    printWindow.focus();
+    printWindow.print();
+  };
 
   const slides = [
     {
@@ -446,11 +531,39 @@ export const ClientPresentation = () => {
         </div>
 
         {/* Slide Content */}
-        <Card className="mb-8 shadow-2xl min-h-[600px]">
+        <Card ref={slideRef} className="mb-8 shadow-2xl min-h-[600px]">
           <CardContent className="p-8">
             {currentSlideData.content}
           </CardContent>
         </Card>
+
+        {/* Export Controls */}
+        <div className="flex justify-center gap-4 mb-6">
+          <Button 
+            onClick={() => downloadSlideAsImage(currentSlide)}
+            variant="outline"
+            className="flex items-center gap-2"
+          >
+            <Download className="h-4 w-4" />
+            Download Current Slide
+          </Button>
+          <Button 
+            onClick={downloadAllSlides}
+            variant="outline"
+            className="flex items-center gap-2"
+          >
+            <FileText className="h-4 w-4" />
+            Download All Slides
+          </Button>
+          <Button 
+            onClick={downloadPresentationPDF}
+            variant="outline"
+            className="flex items-center gap-2"
+          >
+            <Printer className="h-4 w-4" />
+            Print/Save as PDF
+          </Button>
+        </div>
 
         {/* Navigation */}
         <div className="flex items-center justify-between">
