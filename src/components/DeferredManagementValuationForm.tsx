@@ -66,7 +66,7 @@ export function DeferredManagementValuationForm({ onSubmit }: DeferredManagement
       <CardHeader>
         <CardTitle className="text-2xl font-bold text-primary flex items-center gap-2">
           <Users className="h-6 w-6" />
-          Deferred Management Valuation - Retirement Villages
+          Deferred Management Fee - Retirement Villages
         </CardTitle>
         <p className="text-muted-foreground">
           Specialized valuation methodology for retirement village management rights with deferred cash flow analysis.
@@ -390,7 +390,7 @@ export function DeferredManagementValuationForm({ onSubmit }: DeferredManagement
 
           <Button type="submit" className="w-full" size="lg">
             <Users className="h-5 w-5 mr-2" />
-            Calculate Deferred Management Valuation
+            Calculate Deferred Management Fee
           </Button>
         </form>
       </CardContent>

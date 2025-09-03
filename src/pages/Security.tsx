@@ -382,7 +382,7 @@ export default function Security() {
                 </div>
 
                 <div className="p-4 bg-emerald-50 rounded-lg border-l-4 border-l-emerald-500">
-                  <h3 className="font-semibold mb-2">Deferred Management Valuation for Retirement Villages</h3>
+                  <h3 className="font-semibold mb-2">Deferred Management Fee for Retirement Villages</h3>
                   <div className="text-sm space-y-1">
                     <div><strong>Patent Number:</strong> AU2025000017</div>
                     <div><strong>Filing Date:</strong> March 10, 2025</div>

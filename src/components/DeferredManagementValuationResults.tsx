@@ -47,7 +47,7 @@ export function DeferredManagementValuationResults({ inputs, results }: Deferred
         <CardHeader>
           <CardTitle className="text-2xl font-bold flex items-center gap-2">
             <Users className="h-6 w-6" />
-            Deferred Management Valuation Results
+            Deferred Management Fee Results
           </CardTitle>
           <p className="text-muted-foreground">
             {inputs.propertyName} | Analysis Date: {new Date(inputs.analysisDate).toLocaleDateString()} | {inputs.villageUnits} Units

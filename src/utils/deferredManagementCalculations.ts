@@ -1,5 +1,5 @@
 /**
- * Deferred Management Valuation Calculations for Retirement Villages
+ * Deferred Management Fee Calculations for Retirement Villages
  * 
  * Copyright (c) 2025 Delorenzo Property Group Pty Ltd. All Rights Reserved.
  * Licensed under MIT License - see LICENSE file for details
@@ -77,7 +77,7 @@ export interface DeferredManagementResults {
 }
 
 /**
- * Calculate Deferred Management Valuation for Retirement Villages
+ * Calculate Deferred Management Fee for Retirement Villages
  */
 export function calculateDeferredManagementValuation(inputs: DeferredManagementInputs): DeferredManagementResults {
   const {

@@ -1178,7 +1178,7 @@ export default function ValuationAnalysis() {
           <TabsContent value="deferred-management" className="mt-6">
             <div className="flex items-center justify-between mb-6">
               <div>
-                <h2 className="text-2xl font-semibold">Deferred Management Valuation - Retirement Villages</h2>
+                <h2 className="text-2xl font-semibold">Deferred Management Fee - Retirement Villages</h2>
                 <p className="text-muted-foreground">
                   Specialized valuation for retirement village management rights with deferred cash flow analysis and present value calculations
                 </p>

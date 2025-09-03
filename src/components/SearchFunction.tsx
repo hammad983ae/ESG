@@ -193,7 +193,7 @@ const searchItems: SearchItem[] = [
   },
   {
     id: "deferred-management",
-    name: "Deferred Management Valuation",
+    name: "Deferred Management Fee",
     description: "Valuation for retirement villages with deferred management fees",
     category: "Specialized Valuations",
     keywords: ["deferred", "management", "retirement", "village", "aged care"],
