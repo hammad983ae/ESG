@@ -21,6 +21,7 @@ import { VineyardValuationForm } from "@/components/VineyardValuationForm";
 import { PastureValuationForm } from "@/components/PastureValuationForm";
 import { HorticultureValuationForm } from "@/components/HorticultureValuationForm";
 import { CommodityMarketAnalysis } from "@/components/CommodityMarketAnalysis";
+import { MixedFarmForm } from "@/components/MixedFarmForm";
 
 const AgriculturalHub = () => {
   const [activePropertyType, setActivePropertyType] = useState("market-analysis");
@@ -32,6 +33,13 @@ const AgriculturalHub = () => {
       icon: BarChart3,
       description: "AI-powered commodity forecasting and export analysis",
       examples: ["Supply/Demand", "Exchange Rates", "Export Tariffs", "Price Forecasts"]
+    },
+    {
+      id: "mixed-farm",
+      name: "Mixed Farm Operations",
+      icon: Tractor,
+      description: "Multi-property and multi-crop management",
+      examples: ["Multiple Properties", "Custom Varieties", "Mixed Operations"]
     },
     {
       id: "crops",
@@ -147,6 +155,10 @@ const AgriculturalHub = () => {
 
               <TabsContent value="market-analysis" className="mt-6">
                 <CommodityMarketAnalysis />
+              </TabsContent>
+
+              <TabsContent value="mixed-farm" className="mt-6">
+                <MixedFarmForm />
               </TabsContent>
 
               <TabsContent value="crops" className="mt-6">
