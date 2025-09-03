@@ -96,7 +96,7 @@ export function VarietyManager({ category, onVarietySelect, currentVarieties }: 
     return defaultVarieties[category as keyof typeof defaultVarieties] as string[] || [];
   };
 
-  const getAllVarieties = () => {
+  const getAllVarieties = (): string[] => {
     let allVarieties: string[] = [];
     
     if (category === 'grape') {
@@ -104,7 +104,10 @@ export function VarietyManager({ category, onVarietySelect, currentVarieties }: 
         allVarieties = [...allVarieties, ...varieties];
       });
     } else {
-      allVarieties = defaultVarieties[category as keyof typeof defaultVarieties] || [];
+      const categoryVarieties = defaultVarieties[category as keyof typeof defaultVarieties];
+      if (Array.isArray(categoryVarieties)) {
+        allVarieties = categoryVarieties;
+      }
     }
     
     // Add custom varieties
@@ -265,7 +268,7 @@ export function VarietyManager({ category, onVarietySelect, currentVarieties }: 
       {/* Show varieties for other categories */}
       {category !== 'grape' && (
         <div className="flex flex-wrap gap-2">
-          {getVarietiesForType(category).map((variety) => (
+          {(defaultVarieties[category as keyof typeof defaultVarieties] as string[] || []).map((variety) => (
             <Badge 
               key={variety} 
               variant={currentVarieties.includes(variety) ? "default" : "outline"}

@@ -95,8 +95,8 @@ export function MixedFarmForm() {
 
       {/* Property Management */}
       <PropertyManager
-        onPropertiesChange={setProperties}
-        initialProperties={properties}
+        onPropertiesChange={(props) => setProperties(props as MixedFarmProperty[])}
+        initialProperties={properties as any[]}
       />
 
       {/* Farm Overview */}
