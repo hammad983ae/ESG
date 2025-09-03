@@ -161,17 +161,17 @@ export const ImprovedVarietyManager = ({ onVarietiesChange }: ImprovedVarietyMan
           </div>
 
           {/* Add New Variety Form */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 p-4 border rounded-lg bg-muted/30">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 p-3 sm:p-4 border rounded-lg bg-muted/30 touch-manipulation">
             <div className="space-y-2">
               <Label>Grape Category *</Label>
               <Select 
                 value={newVariety.category} 
                 onValueChange={(value) => setNewVariety({...newVariety, category: value, variety: ''})}
               >
-                <SelectTrigger className="bg-background z-50">
+                <SelectTrigger className="bg-background z-50 min-h-[44px] touch-manipulation">
                   <SelectValue placeholder="Select category" />
                 </SelectTrigger>
-                <SelectContent className="bg-background border shadow-lg z-50">
+                <SelectContent className="bg-background border shadow-lg z-50 max-h-[50vh] overflow-y-auto">
                   <SelectItem value="wine">🍷 Wine Grapes</SelectItem>
                   <SelectItem value="table">🍇 Table Grapes</SelectItem>
                   <SelectItem value="dried">🫐 Dried Fruit Grapes</SelectItem>
@@ -186,10 +186,10 @@ export const ImprovedVarietyManager = ({ onVarietiesChange }: ImprovedVarietyMan
                 onValueChange={(value) => setNewVariety({...newVariety, variety: value})}
                 disabled={!newVariety.category}
               >
-                <SelectTrigger className="bg-background z-40">
+                <SelectTrigger className="bg-background z-40 min-h-[44px] touch-manipulation">
                   <SelectValue placeholder="Choose variety" />
                 </SelectTrigger>
-                <SelectContent className="bg-background border shadow-lg z-40 max-h-60">
+                <SelectContent className="bg-background border shadow-lg z-40 max-h-[40vh] overflow-y-auto">
                   {newVariety.category && grapeVarieties[newVariety.category as keyof typeof grapeVarieties]?.map((variety) => (
                     <SelectItem key={variety} value={variety}>{variety}</SelectItem>
                   ))}

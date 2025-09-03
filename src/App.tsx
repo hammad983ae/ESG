@@ -20,6 +20,7 @@ import ValuationAnalysis from "./pages/ValuationAnalysis";
 import RentRevision from "./pages/RentRevision";
 import Security from "./pages/Security";
 import AgriculturalHub from "./pages/AgriculturalHub";
+import PropertyHub from "./pages/PropertyHub";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -35,6 +36,7 @@ const App = () => (
           <Route path="/valuation" element={<ValuationAnalysis />} />
           <Route path="/rent-revision" element={<RentRevision />} />
           <Route path="/agricultural-hub" element={<AgriculturalHub />} />
+          <Route path="/property-hub" element={<PropertyHub />} />
           <Route path="/security" element={<Security />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
