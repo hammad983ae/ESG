@@ -474,3 +474,5 @@ export function WeightPortfolioSection({ onOptimizationComplete }: WeightPortfol
     </div>
   );
 }
+
+export default WeightPortfolioSection;

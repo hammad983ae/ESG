@@ -362,3 +362,5 @@ export function ForecastingGrowthFunctions({ onForecastComplete }: ForecastingGr
     </div>
   );
 }
+
+export default ForecastingGrowthFunctions;

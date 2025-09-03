@@ -462,3 +462,5 @@ export function ComparableAssetForecast({ onForecastComplete }: ComparableAssetF
     </div>
   );
 }
+
+export default ComparableAssetForecast;

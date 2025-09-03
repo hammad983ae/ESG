@@ -559,3 +559,5 @@ export function RateGrowthAnalysis({ onAnalysisComplete }: RateGrowthAnalysisPro
     </div>
   );
 }
+
+export default RateGrowthAnalysis;
