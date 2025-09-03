@@ -31,7 +31,8 @@ const APPLICABLE_PROPERTY_TYPES = [
   'retail', 
   'industrial',
   'hospitality',
-  'healthcare'
+  'healthcare',
+  'fast-food'
 ];
 
 const TIME_SLOTS = [

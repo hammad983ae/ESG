@@ -139,6 +139,15 @@ export default function PropertyHub() {
       examples: 'Service stations, truck stops',
       color: 'bg-yellow-500',
       category: 'specialized'
+    },
+    {
+      id: 'fast-food',
+      name: 'Fast Food Outlets',
+      icon: ShoppingBag,
+      description: 'Quick service restaurants and food outlets',
+      examples: 'McDonald\'s, KFC, Subway',
+      color: 'bg-amber-500',
+      category: 'retail'
     }
   ];
 
@@ -382,9 +391,21 @@ export default function PropertyHub() {
               </div>
             </TabsContent>
 
+            <TabsContent value="fast-food">
+              <div className="space-y-6">
+                <CapitalizationNetIncomeForm onSubmit={(data) => handlePropertySubmit(data, 'Fast Food - Cap Income')} />
+                <SummationApproachForm onSubmit={(data) => handlePropertySubmit(data, 'Fast Food - Summation')} />
+                <ValuationDirectComparisonForm onSubmit={(data) => handlePropertySubmit(data, 'Fast Food - Direct Comparison')} />
+                <TrafficAnalysisComparison 
+                  propertyType="fast-food"
+                  onAnalysisComplete={(results) => toast.success("Traffic analysis completed for Fast Food Outlet!")}
+                />
+              </div>
+            </TabsContent>
+
             {/* Placeholder for other property types */}
             {propertyTypes
-              .filter(p => !['childcare', 'hospitality', 'petrol-station', 'sporting-stadiums', 'commercial-office', 'industrial', 'residential', 'big-box'].includes(p.id))
+              .filter(p => !['childcare', 'hospitality', 'petrol-station', 'sporting-stadiums', 'commercial-office', 'industrial', 'residential', 'big-box', 'fast-food'].includes(p.id))
               .map((property) => (
                 <TabsContent key={property.id} value={property.id}>
                   <Card>
