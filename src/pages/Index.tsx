@@ -120,6 +120,11 @@ const Index = () => {
                 Choose between basic ESG assessment or advanced automated calculations with comprehensive risk analysis.
               </p>
               <div className="flex flex-col sm:flex-row justify-center gap-4">
+                <Link to="/client-presentation">
+                  <Button size="lg" className="flex items-center gap-2 touch-manipulation min-h-[44px]">
+                    📊 Client Presentation
+                  </Button>
+                </Link>
                 <Link to="/valuation">
                   <Button variant="outline" size="lg" className="flex items-center gap-2 touch-manipulation min-h-[44px]">
                     <TrendingUp className="w-5 h-5" />
