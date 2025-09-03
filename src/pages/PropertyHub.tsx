@@ -24,7 +24,8 @@ import {
   MapPin,
   TrendingUp,
   Shield,
-  Zap
+  Zap,
+  Trophy
 } from "lucide-react";
 import { toast } from "sonner";
 
@@ -148,6 +149,15 @@ export default function PropertyHub() {
       examples: 'McDonald\'s, KFC, Subway',
       color: 'bg-amber-500',
       category: 'retail'
+    },
+    {
+      id: 'sporting-stadiums',
+      name: 'Sports Stadiums',
+      icon: Trophy,
+      description: 'Sports venues, arenas, and entertainment facilities',
+      examples: 'Football stadiums, basketball arenas',
+      color: 'bg-emerald-500',
+      category: 'specialized'
     }
   ];
 
