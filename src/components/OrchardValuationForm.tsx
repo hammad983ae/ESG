@@ -5,7 +5,7 @@
  * Licensed under MIT License - see LICENSE file for details
  */
 
-import { useState } from "react";
+import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
@@ -15,19 +15,23 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
-import { Apple, TreePine, Calendar, Droplets } from "lucide-react";
+import { Apple, TreePine, Calendar, Droplets, Shield, Calculator } from "lucide-react";
 import { OCRUpload } from "./OCRUpload";
 import { OrchardValuationResults } from "./OrchardValuationResults";
 import { calculateOrchardValuation, type OrchardInputs } from "@/utils/orchardCalculations";
+import { VarietyManager } from "./VarietyManager";
+import { convertAcreage, calculateWaterForecast, formatAreaDisplay, formatWaterDisplay } from "@/utils/conversionUtils";
 
 const orchardSchema = z.object({
   property_address: z.string().min(1, "Property address is required"),
   total_area: z.number().min(0.1, "Total area must be greater than 0"),
   tree_type: z.string().min(1, "Tree type is required"),
-  variety: z.string().min(1, "Variety is required"),
+  varieties: z.array(z.string()).min(1, "At least one variety is required"),
   planting_year: z.number().min(1900, "Valid planting year required"),
   trees_per_acre: z.number().min(1, "Trees per acre must be at least 1"),
   rootstock: z.string().optional(),
+  hail_netting: z.boolean().default(false),
+  hail_netting_coverage: z.number().min(0).max(100).default(0),
   irrigation_type: z.string().min(1, "Irrigation type is required"),
   irrigation_coverage: z.number().min(0).max(100),
   irrigation_zone: z.string().min(1, "Irrigation zone is required"),
@@ -46,6 +50,9 @@ type OrchardFormData = z.infer<typeof orchardSchema>;
 export function OrchardValuationForm() {
   const [results, setResults] = useState<any>(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [selectedVarieties, setSelectedVarieties] = useState<string[]>([]);
+  const [waterForecast, setWaterForecast] = useState<any>(null);
+  const [areaConversion, setAreaConversion] = useState<any>(null);
 
   const form = useForm<OrchardFormData>({
     resolver: zodResolver(orchardSchema),
@@ -53,10 +60,12 @@ export function OrchardValuationForm() {
       property_address: "",
       total_area: 0,
       tree_type: "",
-      variety: "",
+      varieties: [],
       planting_year: new Date().getFullYear(),
       trees_per_acre: 0,
       rootstock: "",
+      hail_netting: false,
+      hail_netting_coverage: 0,
       irrigation_type: "",
       irrigation_coverage: 0,
       irrigation_zone: "",
@@ -102,16 +111,78 @@ export function OrchardValuationForm() {
 
   const onSubmit = (data: OrchardFormData) => {
     setIsLoading(true);
+    
+    // Calculate water forecast and area conversions
+    const forecast = calculateWaterForecast(
+      data.tree_type,
+      data.irrigation_type,
+      data.irrigation_coverage,
+      'Temperate', // Default climate zone for orchards
+      data.total_area
+    );
+    const conversion = convertAcreage(data.total_area);
+    
     try {
       const inputs: OrchardInputs = data as OrchardInputs;
       const calculationResults = calculateOrchardValuation(inputs);
-      setResults(calculationResults);
+      
+      // Add enhanced results
+      const enhancedResults = {
+        ...calculationResults,
+        varieties: data.varieties,
+        waterForecast: forecast,
+        areaConversion: conversion,
+        hailProtection: data.hail_netting
+      };
+      
+      setResults(enhancedResults);
     } catch (error) {
       console.error('Calculation error:', error);
     } finally {
       setIsLoading(false);
     }
   };
+
+  const handleVarietySelect = (variety: any) => {
+    const varietyName = variety.name;
+    if (!selectedVarieties.includes(varietyName)) {
+      const newVarieties = [...selectedVarieties, varietyName];
+      setSelectedVarieties(newVarieties);
+      form.setValue('varieties', newVarieties);
+    }
+  };
+
+  const removeVariety = (varietyName: string) => {
+    const newVarieties = selectedVarieties.filter(v => v !== varietyName);
+    setSelectedVarieties(newVarieties);
+    form.setValue('varieties', newVarieties);
+  };
+
+  // Watch for area changes to update conversions
+  const watchedArea = form.watch('total_area');
+  const watchedIrrigationType = form.watch('irrigation_type');
+  const watchedIrrigationCoverage = form.watch('irrigation_coverage');
+  const watchedTreeType = form.watch('tree_type');
+
+  // Update conversions and forecasts when relevant fields change
+  React.useEffect(() => {
+    if (watchedArea > 0) {
+      setAreaConversion(convertAcreage(watchedArea));
+    }
+  }, [watchedArea]);
+
+  React.useEffect(() => {
+    if (watchedArea > 0 && watchedIrrigationType && watchedTreeType) {
+      const forecast = calculateWaterForecast(
+        watchedTreeType,
+        watchedIrrigationType,
+        watchedIrrigationCoverage,
+        'Temperate',
+        watchedArea
+      );
+      setWaterForecast(forecast);
+    }
+  }, [watchedArea, watchedIrrigationType, watchedIrrigationCoverage, watchedTreeType]);
 
   if (results) {
     return <OrchardValuationResults results={results} onReset={() => setResults(null)} />;
@@ -172,6 +243,11 @@ export function OrchardValuationForm() {
                         onChange={(e) => field.onChange(parseFloat(e.target.value) || 0)}
                       />
                     </FormControl>
+                    {areaConversion && (
+                      <p className="text-sm text-muted-foreground mt-1">
+                        {formatAreaDisplay(areaConversion.acres)}
+                      </p>
+                    )}
                     <FormMessage />
                   </FormItem>
                 )}
@@ -206,43 +282,70 @@ export function OrchardValuationForm() {
                 Tree Details
               </CardTitle>
             </CardHeader>
-            <CardContent className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <FormField
-                control={form.control}
-                name="tree_type"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Tree Type</FormLabel>
-                    <Select onValueChange={field.onChange} value={field.value}>
-                      <FormControl>
-                        <SelectTrigger>
-                          <SelectValue placeholder="Select tree type" />
-                        </SelectTrigger>
-                      </FormControl>
-                      <SelectContent>
-                        {treeTypes.map((tree) => (
-                          <SelectItem key={tree} value={tree}>{tree}</SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+            <CardContent className="space-y-6">
+              {/* Tree Type Selection */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <FormField
+                  control={form.control}
+                  name="tree_type"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Tree Type</FormLabel>
+                      <Select onValueChange={field.onChange} value={field.value}>
+                        <FormControl>
+                          <SelectTrigger>
+                            <SelectValue placeholder="Select tree type" />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          {treeTypes.map((tree) => (
+                            <SelectItem key={tree} value={tree}>{tree}</SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
 
-              <FormField
-                control={form.control}
-                name="variety"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Variety</FormLabel>
-                    <FormControl>
-                      <Input placeholder="Enter variety name" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+              {/* Variety Management */}
+              {form.watch('tree_type') && (
+                <div className="space-y-4">
+                  <div className="flex items-center gap-2">
+                    <Apple className="h-4 w-4" />
+                    <span className="font-medium">{form.watch('tree_type')} Varieties</span>
+                  </div>
+                  
+                  <VarietyManager
+                    category={form.watch('tree_type')?.toLowerCase() === 'apple' ? 'fruit' : 'fruit'}
+                    onVarietySelect={handleVarietySelect}
+                    currentVarieties={selectedVarieties}
+                  />
+                  
+                  {selectedVarieties.length > 0 && (
+                    <div className="space-y-2">
+                      <h4 className="font-medium text-sm">Selected Varieties:</h4>
+                      <div className="flex flex-wrap gap-2">
+                        {selectedVarieties.map((variety) => (
+                          <div key={variety} className="flex items-center gap-1 bg-primary/10 px-2 py-1 rounded text-sm">
+                            {variety}
+                            <button
+                              type="button"
+                              onClick={() => removeVariety(variety)}
+                              className="text-muted-foreground hover:text-destructive ml-1"
+                            >
+                              ×
+                            </button>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                </div>
+              )}
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
 
               <FormField
                 control={form.control}
@@ -318,6 +421,64 @@ export function OrchardValuationForm() {
                   </FormItem>
                 )}
               />
+
+              {/* Hail Protection */}
+              <div className="col-span-2">
+                <Card className="bg-muted/50">
+                  <CardHeader className="pb-4">
+                    <CardTitle className="flex items-center gap-2 text-base">
+                      <Shield className="h-4 w-4" />
+                      Hail Protection System
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <FormField
+                      control={form.control}
+                      name="hail_netting"
+                      render={({ field }) => (
+                        <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
+                          <div className="space-y-0.5">
+                            <FormLabel className="text-base">Hail Netting Installed</FormLabel>
+                            <div className="text-sm text-muted-foreground">
+                              Protective netting system for crop protection
+                            </div>
+                          </div>
+                          <FormControl>
+                            <input
+                              type="checkbox"
+                              checked={field.value}
+                              onChange={field.onChange}
+                              className="h-4 w-4"
+                            />
+                          </FormControl>
+                        </FormItem>
+                      )}
+                    />
+
+                    {form.watch('hail_netting') && (
+                      <FormField
+                        control={form.control}
+                        name="hail_netting_coverage"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Hail Netting Coverage (%)</FormLabel>
+                            <FormControl>
+                              <Input 
+                                type="number" 
+                                placeholder="0-100"
+                                {...field}
+                                onChange={(e) => field.onChange(parseFloat(e.target.value) || 0)}
+                              />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                    )}
+                  </CardContent>
+                </Card>
+              </div>
+              </div>
             </CardContent>
           </Card>
 
@@ -394,6 +555,36 @@ export function OrchardValuationForm() {
                    </FormItem>
                  )}
                />
+
+               {/* Water Forecast Display */}
+               {waterForecast && (
+                 <div className="col-span-2">
+                   <Card className="bg-blue-50/50 dark:bg-blue-950/20">
+                     <CardHeader className="pb-4">
+                       <CardTitle className="flex items-center gap-2 text-base">
+                         <Calculator className="h-4 w-4" />
+                         Water Requirements Forecast
+                       </CardTitle>
+                     </CardHeader>
+                     <CardContent className="space-y-3">
+                       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
+                         <div>
+                           <p className="font-medium">Per Acre:</p>
+                           <p className="text-muted-foreground">{formatWaterDisplay(waterForecast.mlPerAcre)}</p>
+                         </div>
+                         <div>
+                           <p className="font-medium">Total Required:</p>
+                           <p className="text-muted-foreground">{waterForecast.totalMlRequired} ML</p>
+                         </div>
+                         <div>
+                           <p className="font-medium">Application Frequency:</p>
+                           <p className="text-muted-foreground">{waterForecast.irrigationSchedule.frequency}</p>
+                         </div>
+                       </div>
+                     </CardContent>
+                   </Card>
+                 </div>
+               )}
             </CardContent>
           </Card>
 

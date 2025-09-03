@@ -5,7 +5,7 @@
  * Licensed under MIT License - see LICENSE file for details
  */
 
-import { useState } from "react";
+import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
@@ -15,13 +15,15 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
-import { Grape, Droplets, Wine, Sun } from "lucide-react";
+import { Grape, Droplets, Wine, Sun, Shield, Calculator } from "lucide-react";
 import { OCRUpload } from "./OCRUpload";
+import { VarietyManager } from "./VarietyManager";
+import { convertAcreage, calculateWaterForecast, formatAreaDisplay, formatWaterDisplay } from "@/utils/conversionUtils";
 
 const vineyardSchema = z.object({
   property_address: z.string().min(1, "Property address is required"),
   total_area: z.number().min(0.1, "Total area must be greater than 0"),
-  grape_variety: z.string().min(1, "Grape variety is required"),
+  grape_varieties: z.array(z.string()).min(1, "At least one grape variety is required"),
   clone_selection: z.string().optional(),
   planting_year: z.number().min(1900, "Valid planting year required"),
   vine_age: z.number().min(0, "Vine age must be 0 or greater"),
@@ -29,6 +31,8 @@ const vineyardSchema = z.object({
   row_spacing: z.number().min(0, "Row spacing must be 0 or greater"),
   vine_spacing: z.number().min(0, "Vine spacing must be 0 or greater"),
   trellis_system: z.string().min(1, "Trellis system is required"),
+  hail_netting: z.boolean().default(false),
+  hail_netting_coverage: z.number().min(0).max(100).default(0),
   irrigation_type: z.string().min(1, "Irrigation type is required"),
   irrigation_coverage: z.number().min(0).max(100),
   irrigation_zone: z.string().min(1, "Irrigation zone is required"),
@@ -46,13 +50,16 @@ type VineyardFormData = z.infer<typeof vineyardSchema>;
 export function VineyardValuationForm() {
   const [results, setResults] = useState<any>(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [selectedVarieties, setSelectedVarieties] = useState<string[]>([]);
+  const [waterForecast, setWaterForecast] = useState<any>(null);
+  const [areaConversion, setAreaConversion] = useState<any>(null);
 
   const form = useForm<VineyardFormData>({
     resolver: zodResolver(vineyardSchema),
     defaultValues: {
       property_address: "",
       total_area: 0,
-      grape_variety: "",
+      grape_varieties: [],
       clone_selection: "",
       planting_year: new Date().getFullYear(),
       vine_age: 0,
@@ -60,6 +67,8 @@ export function VineyardValuationForm() {
       row_spacing: 0,
       vine_spacing: 0,
       trellis_system: "",
+      hail_netting: false,
+      hail_netting_coverage: 0,
       irrigation_type: "",
       irrigation_coverage: 0,
       irrigation_zone: "",
@@ -109,12 +118,69 @@ export function VineyardValuationForm() {
 
   const onSubmit = (data: VineyardFormData) => {
     setIsLoading(true);
-    // Placeholder for calculation
+    
+    // Calculate water forecast and area conversions
+    const forecast = calculateWaterForecast(
+      'grape',
+      data.irrigation_type,
+      data.irrigation_coverage,
+      data.climate_zone,
+      data.total_area
+    );
+    const conversion = convertAcreage(data.total_area);
+    
     setTimeout(() => {
-      setResults({ message: "Vineyard valuation calculated successfully!" });
+      setResults({ 
+        message: "Vineyard valuation calculated successfully!",
+        varieties: data.grape_varieties,
+        waterForecast: forecast,
+        areaConversion: conversion,
+        hailProtection: data.hail_netting
+      });
       setIsLoading(false);
     }, 1000);
   };
+
+  const handleVarietySelect = (variety: any) => {
+    const varietyName = variety.name;
+    if (!selectedVarieties.includes(varietyName)) {
+      const newVarieties = [...selectedVarieties, varietyName];
+      setSelectedVarieties(newVarieties);
+      form.setValue('grape_varieties', newVarieties);
+    }
+  };
+
+  const removeVariety = (varietyName: string) => {
+    const newVarieties = selectedVarieties.filter(v => v !== varietyName);
+    setSelectedVarieties(newVarieties);
+    form.setValue('grape_varieties', newVarieties);
+  };
+
+  // Watch for area changes to update conversions
+  const watchedArea = form.watch('total_area');
+  const watchedIrrigationType = form.watch('irrigation_type');
+  const watchedIrrigationCoverage = form.watch('irrigation_coverage');
+  const watchedClimateZone = form.watch('climate_zone');
+
+  // Update conversions and forecasts when relevant fields change
+  React.useEffect(() => {
+    if (watchedArea > 0) {
+      setAreaConversion(convertAcreage(watchedArea));
+    }
+  }, [watchedArea]);
+
+  React.useEffect(() => {
+    if (watchedArea > 0 && watchedIrrigationType && watchedClimateZone) {
+      const forecast = calculateWaterForecast(
+        'grape',
+        watchedIrrigationType,
+        watchedIrrigationCoverage,
+        watchedClimateZone,
+        watchedArea
+      );
+      setWaterForecast(forecast);
+    }
+  }, [watchedArea, watchedIrrigationType, watchedIrrigationCoverage, watchedClimateZone]);
 
   if (results) {
     return (
@@ -181,6 +247,11 @@ export function VineyardValuationForm() {
                         onChange={(e) => field.onChange(parseFloat(e.target.value) || 0)}
                       />
                     </FormControl>
+                    {areaConversion && (
+                      <p className="text-sm text-muted-foreground mt-1">
+                        {formatAreaDisplay(areaConversion.acres)}
+                      </p>
+                    )}
                     <FormMessage />
                   </FormItem>
                 )}
@@ -219,30 +290,42 @@ export function VineyardValuationForm() {
                 Vineyard Details
               </CardTitle>
             </CardHeader>
-            <CardContent className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <FormField
-                control={form.control}
-                name="grape_variety"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Grape Variety</FormLabel>
-                    <Select onValueChange={field.onChange} value={field.value}>
-                      <FormControl>
-                        <SelectTrigger>
-                          <SelectValue placeholder="Select grape variety" />
-                        </SelectTrigger>
-                      </FormControl>
-                      <SelectContent>
-                        {grapeVarieties.map((variety) => (
-                          <SelectItem key={variety} value={variety}>{variety}</SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                    <FormMessage />
-                  </FormItem>
+            <CardContent className="space-y-6">
+              {/* Variety Management */}
+              <div className="space-y-4">
+                <div className="flex items-center gap-2">
+                  <Grape className="h-4 w-4" />
+                  <span className="font-medium">Grape Varieties</span>
+                </div>
+                
+                <VarietyManager
+                  category="grape"
+                  onVarietySelect={handleVarietySelect}
+                  currentVarieties={selectedVarieties}
+                />
+                
+                {selectedVarieties.length > 0 && (
+                  <div className="space-y-2">
+                    <h4 className="font-medium text-sm">Selected Varieties:</h4>
+                    <div className="flex flex-wrap gap-2">
+                      {selectedVarieties.map((variety) => (
+                        <div key={variety} className="flex items-center gap-1 bg-primary/10 px-2 py-1 rounded text-sm">
+                          {variety}
+                          <button
+                            type="button"
+                            onClick={() => removeVariety(variety)}
+                            className="text-muted-foreground hover:text-destructive ml-1"
+                          >
+                            ×
+                          </button>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
                 )}
-              />
+              </div>
 
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <FormField
                 control={form.control}
                 name="clone_selection"
@@ -318,24 +401,81 @@ export function VineyardValuationForm() {
                 )}
               />
 
-              <FormField
-                control={form.control}
-                name="vines_per_acre"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Vines per Acre</FormLabel>
-                    <FormControl>
-                      <Input 
-                        type="number" 
-                        placeholder="0"
-                        {...field}
-                        onChange={(e) => field.onChange(parseFloat(e.target.value) || 0)}
+                <FormField
+                  control={form.control}
+                  name="vines_per_acre"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Vines per Acre</FormLabel>
+                      <FormControl>
+                        <Input 
+                          type="number" 
+                          placeholder="0"
+                          {...field}
+                          onChange={(e) => field.onChange(parseFloat(e.target.value) || 0)}
+                        />
+                      </FormControl>
+                       <FormMessage />
+                     </FormItem>
+                   )}
+                 />
+
+                {/* Hail Protection */}
+                <div className="col-span-2">
+                  <Card className="bg-muted/50">
+                    <CardHeader className="pb-4">
+                      <CardTitle className="flex items-center gap-2 text-base">
+                        <Shield className="h-4 w-4" />
+                        Hail Protection System
+                      </CardTitle>
+                    </CardHeader>
+                    <CardContent className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <FormField
+                        control={form.control}
+                        name="hail_netting"
+                        render={({ field }) => (
+                          <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
+                            <div className="space-y-0.5">
+                              <FormLabel className="text-base">Hail Netting Installed</FormLabel>
+                              <div className="text-sm text-muted-foreground">
+                                Protective netting system for crop protection
+                              </div>
+                            </div>
+                            <FormControl>
+                              <input
+                                type="checkbox"
+                                checked={field.value}
+                                onChange={field.onChange}
+                                className="h-4 w-4"
+                              />
+                            </FormControl>
+                          </FormItem>
+                        )}
                       />
-                    </FormControl>
-                     <FormMessage />
-                   </FormItem>
-                 )}
-               />
+
+                      {form.watch('hail_netting') && (
+                        <FormField
+                          control={form.control}
+                          name="hail_netting_coverage"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel>Hail Netting Coverage (%)</FormLabel>
+                              <FormControl>
+                                <Input 
+                                  type="number" 
+                                  placeholder="0-100"
+                                  {...field}
+                                  onChange={(e) => field.onChange(parseFloat(e.target.value) || 0)}
+                                />
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                      )}
+                    </CardContent>
+                  </Card>
+                </div>
 
                <FormField
                  control={form.control}
@@ -360,24 +500,54 @@ export function VineyardValuationForm() {
                  )}
                />
 
-               <FormField
-                 control={form.control}
-                 name="irrigation_coverage"
-                 render={({ field }) => (
-                   <FormItem>
-                     <FormLabel>Irrigation Coverage (%)</FormLabel>
-                     <FormControl>
-                       <Input 
-                         type="number" 
-                         placeholder="0-100"
-                         {...field}
-                         onChange={(e) => field.onChange(parseFloat(e.target.value) || 0)}
-                       />
-                     </FormControl>
-                     <FormMessage />
-                   </FormItem>
-                 )}
-               />
+                <FormField
+                  control={form.control}
+                  name="irrigation_coverage"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Irrigation Coverage (%)</FormLabel>
+                      <FormControl>
+                        <Input 
+                          type="number" 
+                          placeholder="0-100"
+                          {...field}
+                          onChange={(e) => field.onChange(parseFloat(e.target.value) || 0)}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                {/* Water Forecast Display */}
+                {waterForecast && (
+                  <div className="col-span-2">
+                    <Card className="bg-blue-50/50 dark:bg-blue-950/20">
+                      <CardHeader className="pb-4">
+                        <CardTitle className="flex items-center gap-2 text-base">
+                          <Calculator className="h-4 w-4" />
+                          Water Requirements Forecast
+                        </CardTitle>
+                      </CardHeader>
+                      <CardContent className="space-y-3">
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
+                          <div>
+                            <p className="font-medium">Per Acre:</p>
+                            <p className="text-muted-foreground">{formatWaterDisplay(waterForecast.mlPerAcre)}</p>
+                          </div>
+                          <div>
+                            <p className="font-medium">Total Required:</p>
+                            <p className="text-muted-foreground">{waterForecast.totalMlRequired} ML</p>
+                          </div>
+                          <div>
+                            <p className="font-medium">Application Frequency:</p>
+                            <p className="text-muted-foreground">{waterForecast.irrigationSchedule.frequency}</p>
+                          </div>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  </div>
+                )}
 
                <FormField
                  control={form.control}
@@ -509,11 +679,12 @@ export function VineyardValuationForm() {
                        />
                      </FormControl>
                      <FormMessage />
-                   </FormItem>
-                 )}
-               />
-             </CardContent>
-           </Card>
+                    </FormItem>
+                  )}
+                />
+              </div>
+            </CardContent>
+          </Card>
 
           <Button 
             type="submit" 
