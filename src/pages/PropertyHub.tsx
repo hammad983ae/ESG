@@ -37,12 +37,12 @@ import { IPProtectionNotice } from "@/components/IPProtectionNotice";
 import { CapitalizationNetIncomeForm } from "@/components/CapitalizationNetIncomeForm";
 import { SummationApproachForm } from "@/components/SummationApproachForm";
 import { ValuationDirectComparisonForm } from "@/components/ValuationDirectComparisonForm";
-import PropertyBuilder from "@/components/PropertyBuilder";
+import { PropertyBuilder } from "@/components/PropertyBuilder";
 import { AddressFinder } from "@/components/AddressFinder";
-import ForecastingGrowthFunctions from "@/components/ForecastingGrowthFunctions";
-import WeightPortfolioSection from "@/components/WeightPortfolioSection";
-import ComparableAssetForecast from "@/components/ComparableAssetForecast";
-import RateGrowthAnalysis from "@/components/RateGrowthAnalysis";
+import { ForecastingGrowthFunctions } from "@/components/ForecastingGrowthFunctions";
+import { WeightPortfolioSection } from "@/components/WeightPortfolioSection";
+import { ComparableAssetForecast } from "@/components/ComparableAssetForecast";
+import { RateGrowthAnalysis } from "@/components/RateGrowthAnalysis";
 
 export default function PropertyHub() {
   const navigate = useNavigate();
