@@ -985,6 +985,321 @@ export const StadiumValuationForm: React.FC<StadiumValuationFormProps> = ({ onSu
         </CardContent>
       </Card>
 
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <Shield className="h-5 w-5" />
+            Security & Compliance
+          </CardTitle>
+          <CardDescription>
+            Intellectual property rights, certifications, and compliance information
+          </CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-6">
+          {/* Patent Information */}
+          <div className="space-y-4">
+            <h4 className="font-semibold flex items-center gap-2">
+              <Settings className="h-4 w-4" />
+              Patents & Intellectual Property
+            </h4>
+            
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div className="space-y-2">
+                <Label>Australia Patents</Label>
+                {inputs.security_compliance.patents.australia.map((patent, index) => (
+                  <div key={index} className="flex items-center gap-2">
+                    <Input
+                      value={patent}
+                      onChange={(e) => {
+                        const newPatents = [...inputs.security_compliance.patents.australia];
+                        newPatents[index] = e.target.value;
+                        handleInputChange('security_compliance', {
+                          ...inputs.security_compliance,
+                          patents: {
+                            ...inputs.security_compliance.patents,
+                            australia: newPatents
+                          }
+                        });
+                      }}
+                      placeholder="Enter patent number"
+                      className="flex-1"
+                    />
+                    {inputs.security_compliance.patents.australia.length > 1 && (
+                      <Button
+                        type="button"
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => {
+                          const newPatents = inputs.security_compliance.patents.australia.filter((_, i) => i !== index);
+                          handleInputChange('security_compliance', {
+                            ...inputs.security_compliance,
+                            patents: {
+                              ...inputs.security_compliance.patents,
+                              australia: newPatents
+                            }
+                          });
+                        }}
+                      >
+                        <Trash2 className="h-4 w-4" />
+                      </Button>
+                    )}
+                  </div>
+                ))}
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="sm"
+                  onClick={() => {
+                    const newPatents = [...inputs.security_compliance.patents.australia, ""];
+                    handleInputChange('security_compliance', {
+                      ...inputs.security_compliance,
+                      patents: {
+                        ...inputs.security_compliance.patents,
+                        australia: newPatents
+                      }
+                    });
+                  }}
+                >
+                  <Plus className="h-4 w-4 mr-2" />
+                  Add AU Patent
+                </Button>
+              </div>
+              
+              <div className="space-y-2">
+                <Label>USA Patents</Label>
+                {inputs.security_compliance.patents.usa.map((patent, index) => (
+                  <div key={index} className="flex items-center gap-2">
+                    <Input
+                      value={patent}
+                      onChange={(e) => {
+                        const newPatents = [...inputs.security_compliance.patents.usa];
+                        newPatents[index] = e.target.value;
+                        handleInputChange('security_compliance', {
+                          ...inputs.security_compliance,
+                          patents: {
+                            ...inputs.security_compliance.patents,
+                            usa: newPatents
+                          }
+                        });
+                      }}
+                      placeholder="Enter patent number"
+                      className="flex-1"
+                    />
+                    {inputs.security_compliance.patents.usa.length > 1 && (
+                      <Button
+                        type="button"
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => {
+                          const newPatents = inputs.security_compliance.patents.usa.filter((_, i) => i !== index);
+                          handleInputChange('security_compliance', {
+                            ...inputs.security_compliance,
+                            patents: {
+                              ...inputs.security_compliance.patents,
+                              usa: newPatents
+                            }
+                          });
+                        }}
+                      >
+                        <Trash2 className="h-4 w-4" />
+                      </Button>
+                    )}
+                  </div>
+                ))}
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="sm"
+                  onClick={() => {
+                    const newPatents = [...inputs.security_compliance.patents.usa, ""];
+                    handleInputChange('security_compliance', {
+                      ...inputs.security_compliance,
+                      patents: {
+                        ...inputs.security_compliance.patents,
+                        usa: newPatents
+                      }
+                    });
+                  }}
+                >
+                  <Plus className="h-4 w-4 mr-2" />
+                  Add US Patent
+                </Button>
+              </div>
+              
+              <div className="space-y-2">
+                <Label>International Patents</Label>
+                {inputs.security_compliance.patents.international.map((patent, index) => (
+                  <div key={index} className="flex items-center gap-2">
+                    <Input
+                      value={patent}
+                      onChange={(e) => {
+                        const newPatents = [...inputs.security_compliance.patents.international];
+                        newPatents[index] = e.target.value;
+                        handleInputChange('security_compliance', {
+                          ...inputs.security_compliance,
+                          patents: {
+                            ...inputs.security_compliance.patents,
+                            international: newPatents
+                          }
+                        });
+                      }}
+                      placeholder="Enter patent number"
+                      className="flex-1"
+                    />
+                    {inputs.security_compliance.patents.international.length > 1 && (
+                      <Button
+                        type="button"
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => {
+                          const newPatents = inputs.security_compliance.patents.international.filter((_, i) => i !== index);
+                          handleInputChange('security_compliance', {
+                            ...inputs.security_compliance,
+                            patents: {
+                              ...inputs.security_compliance.patents,
+                              international: newPatents
+                            }
+                          });
+                        }}
+                      >
+                        <Trash2 className="h-4 w-4" />
+                      </Button>
+                    )}
+                  </div>
+                ))}
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="sm"
+                  onClick={() => {
+                    const newPatents = [...inputs.security_compliance.patents.international, ""];
+                    handleInputChange('security_compliance', {
+                      ...inputs.security_compliance,
+                      patents: {
+                        ...inputs.security_compliance.patents,
+                        international: newPatents
+                      }
+                    });
+                  }}
+                >
+                  <Plus className="h-4 w-4 mr-2" />
+                  Add International Patent
+                </Button>
+              </div>
+            </div>
+            
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label>Patent Status</Label>
+                <select
+                  value={inputs.security_compliance.patent_status}
+                  onChange={(e) => handleInputChange('security_compliance', {
+                    ...inputs.security_compliance,
+                    patent_status: e.target.value as 'granted' | 'pending' | 'applied' | 'expired'
+                  })}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                >
+                  <option value="granted">Granted</option>
+                  <option value="pending">Pending</option>
+                  <option value="applied">Applied</option>
+                  <option value="expired">Expired</option>
+                </select>
+              </div>
+              
+              <div className="space-y-2">
+                <Label>Trademark Status</Label>
+                <select
+                  value={inputs.security_compliance.trademark_status}
+                  onChange={(e) => handleInputChange('security_compliance', {
+                    ...inputs.security_compliance,
+                    trademark_status: e.target.value as 'registered' | 'pending' | 'applied' | 'expired'
+                  })}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                >
+                  <option value="registered">Registered</option>
+                  <option value="pending">Pending</option>
+                  <option value="applied">Applied</option>
+                  <option value="expired">Expired</option>
+                </select>
+              </div>
+            </div>
+          </div>
+          
+          <Separator />
+          
+          {/* ISO Certifications */}
+          <div className="space-y-4">
+            <h4 className="font-semibold">ISO Certifications</h4>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {inputs.security_compliance.iso_certifications.map((iso, index) => (
+                <div key={index} className="flex items-center gap-2">
+                  <Input
+                    value={iso}
+                    onChange={(e) => {
+                      const newISOs = [...inputs.security_compliance.iso_certifications];
+                      newISOs[index] = e.target.value;
+                      handleInputChange('security_compliance', {
+                        ...inputs.security_compliance,
+                        iso_certifications: newISOs
+                      });
+                    }}
+                    placeholder="e.g., ISO 27001:2013"
+                    className="flex-1"
+                  />
+                  {inputs.security_compliance.iso_certifications.length > 1 && (
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => {
+                        const newISOs = inputs.security_compliance.iso_certifications.filter((_, i) => i !== index);
+                        handleInputChange('security_compliance', {
+                          ...inputs.security_compliance,
+                          iso_certifications: newISOs
+                        });
+                      }}
+                    >
+                      <Trash2 className="h-4 w-4" />
+                    </Button>
+                  )}
+                </div>
+              ))}
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                onClick={() => {
+                  const newISOs = [...inputs.security_compliance.iso_certifications, ""];
+                  handleInputChange('security_compliance', {
+                    ...inputs.security_compliance,
+                    iso_certifications: newISOs
+                  });
+                }}
+              >
+                <Plus className="h-4 w-4 mr-2" />
+                Add ISO Certification
+              </Button>
+            </div>
+          </div>
+          
+          <Separator />
+          
+          {/* Compliance Notes */}
+          <div className="space-y-2">
+            <Label>Compliance Notes</Label>
+            <textarea
+              value={inputs.security_compliance.compliance_notes}
+              onChange={(e) => handleInputChange('security_compliance', {
+                ...inputs.security_compliance,
+                compliance_notes: e.target.value
+              })}
+              placeholder="Enter compliance notes and additional information..."
+              className="w-full p-3 border rounded-md resize-none h-24 text-sm"
+            />
+          </div>
+        </CardContent>
+      </Card>
+
       <Button type="submit" size="lg" className="w-full">
         <MapPin className="h-4 w-4 mr-2" />
         Calculate Comprehensive Stadium Valuation

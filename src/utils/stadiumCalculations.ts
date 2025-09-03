@@ -52,6 +52,33 @@ export interface CapitalAdjustments {
   custom_capital_items: CustomExpenseItem[];
 }
 
+export interface SecurityCompliance {
+  patents: {
+    australia: string[];
+    usa: string[];
+    international: string[];
+  };
+  trademarks: {
+    australia: string[];
+    usa: string[];
+    international: string[];
+  };
+  copyrights: {
+    australia: string[];
+    usa: string[];
+    international: string[];
+  };
+  licenses: {
+    australia: string[];
+    usa: string[];
+    international: string[];
+  };
+  iso_certifications: string[];
+  patent_status: 'granted' | 'pending' | 'applied' | 'expired';
+  trademark_status: 'registered' | 'pending' | 'applied' | 'expired';
+  compliance_notes: string;
+}
+
 export interface StadiumInputs {
   // Stadium Details
   stadium_name: string;
