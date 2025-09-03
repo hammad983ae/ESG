@@ -32,6 +32,7 @@ import { toast } from "sonner";
 import { ChildcareValuationForm } from "@/components/ChildcareValuationForm";
 import { HospitalityValuationForm } from "@/components/HospitalityValuationForm";
 import { PetrolStationValuationForm } from "@/components/PetrolStationValuationForm";
+import { StadiumValuationForm } from "@/components/StadiumValuationForm";
 import { IPProtectionNotice } from "@/components/IPProtectionNotice";
 
 export default function PropertyHub() {
@@ -315,9 +316,13 @@ export default function PropertyHub() {
               <PetrolStationValuationForm onSubmit={(data) => handlePropertySubmit(data, 'Petrol Station')} />
             </TabsContent>
 
+            <TabsContent value="sporting-stadiums">
+              <StadiumValuationForm onSubmit={(data) => handlePropertySubmit(data, 'Stadium')} />
+            </TabsContent>
+
             {/* Placeholder for other property types */}
             {propertyTypes
-              .filter(p => !['childcare', 'hospitality', 'petrol-station'].includes(p.id))
+              .filter(p => !['childcare', 'hospitality', 'petrol-station', 'sporting-stadiums'].includes(p.id))
               .map((property) => (
                 <TabsContent key={property.id} value={property.id}>
                   <Card>
