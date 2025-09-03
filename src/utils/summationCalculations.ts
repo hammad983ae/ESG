@@ -45,11 +45,12 @@ export function calculateSummationValue(
 }
 
 export const defaultSummationComponents: SummationComponent[] = [
-  { name: "Land Value", area: 4204, rate: 0 },
-  { name: "Dwelling Value", area: 336, rate: 0 },
-  { name: "Car Accommodation", area: 72, rate: 0 },
-  { name: "Outdoor Areas", area: 44, rate: 0 },
-  { name: "Shedding/Bungalow", area: 1, rate: 0 },
-  { name: "Pool", area: 0, rate: 0 },
-  { name: "FPG", area: 1, rate: 0 }
+  { name: "Land Value", area: 0, rate: 0 },
+  { name: "Lettable Area (GLA/GLAR/NLA)", area: 0, rate: 0 },
+  { name: "Car Parking", area: 0, rate: 0 },
+  { name: "Common Areas", area: 0, rate: 0 },
+  { name: "Storage Areas", area: 0, rate: 0 },
+  { name: "Plant/Equipment Areas", area: 0, rate: 0 },
+  { name: "Loading Dock", area: 0, rate: 0 },
+  { name: "Other Improvements", area: 0, rate: 0 }
 ];
