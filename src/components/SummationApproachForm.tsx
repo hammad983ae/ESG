@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
 import { Building2, DollarSign, Plus, Minus, Leaf } from 'lucide-react';
 import { SummationInputs, SummationComponent, defaultSummationComponents } from '@/utils/summationCalculations';
+import { toast } from 'sonner';
 
 interface SummationApproachFormProps {
   onSubmit: (inputs: SummationInputs) => void;

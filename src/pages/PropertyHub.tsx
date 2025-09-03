@@ -43,6 +43,7 @@ import { ForecastingGrowthFunctions } from "@/components/ForecastingGrowthFuncti
 import { WeightPortfolioSection } from "@/components/WeightPortfolioSection";
 import { ComparableAssetForecast } from "@/components/ComparableAssetForecast";
 import { RateGrowthAnalysis } from "@/components/RateGrowthAnalysis";
+import { TrafficAnalysisComparison } from "@/components/TrafficAnalysisComparison";
 
 export default function PropertyHub() {
   const navigate = useNavigate();
