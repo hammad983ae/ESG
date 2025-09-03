@@ -48,7 +48,11 @@ const defaultVarieties = {
     table: [
       "Jack Salute", "Red Globe", "Thompson Seedless", "Flame Seedless",
       "Ruby Seedless", "Princess", "Crimson Seedless", "Autumn Royal",
-      "Sugraone", "Black Beauty", "Italia", "Cardinal"
+      "Sugraone", "Black Beauty", "Italia", "Cardinal",
+      // New SNFL Red Seedless Varieties
+      "Navsel 3", "Sunrise Red (Sheegene 8)", "Navsel 20", "Navsel 21",
+      "Carlita (Sheegene 25)", "Krissy (Sheegene 12)", "Timco (Sheegene 13)",
+      "Allison (Sheegene 20)"
     ]
   },
   fruit: [
