@@ -31,6 +31,7 @@ const vineyardSchema = z.object({
   trellis_system: z.string().min(1, "Trellis system is required"),
   irrigation_type: z.string().min(1, "Irrigation type is required"),
   irrigation_coverage: z.number().min(0).max(100),
+  irrigation_zone: z.string().min(1, "Irrigation zone is required"),
   soil_type: z.string().min(1, "Soil type is required"),
   climate_zone: z.string().min(1, "Climate zone is required"),
   yield_per_vine: z.number().min(0, "Yield must be 0 or greater"),
@@ -61,6 +62,7 @@ export function VineyardValuationForm() {
       trellis_system: "",
       irrigation_type: "",
       irrigation_coverage: 0,
+      irrigation_zone: "",
       soil_type: "",
       climate_zone: "",
       yield_per_vine: 0,
@@ -80,6 +82,16 @@ export function VineyardValuationForm() {
   const trellisSystem = [
     "Vertical Shoot Positioning (VSP)", "Geneva Double Curtain", "Scott Henry",
     "Smart Dyson", "Lyre System", "Minimal Pruning", "Pergola"
+  ];
+
+  const irrigationTypes = [
+    "Drip Irrigation", "Micro-sprinkler", "Sprinkler System", "Flood Irrigation",
+    "Rain-fed", "Combination System"
+  ];
+
+  const irrigationZones = [
+    "Zone A - High Water Table", "Zone B - Moderate Water Table", "Zone C - Low Water Table",
+    "Zone D - Supplemental Only", "Zone E - Rain-fed Primary", "Zone F - Mixed Systems"
   ];
 
   const climateZones = [
@@ -320,12 +332,188 @@ export function VineyardValuationForm() {
                         onChange={(e) => field.onChange(parseFloat(e.target.value) || 0)}
                       />
                     </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            </CardContent>
-          </Card>
+                     <FormMessage />
+                   </FormItem>
+                 )}
+               />
+
+               <FormField
+                 control={form.control}
+                 name="irrigation_type"
+                 render={({ field }) => (
+                   <FormItem>
+                     <FormLabel>Irrigation Type</FormLabel>
+                     <Select onValueChange={field.onChange} value={field.value}>
+                       <FormControl>
+                         <SelectTrigger>
+                           <SelectValue placeholder="Select irrigation type" />
+                         </SelectTrigger>
+                       </FormControl>
+                       <SelectContent>
+                         {irrigationTypes.map((type) => (
+                           <SelectItem key={type} value={type}>{type}</SelectItem>
+                         ))}
+                       </SelectContent>
+                     </Select>
+                     <FormMessage />
+                   </FormItem>
+                 )}
+               />
+
+               <FormField
+                 control={form.control}
+                 name="irrigation_coverage"
+                 render={({ field }) => (
+                   <FormItem>
+                     <FormLabel>Irrigation Coverage (%)</FormLabel>
+                     <FormControl>
+                       <Input 
+                         type="number" 
+                         placeholder="0-100"
+                         {...field}
+                         onChange={(e) => field.onChange(parseFloat(e.target.value) || 0)}
+                       />
+                     </FormControl>
+                     <FormMessage />
+                   </FormItem>
+                 )}
+               />
+
+               <FormField
+                 control={form.control}
+                 name="irrigation_zone"
+                 render={({ field }) => (
+                   <FormItem>
+                     <FormLabel>Irrigation Zone</FormLabel>
+                     <Select onValueChange={field.onChange} value={field.value}>
+                       <FormControl>
+                         <SelectTrigger>
+                           <SelectValue placeholder="Select irrigation zone" />
+                         </SelectTrigger>
+                       </FormControl>
+                       <SelectContent>
+                         {irrigationZones.map((zone) => (
+                           <SelectItem key={zone} value={zone}>{zone}</SelectItem>
+                         ))}
+                       </SelectContent>
+                     </Select>
+                     <FormMessage />
+                   </FormItem>
+                 )}
+               />
+
+               <FormField
+                 control={form.control}
+                 name="soil_type"
+                 render={({ field }) => (
+                   <FormItem>
+                     <FormLabel>Soil Type</FormLabel>
+                     <FormControl>
+                       <Input placeholder="Enter soil type" {...field} />
+                     </FormControl>
+                     <FormMessage />
+                   </FormItem>
+                 )}
+               />
+
+               <FormField
+                 control={form.control}
+                 name="yield_per_vine"
+                 render={({ field }) => (
+                   <FormItem>
+                     <FormLabel>Yield per Vine (lbs)</FormLabel>
+                     <FormControl>
+                       <Input 
+                         type="number" 
+                         placeholder="0"
+                         {...field}
+                         onChange={(e) => field.onChange(parseFloat(e.target.value) || 0)}
+                       />
+                     </FormControl>
+                     <FormMessage />
+                   </FormItem>
+                 )}
+               />
+
+               <FormField
+                 control={form.control}
+                 name="price_per_ton"
+                 render={({ field }) => (
+                   <FormItem>
+                     <FormLabel>Price per Ton ($)</FormLabel>
+                     <FormControl>
+                       <Input 
+                         type="number" 
+                         placeholder="0.00"
+                         step="0.01"
+                         {...field}
+                         onChange={(e) => field.onChange(parseFloat(e.target.value) || 0)}
+                       />
+                     </FormControl>
+                     <FormMessage />
+                   </FormItem>
+                 )}
+               />
+
+               <FormField
+                 control={form.control}
+                 name="production_costs"
+                 render={({ field }) => (
+                   <FormItem>
+                     <FormLabel>Production Costs ($/acre)</FormLabel>
+                     <FormControl>
+                       <Input 
+                         type="number" 
+                         placeholder="0.00"
+                         step="0.01"
+                         {...field}
+                         onChange={(e) => field.onChange(parseFloat(e.target.value) || 0)}
+                       />
+                     </FormControl>
+                     <FormMessage />
+                   </FormItem>
+                 )}
+               />
+
+               <FormField
+                 control={form.control}
+                 name="harvest_costs"
+                 render={({ field }) => (
+                   <FormItem>
+                     <FormLabel>Harvest Costs ($/acre)</FormLabel>
+                     <FormControl>
+                       <Input 
+                         type="number" 
+                         placeholder="0.00"
+                         step="0.01"
+                         {...field}
+                         onChange={(e) => field.onChange(parseFloat(e.target.value) || 0)}
+                       />
+                     </FormControl>
+                     <FormMessage />
+                   </FormItem>
+                 )}
+               />
+
+               <FormField
+                 control={form.control}
+                 name="notes"
+                 render={({ field }) => (
+                   <FormItem className="col-span-2">
+                     <FormLabel>Notes & Comments</FormLabel>
+                     <FormControl>
+                       <Textarea 
+                         placeholder="Any additional information about the vineyard operation..."
+                         className="min-h-[100px]"
+                         {...field} 
+                       />
+                     </FormControl>
+                     <FormMessage />
+                   </FormItem>
+                 )}
+               />
+             </CardContent>
+           </Card>
 
           <Button 
             type="submit" 

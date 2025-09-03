@@ -30,6 +30,7 @@ const orchardSchema = z.object({
   rootstock: z.string().optional(),
   irrigation_type: z.string().min(1, "Irrigation type is required"),
   irrigation_coverage: z.number().min(0).max(100),
+  irrigation_zone: z.string().min(1, "Irrigation zone is required"),
   tree_age: z.number().min(0, "Tree age must be 0 or greater"),
   maturity_status: z.string().min(1, "Maturity status is required"),
   yield_per_tree: z.number().min(0, "Yield must be 0 or greater"),
@@ -58,6 +59,7 @@ export function OrchardValuationForm() {
       rootstock: "",
       irrigation_type: "",
       irrigation_coverage: 0,
+      irrigation_zone: "",
       tree_age: 0,
       maturity_status: "",
       yield_per_tree: 0,
@@ -77,6 +79,11 @@ export function OrchardValuationForm() {
   const irrigationTypes = [
     "Drip Irrigation", "Micro-sprinkler", "Sprinkler System", "Flood Irrigation",
     "Rain-fed", "Combination System"
+  ];
+
+  const irrigationZones = [
+    "Zone A - High Water Table", "Zone B - Moderate Water Table", "Zone C - Low Water Table",
+    "Zone D - Supplemental Only", "Zone E - Rain-fed Primary", "Zone F - Mixed Systems"
   ];
 
   const maturityStatuses = [
@@ -346,24 +353,47 @@ export function OrchardValuationForm() {
                 )}
               />
 
-              <FormField
-                control={form.control}
-                name="irrigation_coverage"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Irrigation Coverage (%)</FormLabel>
-                    <FormControl>
-                      <Input 
-                        type="number" 
-                        placeholder="0-100"
-                        {...field}
-                        onChange={(e) => field.onChange(parseFloat(e.target.value) || 0)}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+               <FormField
+                 control={form.control}
+                 name="irrigation_coverage"
+                 render={({ field }) => (
+                   <FormItem>
+                     <FormLabel>Irrigation Coverage (%)</FormLabel>
+                     <FormControl>
+                       <Input 
+                         type="number" 
+                         placeholder="0-100"
+                         {...field}
+                         onChange={(e) => field.onChange(parseFloat(e.target.value) || 0)}
+                       />
+                     </FormControl>
+                     <FormMessage />
+                   </FormItem>
+                 )}
+               />
+
+               <FormField
+                 control={form.control}
+                 name="irrigation_zone"
+                 render={({ field }) => (
+                   <FormItem className="col-span-2">
+                     <FormLabel>Irrigation Zone</FormLabel>
+                     <Select onValueChange={field.onChange} value={field.value}>
+                       <FormControl>
+                         <SelectTrigger>
+                           <SelectValue placeholder="Select irrigation zone" />
+                         </SelectTrigger>
+                       </FormControl>
+                       <SelectContent>
+                         {irrigationZones.map((zone) => (
+                           <SelectItem key={zone} value={zone}>{zone}</SelectItem>
+                         ))}
+                       </SelectContent>
+                     </Select>
+                     <FormMessage />
+                   </FormItem>
+                 )}
+               />
             </CardContent>
           </Card>
 
