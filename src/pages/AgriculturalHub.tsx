@@ -14,17 +14,25 @@ import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
-import { Sprout, Droplets, Tractor, Apple, Wheat, TreePine, Flower2, Grape } from "lucide-react";
+import { Sprout, Droplets, Tractor, Apple, Wheat, TreePine, Flower2, Grape, BarChart3 } from "lucide-react";
 import { CropValuationForm } from "@/components/CropValuationForm";
 import { OrchardValuationForm } from "@/components/OrchardValuationForm";
 import { VineyardValuationForm } from "@/components/VineyardValuationForm";
 import { PastureValuationForm } from "@/components/PastureValuationForm";
 import { HorticultureValuationForm } from "@/components/HorticultureValuationForm";
+import { CommodityMarketAnalysis } from "@/components/CommodityMarketAnalysis";
 
 const AgriculturalHub = () => {
-  const [activePropertyType, setActivePropertyType] = useState("crops");
+  const [activePropertyType, setActivePropertyType] = useState("market-analysis");
 
   const propertyTypes = [
+    {
+      id: "market-analysis",
+      name: "Market Intelligence",
+      icon: BarChart3,
+      description: "AI-powered commodity forecasting and export analysis",
+      examples: ["Supply/Demand", "Exchange Rates", "Export Tariffs", "Price Forecasts"]
+    },
     {
       id: "crops",
       name: "Annual Crops",
@@ -73,12 +81,17 @@ const AgriculturalHub = () => {
           </div>
           <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
             Comprehensive valuation platform for agricultural and horticultural properties. 
-            Assess crop yields, irrigation systems, planting varieties, and operational infrastructure.
+            Advanced AI-powered market intelligence, commodity forecasting, and export analysis.
           </p>
+          <div className="flex justify-center gap-3 mt-4">
+            <Badge variant="secondary">™ DeLorenzoAI Market Intelligence</Badge>
+            <Badge variant="outline">Patent Pending</Badge>
+            <Badge variant="outline">Copyright Protected</Badge>
+          </div>
         </div>
 
         {/* Property Type Selection */}
-        <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-4 mb-8">
+        <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-6 gap-4 mb-8">
           {propertyTypes.map((type) => {
             const Icon = type.icon;
             return (
@@ -124,13 +137,17 @@ const AgriculturalHub = () => {
           </CardHeader>
           <CardContent className="p-6">
             <Tabs value={activePropertyType} onValueChange={setActivePropertyType}>
-              <TabsList className="grid w-full grid-cols-5">
+              <TabsList className="grid w-full grid-cols-6">
                 {propertyTypes.map((type) => (
                   <TabsTrigger key={type.id} value={type.id} className="text-xs">
                     {type.name.split(' ')[0]}
                   </TabsTrigger>
                 ))}
               </TabsList>
+
+              <TabsContent value="market-analysis" className="mt-6">
+                <CommodityMarketAnalysis />
+              </TabsContent>
 
               <TabsContent value="crops" className="mt-6">
                 <CropValuationForm />
