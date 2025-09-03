@@ -53,6 +53,11 @@ const defaultVarieties = {
       "Navsel 3", "Sunrise Red (Sheegene 8)", "Navsel 20", "Navsel 21",
       "Carlita (Sheegene 25)", "Krissy (Sheegene 12)", "Timco (Sheegene 13)",
       "Allison (Sheegene 20)"
+    ],
+    dried: [
+      "Sultana (Thompson Seedless)", "Currants (Black Corinth)", "Muscat Gordo Blanco",
+      "Carina Currants", "Flame Seedless (Raisins)", "Ruby Seedless (Raisins)",
+      "Sunmuscat", "Sultana H5", "Merbein Seedless", "Menindee Seedless"
     ]
   },
   fruit: [
@@ -260,6 +265,25 @@ export function VarietyManager({ category, onVarietySelect, currentVarieties }: 
                   variant={currentVarieties.includes(variety) ? "default" : "outline"}
                   className="cursor-pointer"
                   onClick={() => onVarietySelect?.({ id: variety, name: variety, category: 'grape', type: 'table' })}
+                >
+                  {variety}
+                </Badge>
+              ))}
+            </div>
+          </div>
+
+          <div>
+            <h4 className="font-medium mb-2 flex items-center gap-2">
+              🫐 Dried Fruit Grapes
+              <Badge variant="secondary">{defaultVarieties.grape.dried.length}</Badge>
+            </h4>
+            <div className="flex flex-wrap gap-2">
+              {defaultVarieties.grape.dried.map((variety) => (
+                <Badge 
+                  key={variety} 
+                  variant={currentVarieties.includes(variety) ? "default" : "outline"}
+                  className="cursor-pointer"
+                  onClick={() => onVarietySelect?.({ id: variety, name: variety, category: 'grape', type: 'dried' })}
                 >
                   {variety}
                 </Badge>

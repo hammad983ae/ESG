@@ -15,7 +15,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
-import { Sprout, Droplets, Tractor, Apple, Wheat, TreePine, Flower2, Grape, BarChart3, BookOpen } from "lucide-react";
+import { Sprout, Droplets, Tractor, Apple, Wheat, TreePine, Flower2, Grape, BarChart3, BookOpen, ArrowLeft } from "lucide-react";
 import { CropValuationForm } from "@/components/CropValuationForm";
 import { OrchardValuationForm } from "@/components/OrchardValuationForm";
 import { VineyardValuationForm } from "@/components/VineyardValuationForm";
@@ -24,8 +24,11 @@ import { HorticultureValuationForm } from "@/components/HorticultureValuationFor
 import { CommodityMarketAnalysis } from "@/components/CommodityMarketAnalysis";
 import { MixedFarmForm } from "@/components/MixedFarmForm";
 import { ManagementDiary } from "@/components/ManagementDiary";
+import { YieldExpectationDisplay } from "@/components/YieldExpectationDisplay";
+import { useNavigate } from "react-router-dom";
 
 const AgriculturalHub = () => {
+  const navigate = useNavigate();
   const [activePropertyType, setActivePropertyType] = useState("management-diary");
 
   const propertyTypes = [
