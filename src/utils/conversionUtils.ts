@@ -188,3 +188,14 @@ export function formatWaterDisplay(mlPerAcre: number): string {
   const mlPerHectare = mlPerAcre * 2.47105;
   return `${mlPerAcre} ML/acre (${mlPerHectare.toFixed(2)} ML/ha)`;
 }
+
+/**
+ * Simple conversion functions for components
+ */
+export function convertAcreToHectare(acres: number): number {
+  return acres * 0.404686;
+}
+
+export function convertHectareToAcre(hectares: number): number {
+  return hectares * 2.47105;
+}

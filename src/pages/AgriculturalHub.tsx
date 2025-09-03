@@ -14,7 +14,7 @@ import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
-import { Sprout, Droplets, Tractor, Apple, Wheat, TreePine, Flower2, Grape, BarChart3 } from "lucide-react";
+import { Sprout, Droplets, Tractor, Apple, Wheat, TreePine, Flower2, Grape, BarChart3, BookOpen } from "lucide-react";
 import { CropValuationForm } from "@/components/CropValuationForm";
 import { OrchardValuationForm } from "@/components/OrchardValuationForm";
 import { VineyardValuationForm } from "@/components/VineyardValuationForm";
@@ -22,11 +22,19 @@ import { PastureValuationForm } from "@/components/PastureValuationForm";
 import { HorticultureValuationForm } from "@/components/HorticultureValuationForm";
 import { CommodityMarketAnalysis } from "@/components/CommodityMarketAnalysis";
 import { MixedFarmForm } from "@/components/MixedFarmForm";
+import { ManagementDiary } from "@/components/ManagementDiary";
 
 const AgriculturalHub = () => {
-  const [activePropertyType, setActivePropertyType] = useState("market-analysis");
+  const [activePropertyType, setActivePropertyType] = useState("management-diary");
 
   const propertyTypes = [
+    {
+      id: "management-diary",
+      name: "Management Diary",
+      icon: BookOpen,
+      description: "Farm operations tracking and expense management",
+      examples: ["Spray Programs", "Yields", "Labor", "Expenses"]
+    },
     {
       id: "market-analysis",
       name: "Market Intelligence",
@@ -99,7 +107,7 @@ const AgriculturalHub = () => {
         </div>
 
         {/* Property Type Selection */}
-        <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-6 gap-4 mb-8">
+        <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-7 gap-4 mb-8">
           {propertyTypes.map((type) => {
             const Icon = type.icon;
             return (
@@ -144,18 +152,22 @@ const AgriculturalHub = () => {
             </div>
           </CardHeader>
           <CardContent className="p-6">
-            <Tabs value={activePropertyType} onValueChange={setActivePropertyType}>
-              <TabsList className="grid w-full grid-cols-6">
-                {propertyTypes.map((type) => (
-                  <TabsTrigger key={type.id} value={type.id} className="text-xs">
-                    {type.name.split(' ')[0]}
-                  </TabsTrigger>
-                ))}
-              </TabsList>
+          <Tabs value={activePropertyType} onValueChange={setActivePropertyType}>
+            <TabsList className="grid w-full grid-cols-7">
+              {propertyTypes.map((type) => (
+                <TabsTrigger key={type.id} value={type.id} className="text-xs">
+                  {type.name.split(' ')[0]}
+                </TabsTrigger>
+              ))}
+            </TabsList>
 
-              <TabsContent value="market-analysis" className="mt-6">
-                <CommodityMarketAnalysis />
-              </TabsContent>
+            <TabsContent value="management-diary" className="mt-6">
+              <ManagementDiary />
+            </TabsContent>
+
+            <TabsContent value="market-analysis" className="mt-6">
+              <CommodityMarketAnalysis />
+            </TabsContent>
 
               <TabsContent value="mixed-farm" className="mt-6">
                 <MixedFarmForm />
