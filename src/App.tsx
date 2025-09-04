@@ -23,6 +23,7 @@ import AgriculturalHub from "./pages/AgriculturalHub";
 import PropertyHub from "./pages/PropertyHub";
 import ClientPresentation from "./pages/ClientPresentation";
 import EconomicActivity from "./pages/EconomicActivity";
+import CropHarvestSimulation from "./pages/CropHarvestSimulation";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -41,6 +42,7 @@ const App = () => (
           <Route path="/property-hub" element={<PropertyHub />} />
           <Route path="/client-presentation" element={<ClientPresentation />} />
           <Route path="/economic-activity" element={<EconomicActivity />} />
+          <Route path="/crop-harvest-simulation" element={<CropHarvestSimulation />} />
           <Route path="/security" element={<Security />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />

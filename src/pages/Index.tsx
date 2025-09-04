@@ -155,6 +155,12 @@ const Index = () => {
                     Economic Activity
                   </Button>
                 </Link>
+                <Link to="/crop-harvest-simulation">
+                  <Button variant="outline" size="lg" className="flex items-center gap-2 touch-manipulation min-h-[44px]">
+                    <Sprout className="w-5 h-5" />
+                    Crop Game Theory
+                  </Button>
+                </Link>
               </div>
             </div>
 
