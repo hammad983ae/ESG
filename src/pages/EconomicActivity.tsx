@@ -16,12 +16,13 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
-import { ArrowLeft, TrendingUp, TrendingDown, BarChart3, DollarSign, Globe, Activity } from "lucide-react";
+import { ArrowLeft, TrendingUp, TrendingDown, BarChart3, DollarSign, Globe, Activity, Building2 } from "lucide-react";
 import { CommoditySectorAnalysis } from "@/components/CommoditySectorAnalysis";
 import { EconomicSectorPerformance } from "@/components/EconomicSectorPerformance";
+import { PropertyClassAnalysis } from "@/components/PropertyClassAnalysis";
 
 const EconomicActivity = () => {
-  const [activeTab, setActiveTab] = useState<'commodities' | 'sectors'>('commodities');
+  const [activeTab, setActiveTab] = useState<'commodities' | 'sectors' | 'property'>('commodities');
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-accent/20 to-background">
@@ -105,8 +106,8 @@ const EconomicActivity = () => {
         </div>
 
         {/* Analysis Tabs */}
-        <Tabs value={activeTab} onValueChange={(value) => setActiveTab(value as 'commodities' | 'sectors')}>
-          <TabsList className="grid w-full grid-cols-2 max-w-lg mx-auto">
+        <Tabs value={activeTab} onValueChange={(value) => setActiveTab(value as 'commodities' | 'sectors' | 'property')}>
+          <TabsList className="grid w-full grid-cols-3 max-w-2xl mx-auto">
             <TabsTrigger value="commodities" className="flex items-center gap-2">
               <BarChart3 className="h-4 w-4" />
               Commodity Analysis
@@ -114,6 +115,10 @@ const EconomicActivity = () => {
             <TabsTrigger value="sectors" className="flex items-center gap-2">
               <Globe className="h-4 w-4" />
               Economic Sectors
+            </TabsTrigger>
+            <TabsTrigger value="property" className="flex items-center gap-2">
+              <Building2 className="h-4 w-4" />
+              Property Classes
             </TabsTrigger>
           </TabsList>
 
@@ -123,6 +128,10 @@ const EconomicActivity = () => {
 
           <TabsContent value="sectors" className="mt-8">
             <EconomicSectorPerformance />
+          </TabsContent>
+
+          <TabsContent value="property" className="mt-8">
+            <PropertyClassAnalysis />
           </TabsContent>
         </Tabs>
       </div>
