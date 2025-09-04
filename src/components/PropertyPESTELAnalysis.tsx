@@ -242,11 +242,83 @@ const getPESTELData = (propertyType: string) => {
         { factor: "Public-Private Partnership Rules", impact: "Medium", trend: "Positive", description: "Government collaboration opportunities for infrastructure provision" },
         { factor: "Environmental Planning Laws", impact: "Medium", trend: "Neutral", description: "Integrated assessment requirements for large mixed-use projects" }
       ]
+    },
+    agricultural: {
+      political: [
+        { factor: "Agricultural Policy Support", impact: "High", trend: "Positive", description: "Government support for agricultural productivity and sustainability initiatives" },
+        { factor: "Foreign Investment Regulations", impact: "High", trend: "Negative", description: "FIRB restrictions on foreign ownership of agricultural land affecting investment" },
+        { factor: "Water Policy Reform", impact: "Medium", trend: "Neutral", description: "Murray-Darling Basin plan and water allocation reforms affecting irrigation properties" },
+        { factor: "Rural Development Funding", impact: "Medium", trend: "Positive", description: "Infrastructure and connectivity investment in regional areas" }
+      ],
+      economic: [
+        { factor: "Commodity Price Volatility", impact: "High", trend: "Neutral", description: "Global commodity markets affecting agricultural land values and returns" },
+        { factor: "Input Cost Inflation", impact: "High", trend: "Negative", description: "Rising costs of fertilizer, fuel, and machinery affecting farm profitability" },
+        { factor: "Interest Rate Environment", impact: "Medium", trend: "Negative", description: "Higher borrowing costs affecting farm expansion and land purchases" },
+        { factor: "Export Market Demand", impact: "High", trend: "Positive", description: "Strong Asian demand for Australian agricultural products" }
+      ],
+      social: [
+        { factor: "Generational Change", impact: "Medium", trend: "Neutral", description: "Aging farming population and succession planning affecting land ownership" },
+        { factor: "Rural Population Decline", impact: "Medium", trend: "Negative", description: "Young people leaving rural areas affecting agricultural communities" },
+        { factor: "Consumer Sustainability Demand", impact: "Medium", trend: "Positive", description: "Growing demand for sustainably produced food supporting premium pricing" },
+        { factor: "Food Security Awareness", impact: "High", trend: "Positive", description: "Increased focus on domestic food production supporting agricultural investment" }
+      ],
+      technological: [
+        { factor: "Precision Agriculture", impact: "High", trend: "Positive", description: "GPS, sensors, and data analytics improving productivity and efficiency" },
+        { factor: "Automation and Robotics", impact: "Medium", trend: "Positive", description: "Automated machinery reducing labor requirements and costs" },
+        { factor: "Biotechnology Advances", impact: "Medium", trend: "Positive", description: "Improved crop varieties and livestock breeding enhancing yields" },
+        { factor: "Digital Platforms", impact: "Low", trend: "Positive", description: "Online marketplaces and farm management systems improving efficiency" }
+      ],
+      environmental: [
+        { factor: "Climate Change Adaptation", impact: "High", trend: "Neutral", description: "Changing rainfall patterns requiring adaptation in farming practices" },
+        { factor: "Carbon Farming Schemes", impact: "High", trend: "Positive", description: "Carbon credit opportunities providing additional income streams" },
+        { factor: "Biodiversity Requirements", impact: "Medium", trend: "Neutral", description: "Environmental regulations affecting land use and management practices" },
+        { factor: "Water Scarcity Issues", impact: "High", trend: "Negative", description: "Water allocation pressures affecting irrigation-dependent properties" }
+      ],
+      legal: [
+        { factor: "Native Title Considerations", impact: "Medium", trend: "Neutral", description: "Native title claims and co-management arrangements affecting some properties" },
+        { factor: "Environmental Compliance", impact: "Medium", trend: "Neutral", description: "Vegetation clearing and water use regulations affecting farm operations" },
+        { factor: "Right to Farm Laws", impact: "Low", trend: "Positive", description: "Protection of agricultural operations from urban encroachment complaints" },
+        { factor: "Contract Law Changes", impact: "Low", trend: "Neutral", description: "Agricultural contract and lease law reforms affecting farm businesses" }
+      ]
+    },
+    development: {
+      political: [
+        { factor: "Housing Policy Initiatives", impact: "High", trend: "Positive", description: "Government programs to address housing affordability and supply constraints" },
+        { factor: "Planning System Reform", impact: "High", trend: "Positive", description: "Streamlined approval processes and digital planning systems" },
+        { factor: "Infrastructure Investment", impact: "High", trend: "Positive", description: "Major transport and utility projects enhancing development land values" },
+        { factor: "Developer Contribution Levies", impact: "Medium", trend: "Negative", description: "Increasing infrastructure charges affecting development feasibility" }
+      ],
+      economic: [
+        { factor: "Construction Cost Inflation", impact: "High", trend: "Negative", description: "Material and labor cost increases significantly affecting development margins" },
+        { factor: "Interest Rate Environment", impact: "High", trend: "Negative", description: "Higher borrowing costs affecting both development funding and buyer capacity" },
+        { factor: "Land Value Appreciation", impact: "Medium", trend: "Positive", description: "Scarcity of zoned development land supporting price growth" },
+        { factor: "Population Growth", impact: "High", trend: "Positive", description: "Strong migration maintaining underlying demand for new housing" }
+      ],
+      social: [
+        { factor: "Housing Affordability Crisis", impact: "High", trend: "Negative", description: "High land and construction costs affecting housing accessibility" },
+        { factor: "Community Opposition", impact: "Medium", trend: "Negative", description: "NIMBY attitudes affecting approvals for higher density development" },
+        { factor: "Lifestyle Preferences", impact: "Medium", trend: "Positive", description: "Demand for sustainable and well-designed communities" },
+        { factor: "Demographic Changes", impact: "Medium", trend: "Positive", description: "Changing household composition driving demand for diverse housing types" }
+      ],
+      technological: [
+        { factor: "Construction Technology", impact: "Medium", trend: "Positive", description: "Prefabrication and modular construction improving efficiency and quality" },
+        { factor: "Digital Planning Tools", impact: "Medium", trend: "Positive", description: "3D modeling and virtual reality enhancing design and approval processes" },
+        { factor: "Smart City Infrastructure", impact: "Low", trend: "Positive", description: "IoT and connected systems becoming standard in new developments" },
+        { factor: "Building Information Modeling", impact: "Low", trend: "Positive", description: "BIM technology improving project coordination and outcomes" }
+      ],
+      environmental: [
+        { factor: "Climate Change Adaptation", impact: "High", trend: "Neutral", description: "Flood, bushfire, and sea level rise affecting developable land availability" },
+        { factor: "Green Building Standards", impact: "Medium", trend: "Positive", description: "Energy efficiency and sustainability requirements becoming market differentiators" },
+        { factor: "Biodiversity Offset Requirements", impact: "Medium", trend: "Negative", description: "Environmental offset obligations increasing development costs and complexity" },
+        { factor: "Stormwater Management", impact: "Medium", trend: "Neutral", description: "Water-sensitive urban design requirements affecting development layout" }
+      ],
+      legal: [
+        { factor: "Development Liability Laws", impact: "High", trend: "Negative", description: "Extended warranty periods and defect liability increasing developer risks" },
+        { factor: "Strata Law Reforms", impact: "Medium", trend: "Neutral", description: "Building management and governance changes affecting apartment developments" },
+        { factor: "Heritage Protection", impact: "Medium", trend: "Neutral", description: "Heritage listing and archaeological requirements affecting some sites" },
+        { factor: "Contract and Property Law", impact: "Low", trend: "Neutral", description: "Off-the-plan sales and sunset clause regulations" }
+      ]
     }
-  };
-
-  return pestelData[propertyType as keyof typeof pestelData] || pestelData.office;
-};
 
 export const PropertyPESTELAnalysis = ({ propertyType }: PropertyPESTELAnalysisProps) => {
   const data = getPESTELData(propertyType);
@@ -270,6 +342,82 @@ export const PropertyPESTELAnalysis = ({ propertyType }: PropertyPESTELAnalysisP
         return <Badge variant="secondary">{impact}</Badge>;
       default:
         return <Badge variant="outline">{impact}</Badge>;
+    }
+  };
+      political: [
+        { factor: "Agricultural Policy Support", impact: "High", trend: "Positive", description: "Government support for agricultural productivity and sustainability initiatives" },
+        { factor: "Foreign Investment Regulations", impact: "High", trend: "Negative", description: "FIRB restrictions on foreign ownership of agricultural land affecting investment" },
+        { factor: "Water Policy Reform", impact: "Medium", trend: "Neutral", description: "Murray-Darling Basin plan and water allocation reforms affecting irrigation properties" },
+        { factor: "Rural Development Funding", impact: "Medium", trend: "Positive", description: "Infrastructure and connectivity investment in regional areas" }
+      ],
+      economic: [
+        { factor: "Commodity Price Volatility", impact: "High", trend: "Neutral", description: "Global commodity markets affecting agricultural land values and returns" },
+        { factor: "Input Cost Inflation", impact: "High", trend: "Negative", description: "Rising costs of fertilizer, fuel, and machinery affecting farm profitability" },
+        { factor: "Interest Rate Environment", impact: "Medium", trend: "Negative", description: "Higher borrowing costs affecting farm expansion and land purchases" },
+        { factor: "Export Market Demand", impact: "High", trend: "Positive", description: "Strong Asian demand for Australian agricultural products" }
+      ],
+      social: [
+        { factor: "Generational Change", impact: "Medium", trend: "Neutral", description: "Aging farming population and succession planning affecting land ownership" },
+        { factor: "Rural Population Decline", impact: "Medium", trend: "Negative", description: "Young people leaving rural areas affecting agricultural communities" },
+        { factor: "Consumer Sustainability Demand", impact: "Medium", trend: "Positive", description: "Growing demand for sustainably produced food supporting premium pricing" },
+        { factor: "Food Security Awareness", impact: "High", trend: "Positive", description: "Increased focus on domestic food production supporting agricultural investment" }
+      ],
+      technological: [
+        { factor: "Precision Agriculture", impact: "High", trend: "Positive", description: "GPS, sensors, and data analytics improving productivity and efficiency" },
+        { factor: "Automation and Robotics", impact: "Medium", trend: "Positive", description: "Automated machinery reducing labor requirements and costs" },
+        { factor: "Biotechnology Advances", impact: "Medium", trend: "Positive", description: "Improved crop varieties and livestock breeding enhancing yields" },
+        { factor: "Digital Platforms", impact: "Low", trend: "Positive", description: "Online marketplaces and farm management systems improving efficiency" }
+      ],
+      environmental: [
+        { factor: "Climate Change Adaptation", impact: "High", trend: "Neutral", description: "Changing rainfall patterns requiring adaptation in farming practices" },
+        { factor: "Carbon Farming Schemes", impact: "High", trend: "Positive", description: "Carbon credit opportunities providing additional income streams" },
+        { factor: "Biodiversity Requirements", impact: "Medium", trend: "Neutral", description: "Environmental regulations affecting land use and management practices" },
+        { factor: "Water Scarcity Issues", impact: "High", trend: "Negative", description: "Water allocation pressures affecting irrigation-dependent properties" }
+      ],
+      legal: [
+        { factor: "Native Title Considerations", impact: "Medium", trend: "Neutral", description: "Native title claims and co-management arrangements affecting some properties" },
+        { factor: "Environmental Compliance", impact: "Medium", trend: "Neutral", description: "Vegetation clearing and water use regulations affecting farm operations" },
+        { factor: "Right to Farm Laws", impact: "Low", trend: "Positive", description: "Protection of agricultural operations from urban encroachment complaints" },
+        { factor: "Contract Law Changes", impact: "Low", trend: "Neutral", description: "Agricultural contract and lease law reforms affecting farm businesses" }
+      ]
+    },
+    development: {
+      political: [
+        { factor: "Housing Policy Initiatives", impact: "High", trend: "Positive", description: "Government programs to address housing affordability and supply constraints" },
+        { factor: "Planning System Reform", impact: "High", trend: "Positive", description: "Streamlined approval processes and digital planning systems" },
+        { factor: "Infrastructure Investment", impact: "High", trend: "Positive", description: "Major transport and utility projects enhancing development land values" },
+        { factor: "Developer Contribution Levies", impact: "Medium", trend: "Negative", description: "Increasing infrastructure charges affecting development feasibility" }
+      ],
+      economic: [
+        { factor: "Construction Cost Inflation", impact: "High", trend: "Negative", description: "Material and labor cost increases significantly affecting development margins" },
+        { factor: "Interest Rate Environment", impact: "High", trend: "Negative", description: "Higher borrowing costs affecting both development funding and buyer capacity" },
+        { factor: "Land Value Appreciation", impact: "Medium", trend: "Positive", description: "Scarcity of zoned development land supporting price growth" },
+        { factor: "Population Growth", impact: "High", trend: "Positive", description: "Strong migration maintaining underlying demand for new housing" }
+      ],
+      social: [
+        { factor: "Housing Affordability Crisis", impact: "High", trend: "Negative", description: "High land and construction costs affecting housing accessibility" },
+        { factor: "Community Opposition", impact: "Medium", trend: "Negative", description: "NIMBY attitudes affecting approvals for higher density development" },
+        { factor: "Lifestyle Preferences", impact: "Medium", trend: "Positive", description: "Demand for sustainable and well-designed communities" },
+        { factor: "Demographic Changes", impact: "Medium", trend: "Positive", description: "Changing household composition driving demand for diverse housing types" }
+      ],
+      technological: [
+        { factor: "Construction Technology", impact: "Medium", trend: "Positive", description: "Prefabrication and modular construction improving efficiency and quality" },
+        { factor: "Digital Planning Tools", impact: "Medium", trend: "Positive", description: "3D modeling and virtual reality enhancing design and approval processes" },
+        { factor: "Smart City Infrastructure", impact: "Low", trend: "Positive", description: "IoT and connected systems becoming standard in new developments" },
+        { factor: "Building Information Modeling", impact: "Low", trend: "Positive", description: "BIM technology improving project coordination and outcomes" }
+      ],
+      environmental: [
+        { factor: "Climate Change Adaptation", impact: "High", trend: "Neutral", description: "Flood, bushfire, and sea level rise affecting developable land availability" },
+        { factor: "Green Building Standards", impact: "Medium", trend: "Positive", description: "Energy efficiency and sustainability requirements becoming market differentiators" },
+        { factor: "Biodiversity Offset Requirements", impact: "Medium", trend: "Negative", description: "Environmental offset obligations increasing development costs and complexity" },
+        { factor: "Stormwater Management", impact: "Medium", trend: "Neutral", description: "Water-sensitive urban design requirements affecting development layout" }
+      ],
+      legal: [
+        { factor: "Development Liability Laws", impact: "High", trend: "Negative", description: "Extended warranty periods and defect liability increasing developer risks" },
+        { factor: "Strata Law Reforms", impact: "Medium", trend: "Neutral", description: "Building management and governance changes affecting apartment developments" },
+        { factor: "Heritage Protection", impact: "Medium", trend: "Neutral", description: "Heritage listing and archaeological requirements affecting some sites" },
+        { factor: "Contract and Property Law", impact: "Low", trend: "Neutral", description: "Off-the-plan sales and sunset clause regulations" }
+      ]
     }
   };
 

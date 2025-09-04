@@ -12,6 +12,7 @@ import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContai
 
 interface PropertyRentalAnalysisProps {
   propertyType: string;
+  geographicLevel: string;
 }
 
 const getRentalData = (propertyType: string) => {
@@ -141,13 +142,55 @@ const getRentalData = (propertyType: string) => {
         { area: 'Community Hubs', rent: 420, change: 3.8, vacancy: 7.2 },
         { area: 'Suburban Mixed', rent: 385, change: 3.2, vacancy: 8.1 }
       ]
+    },
+    agricultural: {
+      avgRent: "$125/hectare",
+      yoyChange: "+3.8%",
+      vacancyRate: "2.1%",
+      rentalYield: "4.2%",
+      rentHistory: [
+        { year: '2020', rent: 110, vacancy: 2.8, yield: 3.8 },
+        { year: '2021', rent: 115, vacancy: 2.5, yield: 3.9 },
+        { year: '2022', rent: 118, vacancy: 2.3, yield: 4.0 },
+        { year: '2023', rent: 120, vacancy: 2.2, yield: 4.1 },
+        { year: '2024', rent: 125, vacancy: 2.1, yield: 4.2 }
+      ],
+      submarkets: [
+        { area: 'Prime Cropping Land', rent: 185, change: 4.8, vacancy: 1.2 },
+        { area: 'Irrigation Districts', rent: 285, change: 5.2, vacancy: 0.8 },
+        { area: 'Grazing Country', rent: 95, change: 3.1, vacancy: 2.8 },
+        { area: 'Horticultural Land', rent: 485, change: 6.5, vacancy: 1.5 },
+        { area: 'Marginal Farmland', rent: 65, change: 2.2, vacancy: 4.2 },
+        { area: 'Vineyard Land', rent: 520, change: 4.9, vacancy: 1.8 }
+      ]
+    },
+    development: {
+      avgRent: "$2,850/hectare",
+      yoyChange: "+8.2%",
+      vacancyRate: "12.5%",
+      rentalYield: "N/A",
+      rentHistory: [
+        { year: '2020', rent: 2200, vacancy: 18.5, yield: 0 },
+        { year: '2021', rent: 2450, vacancy: 15.8, yield: 0 },
+        { year: '2022', rent: 2580, vacancy: 14.2, yield: 0 },
+        { year: '2023', rent: 2635, vacancy: 13.1, yield: 0 },
+        { year: '2024', rent: 2850, vacancy: 12.5, yield: 0 }
+      ],
+      submarkets: [
+        { area: 'Zoned Residential', rent: 4850, change: 12.1, vacancy: 8.2 },
+        { area: 'Mixed-Use Zoned', rent: 3850, change: 9.8, vacancy: 10.1 },
+        { area: 'Commercial Zoned', rent: 3200, change: 8.5, vacancy: 11.5 },
+        { area: 'Industrial Zoned', rent: 1850, change: 6.2, vacancy: 15.8 },
+        { area: 'Future Urban', rent: 950, change: 4.8, vacancy: 22.5 },
+        { area: 'Holding Income', rent: 485, change: 2.1, vacancy: 35.2 }
+      ]
     }
   };
   
   return baseData[propertyType as keyof typeof baseData] || baseData.office;
 };
 
-export const PropertyRentalAnalysis = ({ propertyType }: PropertyRentalAnalysisProps) => {
+export const PropertyRentalAnalysis = ({ propertyType, geographicLevel }: PropertyRentalAnalysisProps) => {
   const data = getRentalData(propertyType);
 
   return (

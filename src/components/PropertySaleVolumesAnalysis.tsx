@@ -12,6 +12,7 @@ import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContaine
 
 interface PropertySaleVolumesAnalysisProps {
   propertyType: string;
+  geographicLevel: string;
 }
 
 const getSalesData = (propertyType: string) => {
@@ -147,13 +148,57 @@ const getSalesData = (propertyType: string) => {
         { segment: 'Mid Mixed ($10M-$25M)', volume: 2.1, count: 85, percentage: 16 },
         { segment: 'Small Mixed (<$10M)', volume: 0.7, count: 334, percentage: 6 }
       ]
+    },
+    agricultural: {
+      totalVolume: "$28.5B",
+      transactionCount: "12,485",
+      avgDealSize: "$2.28M",
+      yoyVolumeChange: "+4.2%",
+      volumeHistory: [
+        { quarter: 'Q1 2023', volume: 6.8, transactions: 2850, avgSize: 2.39, days: 185 },
+        { quarter: 'Q2 2023', volume: 7.2, transactions: 3125, avgSize: 2.31, days: 165 },
+        { quarter: 'Q3 2023', volume: 6.9, transactions: 2985, avgSize: 2.31, days: 175 },
+        { quarter: 'Q4 2023', volume: 6.4, transactions: 2685, avgSize: 2.38, days: 198 },
+        { quarter: 'Q1 2024', volume: 7.1, transactions: 3058, avgSize: 2.32, days: 168 },
+        { quarter: 'Q2 2024', volume: 7.8, transactions: 3485, avgSize: 2.24, days: 152 },
+        { quarter: 'Q3 2024', volume: 7.5, transactions: 3285, avgSize: 2.28, days: 162 },
+        { quarter: 'Q4 2024', volume: 6.1, transactions: 2657, avgSize: 2.30, days: 185 }
+      ],
+      sizeSegments: [
+        { segment: 'Large Farms (>$5M)', volume: 12.8, count: 485, percentage: 45 },
+        { segment: 'Medium Farms ($1M-$5M)', volume: 9.2, count: 2850, percentage: 32 },
+        { segment: 'Small Farms ($500K-$1M)', volume: 4.8, count: 4250, percentage: 17 },
+        { segment: 'Lifestyle Blocks (<$500K)', volume: 1.7, count: 4900, percentage: 6 }
+      ]
+    },
+    development: {
+      totalVolume: "$89.2B",
+      transactionCount: "3,285",
+      avgDealSize: "$27.2M",
+      yoyVolumeChange: "+15.8%",
+      volumeHistory: [
+        { quarter: 'Q1 2023', volume: 18.5, transactions: 745, avgSize: 24.8, days: 285 },
+        { quarter: 'Q2 2023', volume: 21.2, transactions: 825, avgSize: 25.7, days: 265 },
+        { quarter: 'Q3 2023', volume: 19.8, transactions: 785, avgSize: 25.2, days: 275 },
+        { quarter: 'Q4 2023', volume: 17.3, transactions: 695, avgSize: 24.9, days: 295 },
+        { quarter: 'Q1 2024', volume: 20.8, transactions: 758, avgSize: 27.4, days: 245 },
+        { quarter: 'Q2 2024', volume: 25.2, transactions: 885, avgSize: 28.5, days: 225 },
+        { quarter: 'Q3 2024', volume: 23.5, transactions: 845, avgSize: 27.8, days: 235 },
+        { quarter: 'Q4 2024', volume: 19.7, transactions: 797, avgSize: 24.7, days: 268 }
+      ],
+      sizeSegments: [
+        { segment: 'Major Developments (>$100M)', volume: 38.5, count: 28, percentage: 43 },
+        { segment: 'Large Projects ($25M-$100M)', volume: 28.2, count: 185, percentage: 32 },
+        { segment: 'Medium Developments ($5M-$25M)', volume: 16.8, count: 785, percentage: 19 },
+        { segment: 'Small Parcels (<$5M)', volume: 5.7, count: 2287, percentage: 6 }
+      ]
     }
   };
   
   return baseData[propertyType as keyof typeof baseData] || baseData.office;
 };
 
-export const PropertySaleVolumesAnalysis = ({ propertyType }: PropertySaleVolumesAnalysisProps) => {
+export const PropertySaleVolumesAnalysis = ({ propertyType, geographicLevel }: PropertySaleVolumesAnalysisProps) => {
   const data = getSalesData(propertyType);
 
   return (

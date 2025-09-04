@@ -12,15 +12,16 @@ import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
-import { Building2, Home, Store, Warehouse, Hotel, ShoppingCart } from "lucide-react";
+import { Building2, Home, Store, Warehouse, Hotel, ShoppingCart, TreePine, MapPin } from "lucide-react";
 import { PropertyMarketSegmentAnalysis } from "@/components/PropertyMarketSegmentAnalysis";
 import { PropertyRentalAnalysis } from "@/components/PropertyRentalAnalysis";
 import { PropertyMarketValueAnalysis } from "@/components/PropertyMarketValueAnalysis";
 import { PropertySaleVolumesAnalysis } from "@/components/PropertySaleVolumesAnalysis";
 import { PropertySWOTAnalysis } from "@/components/PropertySWOTAnalysis";
 import { PropertyPESTELAnalysis } from "@/components/PropertyPESTELAnalysis";
+import { GeographicBreakdownSelector } from "@/components/GeographicBreakdownSelector";
 
-type PropertyType = 'office' | 'retail' | 'industrial' | 'residential' | 'hospitality' | 'mixed';
+type PropertyType = 'office' | 'retail' | 'industrial' | 'residential' | 'hospitality' | 'mixed' | 'agricultural' | 'development';
 
 const propertyTypes = [
   { id: 'office', name: 'Office', icon: Building2, color: 'primary' },
@@ -29,11 +30,14 @@ const propertyTypes = [
   { id: 'residential', name: 'Residential', icon: Home, color: 'warning' },
   { id: 'hospitality', name: 'Hospitality', icon: Hotel, color: 'destructive' },
   { id: 'mixed', name: 'Mixed Use', icon: ShoppingCart, color: 'secondary' },
+  { id: 'agricultural', name: 'Agricultural', icon: TreePine, color: 'success' },
+  { id: 'development', name: 'Development', icon: MapPin, color: 'primary' },
 ];
 
 export const PropertyClassAnalysis = () => {
   const [selectedProperty, setSelectedProperty] = useState<PropertyType>('office');
   const [analysisType, setAnalysisType] = useState<string>('market-segment');
+  const [geographicLevel, setGeographicLevel] = useState<string>('total');
 
   const selectedPropertyData = propertyTypes.find(p => p.id === selectedProperty);
 
@@ -48,7 +52,7 @@ export const PropertyClassAnalysis = () => {
           </CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3">
+          <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-8 gap-3">
             {propertyTypes.map((property) => {
               const Icon = property.icon;
               const isSelected = selectedProperty === property.id;
@@ -93,41 +97,46 @@ export const PropertyClassAnalysis = () => {
         </Badge>
       </div>
 
-      {/* Analysis Type Tabs */}
-      <Tabs value={analysisType} onValueChange={setAnalysisType}>
-        <TabsList className="grid w-full grid-cols-2 md:grid-cols-3 lg:grid-cols-6">
-          <TabsTrigger value="market-segment">Market Segment</TabsTrigger>
-          <TabsTrigger value="rental">Rental Analysis</TabsTrigger>
-          <TabsTrigger value="market-value">Market Value</TabsTrigger>
-          <TabsTrigger value="sale-volumes">Sale Volumes</TabsTrigger>
-          <TabsTrigger value="swot">SWOT Analysis</TabsTrigger>
-          <TabsTrigger value="pestel">PESTEL Analysis</TabsTrigger>
-        </TabsList>
+      {/* Analysis Type Tabs with Geographic Breakdown */}
+      <GeographicBreakdownSelector
+        selectedLevel={geographicLevel}
+        onLevelChange={setGeographicLevel}
+      >
+        <Tabs value={analysisType} onValueChange={setAnalysisType}>
+          <TabsList className="grid w-full grid-cols-2 md:grid-cols-3 lg:grid-cols-6">
+            <TabsTrigger value="market-segment">Market Segment</TabsTrigger>
+            <TabsTrigger value="rental">Rental Analysis</TabsTrigger>
+            <TabsTrigger value="market-value">Market Value</TabsTrigger>
+            <TabsTrigger value="sale-volumes">Sale Volumes</TabsTrigger>
+            <TabsTrigger value="swot">SWOT Analysis</TabsTrigger>
+            <TabsTrigger value="pestel">PESTEL Analysis</TabsTrigger>
+          </TabsList>
 
-        <TabsContent value="market-segment" className="mt-6">
-          <PropertyMarketSegmentAnalysis propertyType={selectedProperty} />
-        </TabsContent>
+          <TabsContent value="market-segment" className="mt-6">
+            <PropertyMarketSegmentAnalysis propertyType={selectedProperty} geographicLevel={geographicLevel} />
+          </TabsContent>
 
-        <TabsContent value="rental" className="mt-6">
-          <PropertyRentalAnalysis propertyType={selectedProperty} />
-        </TabsContent>
+          <TabsContent value="rental" className="mt-6">
+            <PropertyRentalAnalysis propertyType={selectedProperty} geographicLevel={geographicLevel} />
+          </TabsContent>
 
-        <TabsContent value="market-value" className="mt-6">
-          <PropertyMarketValueAnalysis propertyType={selectedProperty} />
-        </TabsContent>
+          <TabsContent value="market-value" className="mt-6">
+            <PropertyMarketValueAnalysis propertyType={selectedProperty} geographicLevel={geographicLevel} />
+          </TabsContent>
 
-        <TabsContent value="sale-volumes" className="mt-6">
-          <PropertySaleVolumesAnalysis propertyType={selectedProperty} />
-        </TabsContent>
+          <TabsContent value="sale-volumes" className="mt-6">
+            <PropertySaleVolumesAnalysis propertyType={selectedProperty} geographicLevel={geographicLevel} />
+          </TabsContent>
 
-        <TabsContent value="swot" className="mt-6">
-          <PropertySWOTAnalysis propertyType={selectedProperty} />
-        </TabsContent>
+          <TabsContent value="swot" className="mt-6">
+            <PropertySWOTAnalysis propertyType={selectedProperty} />
+          </TabsContent>
 
-        <TabsContent value="pestel" className="mt-6">
-          <PropertyPESTELAnalysis propertyType={selectedProperty} />
-        </TabsContent>
-      </Tabs>
+          <TabsContent value="pestel" className="mt-6">
+            <PropertyPESTELAnalysis propertyType={selectedProperty} />
+          </TabsContent>
+        </Tabs>
+      </GeographicBreakdownSelector>
     </div>
   );
 };

@@ -12,6 +12,7 @@ import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContai
 
 interface PropertyMarketValueAnalysisProps {
   propertyType: string;
+  geographicLevel: string;
 }
 
 const getValueData = (propertyType: string) => {
@@ -129,13 +130,51 @@ const getValueData = (propertyType: string) => {
         { range: 'Suburban Mixed ($5k-$7k)', percentage: 30, avgValue: 5850, growth: 3.8 },
         { range: 'Value Mixed (<$5k)', percentage: 15, avgValue: 3900, growth: 2.9 }
       ]
+    },
+    agricultural: {
+      avgValue: "$12,500/hectare",
+      yoyChange: "+4.1%",
+      capRate: "4.2%",
+      totalVolume: "$28.5B",
+      valueHistory: [
+        { year: '2020', value: 11200, capRate: 4.5, volume: 24.8, priceIndex: 92 },
+        { year: '2021', value: 11650, capRate: 4.4, volume: 26.2, priceIndex: 96 },
+        { year: '2022', value: 12100, capRate: 4.3, volume: 27.1, priceIndex: 100 },
+        { year: '2023', value: 12000, capRate: 4.2, volume: 26.8, priceIndex: 99 },
+        { year: '2024', value: 12500, capRate: 4.2, volume: 28.5, priceIndex: 103 }
+      ],
+      priceRanges: [
+        { range: 'Prime Irrigation ($25k+)', percentage: 15, avgValue: 35000, growth: 6.2 },
+        { range: 'Quality Cropping ($15k-$25k)', percentage: 25, avgValue: 18500, growth: 4.8 },
+        { range: 'Good Grazing ($8k-$15k)', percentage: 35, avgValue: 11200, growth: 3.9 },
+        { range: 'Marginal Land (<$8k)', percentage: 25, avgValue: 5800, growth: 2.1 }
+      ]
+    },
+    development: {
+      avgValue: "$485,000/hectare",
+      yoyChange: "+12.8%",
+      capRate: "N/A",
+      totalVolume: "$89.2B",
+      valueHistory: [
+        { year: '2020', value: 385000, capRate: 0, volume: 65.8, priceIndex: 88 },
+        { year: '2021', value: 425000, capRate: 0, volume: 72.5, priceIndex: 95 },
+        { year: '2022', value: 450000, capRate: 0, volume: 78.2, priceIndex: 101 },
+        { year: '2023', value: 430000, capRate: 0, volume: 76.8, priceIndex: 96 },
+        { year: '2024', value: 485000, capRate: 0, volume: 89.2, priceIndex: 109 }
+      ],
+      priceRanges: [
+        { range: 'Metro Residential ($1M+)', percentage: 35, avgValue: 1850000, growth: 18.5 },
+        { range: 'Regional Residential ($500k-$1M)', percentage: 28, avgValue: 750000, growth: 12.8 },
+        { range: 'Commercial Zones ($300k-$500k)', percentage: 22, avgValue: 385000, growth: 9.8 },
+        { range: 'Industrial/Rural (<$300k)', percentage: 15, avgValue: 185000, growth: 5.2 }
+      ]
     }
   };
   
   return baseData[propertyType as keyof typeof baseData] || baseData.office;
 };
 
-export const PropertyMarketValueAnalysis = ({ propertyType }: PropertyMarketValueAnalysisProps) => {
+export const PropertyMarketValueAnalysis = ({ propertyType, geographicLevel }: PropertyMarketValueAnalysisProps) => {
   const data = getValueData(propertyType);
 
   return (
