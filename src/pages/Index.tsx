@@ -36,7 +36,7 @@ import { calculateAdvancedRiskAssessment, AdvancedCalculationResults } from "@/u
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Building, Calculator, BarChart3, ArrowLeft, Target, TrendingUp, Shield, ArrowUpDown, Sprout, Building2 } from "lucide-react";
+import { Building, Calculator, BarChart3, ArrowLeft, Target, TrendingUp, Shield, ArrowUpDown, Sprout, Building2, Activity } from "lucide-react";
 
 const Index = () => {
   const navigate = useNavigate();
@@ -147,6 +147,12 @@ const Index = () => {
                   <Button variant="outline" size="lg" className="flex items-center gap-2 touch-manipulation min-h-[44px]">
                     <Building2 className="w-5 h-5" />
                     Property Hub
+                  </Button>
+                </Link>
+                <Link to="/economic-activity">
+                  <Button variant="outline" size="lg" className="flex items-center gap-2 touch-manipulation min-h-[44px]">
+                    <Activity className="w-5 h-5" />
+                    Economic Activity
                   </Button>
                 </Link>
               </div>
