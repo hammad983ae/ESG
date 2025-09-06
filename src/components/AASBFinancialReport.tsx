@@ -9,6 +9,7 @@ import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { Switch } from "@/components/ui/switch";
 import { format } from "date-fns";
 import { 
   FileText, 
@@ -170,6 +171,18 @@ export const AASBFinancialReport = () => {
   const [aiResponse, setAiResponse] = useState("");
   const [isGenerating, setIsGenerating] = useState(false);
   
+  // Section inclusion state - all sections enabled by default except AI enhancement
+  const [sectionInclusion, setSectionInclusion] = useState<Record<string, boolean>>({
+    "business-overview": true,
+    "sustainability": true,
+    "governance": true,
+    "risk-management": true,
+    "directors-report": true,
+    "financial-statements": true,
+    "additional-info": true,
+    "ai-enhancement": false, // Keep AI enhancement disabled by default
+  });
+  
   const [companyData, setCompanyData] = useState<CompanyData>({
     companyName: "",
     abn: "",
@@ -220,6 +233,21 @@ export const AASBFinancialReport = () => {
       ...prev,
       [field]: value
     }));
+  };
+
+  const toggleSectionInclusion = (sectionId: string) => {
+    setSectionInclusion(prev => ({
+      ...prev,
+      [sectionId]: !prev[sectionId]
+    }));
+  };
+
+  const toggleAllSections = (include: boolean) => {
+    const newInclusion: Record<string, boolean> = {};
+    REPORT_SECTIONS.forEach(section => {
+      newInclusion[section.id] = include;
+    });
+    setSectionInclusion(newInclusion);
   };
 
   const applyIndustryTemplate = (industry: string) => {
@@ -915,6 +943,34 @@ export const AASBFinancialReport = () => {
   );
 
   const renderContent = () => {
+    // Check if current section is included
+    if (!sectionInclusion[activeSection]) {
+      return (
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <AlertCircle className="h-5 w-5 text-muted-foreground" />
+              Section Excluded
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="text-center py-8">
+              <p className="text-muted-foreground mb-4">
+                This section is currently excluded from the report.
+              </p>
+              <Button
+                onClick={() => toggleSectionInclusion(activeSection)}
+                variant="outline"
+              >
+                <CheckCircle2 className="mr-2 h-4 w-4" />
+                Include This Section
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
+      );
+    }
+
     switch (activeSection) {
       case "business-overview": return renderBusinessOverview();
       case "sustainability": return renderSustainability();
@@ -967,22 +1023,117 @@ export const AASBFinancialReport = () => {
         </CardContent>
       </Card>
 
+      {/* Section Configuration */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <CheckCircle2 className="h-5 w-5" />
+            Report Section Configuration
+          </CardTitle>
+          <p className="text-sm text-muted-foreground">
+            Select which sections to include in your final report
+          </p>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          {/* Quick Actions */}
+          <div className="flex gap-3">
+            <Button 
+              onClick={() => toggleAllSections(true)} 
+              variant="outline" 
+              size="sm"
+            >
+              <CheckCircle2 className="mr-2 h-4 w-4" />
+              Include All
+            </Button>
+            <Button 
+              onClick={() => toggleAllSections(false)} 
+              variant="outline" 
+              size="sm"
+            >
+              <AlertCircle className="mr-2 h-4 w-4" />
+              Exclude All
+            </Button>
+          </div>
+
+          {/* Section Toggles */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+            {REPORT_SECTIONS.map((section) => {
+              const IconComponent = section.icon;
+              const isIncluded = sectionInclusion[section.id];
+              
+              return (
+                <div 
+                  key={section.id} 
+                  className={cn(
+                    "flex items-center gap-3 p-3 border rounded-lg",
+                    isIncluded ? "bg-background" : "bg-muted/50"
+                  )}
+                >
+                  <IconComponent className={cn(
+                    "h-4 w-4",
+                    isIncluded ? "text-primary" : "text-muted-foreground"
+                  )} />
+                  <div className="flex-1">
+                    <Label 
+                      htmlFor={section.id}
+                      className={cn(
+                        "text-sm cursor-pointer",
+                        isIncluded ? "text-foreground" : "text-muted-foreground"
+                      )}
+                    >
+                      {section.label}
+                    </Label>
+                  </div>
+                  <Switch
+                    id={section.id}
+                    checked={isIncluded}
+                    onCheckedChange={() => toggleSectionInclusion(section.id)}
+                  />
+                </div>
+              );
+            })}
+          </div>
+
+          {/* Summary */}
+          <div className="text-sm text-muted-foreground">
+            {Object.values(sectionInclusion).filter(Boolean).length} of {REPORT_SECTIONS.length} sections included
+          </div>
+        </CardContent>
+      </Card>
+
       {/* Navigation */}
       <Card>
         <CardContent className="pt-6">
           <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-8 gap-2">
             {REPORT_SECTIONS.map((section) => {
               const IconComponent = section.icon;
+              const isIncluded = sectionInclusion[section.id];
+              const isActive = activeSection === section.id;
+              
               return (
                 <Button
                   key={section.id}
                   onClick={() => setActiveSection(section.id)}
-                  variant={activeSection === section.id ? "default" : "outline"}
+                  variant={isActive ? "default" : "outline"}
                   size="sm"
-                  className="flex flex-col items-center gap-1 h-auto py-3"
+                  disabled={!isIncluded}
+                  className={cn(
+                    "flex flex-col items-center gap-1 h-auto py-3",
+                    !isIncluded && "opacity-50"
+                  )}
                 >
                   <IconComponent className="h-4 w-4" />
                   <span className="text-xs text-center">{section.label}</span>
+                  {isIncluded && (
+                    <Badge variant="secondary" className="text-[10px] px-1 py-0 h-4">
+                      Included
+                    </Badge>
+                  )}
+                  {!isIncluded && (
+                    <Badge variant="outline" className="text-[10px] px-1 py-0 h-4">
+                      Excluded
+                    </Badge>
+                  )}
                 </Button>
               );
             })}
