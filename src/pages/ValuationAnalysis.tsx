@@ -127,6 +127,16 @@ import {
 } from "@/utils/stadiumCalculations";
 import { StadiumValuationForm } from "@/components/StadiumValuationForm";
 import { StadiumValuationResults } from "@/components/StadiumValuationResults";
+import { 
+  CapNetIncomeInputs, 
+  CapNetIncomeResults, 
+  DirectComparisonInputs, 
+  DirectComparisonResults, 
+  DCFInputs, 
+  DCFResults,
+  ComparableProperty,
+  FormSubmitHandler
+} from "@/types/valuationTypes";
 
 export default function ValuationAnalysis() {
   // ARY States
@@ -154,16 +164,16 @@ export default function ValuationAnalysis() {
   const [esgSalesResults, setEsgSalesResults] = useState<ESGWeightedSalesResults | null>(null);
   
   // Cap Net Income States
-  const [capNetIncomeInputs, setCapNetIncomeInputs] = useState<any>(null);
-  const [capNetIncomeResults, setCapNetIncomeResults] = useState<any>(null);
+  const [capNetIncomeInputs, setCapNetIncomeInputs] = useState<CapNetIncomeInputs | null>(null);
+  const [capNetIncomeResults, setCapNetIncomeResults] = useState<CapNetIncomeResults | null>(null);
   
   // Summation Approach States
   const [summationInputs, setSummationInputs] = useState<SummationInputs | null>(null);
   const [summationResults, setSummationResults] = useState<SummationResults | null>(null);
   
   // Direct Comparison States
-  const [directCompInputs, setDirectCompInputs] = useState<any>(null);
-  const [directCompResults, setDirectCompResults] = useState<any>(null);
+  const [directCompInputs, setDirectCompInputs] = useState<DirectComparisonInputs | null>(null);
+  const [directCompResults, setDirectCompResults] = useState<DirectComparisonResults | null>(null);
 
   // Hypothetical Development States
   const [hypotheticalInputs, setHypotheticalInputs] = useState<HypotheticalDevelopmentParams | null>(null);
@@ -191,8 +201,8 @@ export default function ValuationAnalysis() {
   const [deferredManagementResults, setDeferredManagementResults] = useState<DeferredManagementResults | null>(null);
   
   // DCF Analysis States
-  const [dcfInputs, setDcfInputs] = useState<any>(null);
-  const [dcfResults, setDcfResults] = useState<any>(null);
+  const [dcfInputs, setDcfInputs] = useState<DCFInputs | null>(null);
+  const [dcfResults, setDcfResults] = useState<DCFResults | null>(null);
   
   // Stadium Valuation States
   const [stadiumInputs, setStadiumInputs] = useState<StadiumInputs | null>(null);
@@ -334,7 +344,7 @@ export default function ValuationAnalysis() {
     }
   };
 
-  const handleCapNetIncomeSubmit = (inputs: any) => {
+  const handleCapNetIncomeSubmit: FormSubmitHandler<CapNetIncomeInputs> = (inputs) => {
     try {
       // Calculate market value using basic cap rate approach
       const marketValue = inputs.noi / (inputs.capitalizationRate / 100);
@@ -363,7 +373,7 @@ export default function ValuationAnalysis() {
     }
   };
 
-  const handleDirectComparisonSubmit = (inputs: any) => {
+  const handleDirectComparisonSubmit: FormSubmitHandler<DirectComparisonInputs> = (inputs) => {
     try {
       setDirectCompInputs(inputs);
       setDirectCompResults(inputs);
@@ -453,7 +463,7 @@ export default function ValuationAnalysis() {
     }
   };
 
-  const handleDCFSubmit = (inputs: any) => {
+  const handleDCFSubmit: FormSubmitHandler<DCFInputs> = (inputs) => {
     try {
       // Create basic DCF calculation results
       const calculatedResults = {
@@ -941,7 +951,7 @@ export default function ValuationAnalysis() {
                   </div>
                   <div className="space-y-4">
                     <h3 className="text-lg font-semibold">Comparable Sales</h3>
-                    {directCompResults.comparables?.map((comp: any, index: number) => (
+                    {directCompResults.comparables?.map((comp: ComparableProperty, index: number) => (
                       <Card key={comp.id} className="p-4">
                         <div className="grid grid-cols-1 md:grid-cols-6 gap-4">
                           <div>

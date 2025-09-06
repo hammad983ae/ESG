@@ -39,7 +39,18 @@ const commoditySchema = z.object({
 type CommodityFormData = z.infer<typeof commoditySchema>;
 
 export function CommodityMarketAnalysis() {
-  const [results, setResults] = useState<any>(null);
+  const [results, setResults] = useState<{
+    commodity: string;
+    currentPrice: number;
+    priceChange: number;
+    volatility: number;
+    demandIndex: number;
+    forecast: Array<{
+      date: string;
+      price: number;
+      confidence: number;
+    }>;
+  } | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [activeTab, setActiveTab] = useState("forecast");
 

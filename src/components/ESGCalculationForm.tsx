@@ -38,14 +38,14 @@ export const ESGCalculationForm = ({ onSubmit }: ESGCalculationFormProps) => {
     onSubmit(inputs);
   };
 
-  const handleOCRDataExtracted = (data: any) => {
-    if (data.cashRate !== undefined) setCashRate((data.cashRate * 100).toString());
-    if (data.propertyType) setPropertyType(data.propertyType);
-    if (data.energyRating !== undefined) setEnergyRating([data.energyRating]);
-    if (data.waterEfficiency !== undefined) setWaterEfficiency([data.waterEfficiency]);
-    if (data.wasteReduction !== undefined) setWasteReduction([data.wasteReduction]);
-    if (data.sustainableMaterials !== undefined) setSustainableMaterials([data.sustainableMaterials]);
-    if (data.carbonFootprint !== undefined) setCarbonFootprint([data.carbonFootprint]);
+  const handleOCRDataExtracted = (data: Record<string, unknown>) => {
+    if (typeof data.cashRate === 'number') setCashRate((data.cashRate * 100).toString());
+    if (typeof data.propertyType === 'string') setPropertyType(data.propertyType as 'Commercial' | 'Residential');
+    if (typeof data.energyRating === 'number') setEnergyRating([data.energyRating]);
+    if (typeof data.waterEfficiency === 'number') setWaterEfficiency([data.waterEfficiency]);
+    if (typeof data.wasteReduction === 'number') setWasteReduction([data.wasteReduction]);
+    if (typeof data.sustainableMaterials === 'number') setSustainableMaterials([data.sustainableMaterials]);
+    if (typeof data.carbonFootprint === 'number') setCarbonFootprint([data.carbonFootprint]);
   };
 
   return (

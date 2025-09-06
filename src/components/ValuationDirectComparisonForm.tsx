@@ -8,6 +8,7 @@ import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Plus, Trash2, Search, TrendingUp, MapPin, Calendar } from "lucide-react";
 import { toast } from "sonner";
+import { DirectComparisonInputs } from "@/types/valuationTypes";
 
 interface ComparableSale {
   id: string;
@@ -28,7 +29,7 @@ interface ComparableSale {
 }
 
 interface ValuationDirectComparisonFormProps {
-  onSubmit: (data: any) => void;
+  onSubmit: (data: DirectComparisonInputs) => void;
 }
 
 const ASSET_TYPES = [
@@ -193,19 +194,21 @@ export function ValuationDirectComparisonForm({ onSubmit }: ValuationDirectCompa
     setComparables(comparables.filter(comp => comp.id !== id));
   };
 
-  const updateComparable = (id: string, field: string, value: any) => {
+  const updateComparable = (id: string, field: string, value: string | number) => {
     setComparables(comparables.map(comp => {
       if (comp.id === id) {
         const updated = { ...comp };
         
         if (field.includes('.')) {
           const [parent, child] = field.split('.');
-          (updated as any)[parent] = {
-            ...(updated as any)[parent],
-            [child]: value
-          };
+          if (parent === 'adjustmentFactors') {
+            updated.adjustmentFactors = {
+              ...updated.adjustmentFactors,
+              [child]: value as number
+            };
+          }
         } else {
-          (updated as any)[field] = value;
+          (updated as Record<string, string | number>)[field] = value;
         }
         
         // Recalculate derived values
@@ -251,13 +254,26 @@ export function ValuationDirectComparisonForm({ onSubmit }: ValuationDirectCompa
       return;
     }
     
-    const results = {
-      subjectProperty,
-      selectedAssetType,
-      comparables,
-      valuation,
-      methodology: 'Direct Comparison Approach',
-      calculationDate: new Date().toISOString()
+    const results: DirectComparisonInputs = {
+      subjectProperty: {
+        name: subjectProperty.name,
+        location: subjectProperty.location
+      },
+      valuation: {
+        comparablesCount: valuation.comparablesCount,
+        averagePricePerSqm: valuation.averagePricePerSqm,
+        estimatedValue: valuation.estimatedValue,
+        valueRange: valuation.valueRange
+      },
+      comparables: comparables.map(comp => ({
+        id: comp.id,
+        property: comp.property,
+        location: comp.location,
+        saleDate: comp.saleDate,
+        price: comp.price,
+        pricePerSqm: comp.pricePerSqm,
+        adjustedPrice: comp.adjustedPrice
+      }))
     };
     
     onSubmit(results);

@@ -58,7 +58,7 @@ export const ARYCalculationForm = ({ onSubmit }: ARYCalculationFormProps) => {
     setInputs(prev => ({ ...prev, cashRate: currentRate }));
   };
 
-  const handleOCRDataExtracted = (data: any) => {
+  const handleOCRDataExtracted = (data: unknown) => {
     const updatedInputs: Partial<ARYInputs> = { ...inputs };
     
     if (data.cashRate !== undefined) updatedInputs.cashRate = data.cashRate;

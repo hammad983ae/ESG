@@ -57,7 +57,7 @@ export const ChildcareValuationForm: React.FC<ChildcareValuationFormProps> = ({ 
     onSubmit(inputs);
   };
 
-  const handleOCRDataExtracted = (data: any) => {
+  const handleOCRDataExtracted = (data: unknown) => {
     const updatedInputs: Partial<ChildcareInputs> = { ...inputs };
     
     if (data.capacity !== undefined) updatedInputs.childcare_placements = data.capacity;

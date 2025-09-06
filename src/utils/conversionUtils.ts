@@ -5,26 +5,52 @@
  * Licensed under MIT License - see LICENSE file for details
  */
 
+/**
+ * Result of area conversion calculations
+ * Contains the same area expressed in different units
+ */
 export interface ConversionResult {
+  /** Area in acres */
   acres: number;
+  /** Area in hectares */
   hectares: number;
+  /** Area in square meters */
   squareMeters: number;
+  /** Area in square feet */
   squareFeet: number;
 }
 
+/**
+ * Water forecast data for agricultural irrigation planning
+ * Contains water requirements and irrigation scheduling information
+ */
 export interface WaterForecast {
+  /** Water requirement in megalitres per acre */
   mlPerAcre: number;
+  /** Water requirement in megalitres per hectare */
   mlPerHectare: number;
+  /** Total water required for the entire area */
   totalMlRequired: number;
+  /** Irrigation schedule recommendations */
   irrigationSchedule: {
+    /** Recommended irrigation frequency */
     frequency: string;
+    /** Application rate per irrigation event */
     applicationRate: string;
+    /** Total seasonal water requirement */
     seasonalTotal: string;
   };
 }
 
 /**
  * Convert acres to hectares and other units
+ * @param acres - Area in acres to convert
+ * @returns ConversionResult with area in acres, hectares, square meters, and square feet
+ * @example
+ * ```typescript
+ * const result = convertAcreage(10);
+ * console.log(result.hectares); // 4.0469
+ * ```
  */
 export function convertAcreage(acres: number): ConversionResult {
   const hectares = acres * 0.404686;
@@ -41,6 +67,13 @@ export function convertAcreage(acres: number): ConversionResult {
 
 /**
  * Convert hectares to acres and other units
+ * @param hectares - Area in hectares to convert
+ * @returns ConversionResult with area in acres, hectares, square meters, and square feet
+ * @example
+ * ```typescript
+ * const result = convertHectares(4.0469);
+ * console.log(result.acres); // 10.0000
+ * ```
  */
 export function convertHectares(hectares: number): ConversionResult {
   const acres = hectares * 2.47105;
@@ -57,6 +90,17 @@ export function convertHectares(hectares: number): ConversionResult {
 
 /**
  * Calculate ML (Megalitres) per acre water requirements
+ * @param cropType - Type of crop being grown
+ * @param irrigationType - Type of irrigation system used
+ * @param coverage - Percentage of area covered by irrigation (0-100)
+ * @param climateZone - Climate zone classification
+ * @param totalArea - Total area in acres
+ * @returns WaterForecast with water requirements and irrigation schedule
+ * @example
+ * ```typescript
+ * const forecast = calculateWaterForecast('Apple', 'Drip Irrigation', 100, 'Temperate', 50);
+ * console.log(forecast.mlPerAcre); // 1.89
+ * ```
  */
 export function calculateWaterForecast(
   cropType: string,
@@ -147,8 +191,28 @@ export function calculateWaterForecast(
   };
 }
 
-function generateIrrigationSchedule(cropType: string, irrigationType: string, mlPerAcre: number) {
-  const schedules: Record<string, any> = {
+/**
+ * Irrigation schedule data for agricultural planning
+ * Contains timing and application rate information
+ */
+interface IrrigationScheduleData {
+  /** Recommended irrigation frequency */
+  frequency: string;
+  /** Application rate per irrigation event */
+  applicationRate: string;
+  /** Total seasonal water requirement */
+  seasonalTotal: string;
+}
+
+/**
+ * Generate irrigation schedule based on crop type and irrigation system
+ * @param cropType - Type of crop being grown
+ * @param irrigationType - Type of irrigation system used
+ * @param mlPerAcre - Water requirement in ML per acre
+ * @returns IrrigationScheduleData with frequency and application rates
+ */
+function generateIrrigationSchedule(cropType: string, irrigationType: string, mlPerAcre: number): IrrigationScheduleData {
+  const schedules: Record<string, IrrigationScheduleData> = {
     'Drip Irrigation': {
       frequency: 'Daily during growing season',
       applicationRate: `${(mlPerAcre / 180).toFixed(3)} ML/acre/day`,
@@ -175,6 +239,13 @@ function generateIrrigationSchedule(cropType: string, irrigationType: string, ml
 
 /**
  * Format area display with conversions
+ * @param acres - Area in acres to format
+ * @returns Formatted string showing acres and hectares
+ * @example
+ * ```typescript
+ * const display = formatAreaDisplay(10);
+ * console.log(display); // "10 acres (4.0469 ha)"
+ * ```
  */
 export function formatAreaDisplay(acres: number): string {
   const conversion = convertAcreage(acres);
@@ -183,6 +254,13 @@ export function formatAreaDisplay(acres: number): string {
 
 /**
  * Format water display with conversions
+ * @param mlPerAcre - Water requirement in ML per acre to format
+ * @returns Formatted string showing ML per acre and per hectare
+ * @example
+ * ```typescript
+ * const display = formatWaterDisplay(1.5);
+ * console.log(display); // "1.5 ML/acre (3.71 ML/ha)"
+ * ```
  */
 export function formatWaterDisplay(mlPerAcre: number): string {
   const mlPerHectare = mlPerAcre * 2.47105;
@@ -191,11 +269,28 @@ export function formatWaterDisplay(mlPerAcre: number): string {
 
 /**
  * Simple conversion functions for components
+ * @param acres - Area in acres to convert
+ * @returns Area in hectares
+ * @example
+ * ```typescript
+ * const hectares = convertAcreToHectare(10);
+ * console.log(hectares); // 4.04686
+ * ```
  */
 export function convertAcreToHectare(acres: number): number {
   return acres * 0.404686;
 }
 
+/**
+ * Convert hectares to acres
+ * @param hectares - Area in hectares to convert
+ * @returns Area in acres
+ * @example
+ * ```typescript
+ * const acres = convertHectareToAcre(4.0469);
+ * console.log(acres); // 10.0000
+ * ```
+ */
 export function convertHectareToAcre(hectares: number): number {
   return hectares * 2.47105;
 }

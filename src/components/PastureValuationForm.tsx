@@ -40,7 +40,22 @@ const pastureSchema = z.object({
 type PastureFormData = z.infer<typeof pastureSchema>;
 
 export function PastureValuationForm() {
-  const [results, setResults] = useState<any>(null);
+  const [results, setResults] = useState<{
+    totalValue: number;
+    netIncome: number;
+    profitMargin: number;
+    costBreakdown: {
+      production: number;
+      labor: number;
+      equipment: number;
+      total: number;
+    };
+    revenueBreakdown: {
+      grossRevenue: number;
+      netRevenue: number;
+      valuePerAcre: number;
+    };
+  } | null>(null);
   const [isLoading, setIsLoading] = useState(false);
 
   const form = useForm<PastureFormData>({
@@ -80,10 +95,13 @@ export function PastureValuationForm() {
     "Goats", "Horses", "Mixed Livestock", "Hay Production Only"
   ];
 
-  const handleOCRData = (data: any) => {
+  const handleOCRData = (data: Record<string, unknown>) => {
     Object.entries(data).forEach(([key, value]) => {
       if (key in form.getValues() && value !== null && value !== undefined) {
-        form.setValue(key as keyof PastureFormData, value as any);
+        // Type guard for form field values
+        if (typeof value === 'string' || typeof value === 'number') {
+          form.setValue(key as keyof PastureFormData, value as any);
+        }
       }
     });
   };

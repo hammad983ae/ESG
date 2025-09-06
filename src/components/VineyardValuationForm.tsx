@@ -48,11 +48,40 @@ const vineyardSchema = z.object({
 type VineyardFormData = z.infer<typeof vineyardSchema>;
 
 export function VineyardValuationForm() {
-  const [results, setResults] = useState<any>(null);
+  const [results, setResults] = useState<{
+    totalValue: number;
+    netIncome: number;
+    profitMargin: number;
+    costBreakdown: {
+      production: number;
+      labor: number;
+      equipment: number;
+      total: number;
+    };
+    revenueBreakdown: {
+      grossRevenue: number;
+      netRevenue: number;
+      valuePerAcre: number;
+    };
+  } | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [selectedVarieties, setSelectedVarieties] = useState<string[]>([]);
-  const [waterForecast, setWaterForecast] = useState<any>(null);
-  const [areaConversion, setAreaConversion] = useState<any>(null);
+  const [waterForecast, setWaterForecast] = useState<{
+    mlPerAcre: number;
+    mlPerHectare: number;
+    totalMlRequired: number;
+    irrigationSchedule: {
+      frequency: string;
+      applicationRate: string;
+      seasonalTotal: string;
+    };
+  } | null>(null);
+  const [areaConversion, setAreaConversion] = useState<{
+    acres: number;
+    hectares: number;
+    squareMeters: number;
+    squareFeet: number;
+  } | null>(null);
 
   const form = useForm<VineyardFormData>({
     resolver: zodResolver(vineyardSchema),
@@ -108,7 +137,7 @@ export function VineyardValuationForm() {
     "Hot Climate (Zone IV)", "Very Hot Climate (Zone V)"
   ];
 
-  const handleOCRData = (data: any) => {
+  const handleOCRData = (data: unknown) => {
     Object.entries(data).forEach(([key, value]) => {
       if (key in form.getValues() && value !== null && value !== undefined) {
         form.setValue(key as keyof VineyardFormData, value as any);

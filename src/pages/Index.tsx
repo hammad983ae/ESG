@@ -77,7 +77,10 @@ const Index = () => {
     setCurrentStep('form');
   };
 
-  const handleSearchSelection = (item: any) => {
+  const handleSearchSelection = (item: {
+    route: string;
+    tab?: string;
+  }) => {
     if (item.route === "/") {
       // Handle internal navigation
       if (item.tab && ['basic', 'advanced', 'before-after'].includes(item.tab)) {

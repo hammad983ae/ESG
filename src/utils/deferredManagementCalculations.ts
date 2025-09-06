@@ -12,72 +12,132 @@
  * @version 1.0.0
  */
 
+/**
+ * Input parameters for deferred management fee calculations
+ * Contains retirement village specific data and financial parameters
+ */
 export interface DeferredManagementInputs {
+  /** Property name or identifier */
   propertyName: string;
+  /** Current property value in dollars */
   currentValue: number;
+  /** Deferral period in years */
   deferralPeriod: number;
+  /** Discount rate as decimal (e.g., 0.08 for 8%) */
   discountRate: number;
+  /** Array of projected future cash flows */
   futureCashFlows: number[];
+  /** Type of management fee structure */
   managementType: 'entrance-fees' | 'ongoing-fees' | 'deferred-management' | 'combined';
+  /** Total number of village units */
   villageUnits: number;
+  /** Occupancy rate as percentage (0-100) */
   occupancyRate: number;
+  /** Average age of residents */
   averageAge: number;
+  /** Annual turnover rate as percentage (0-100) */
   turnoverRate: number;
+  /** Analysis date (YYYY-MM-DD) */
   analysisDate: string;
   
-  // Additional retirement village specific parameters
-  deferredManagementFeeRate: number; // Percentage of unit value
+  /** Deferred management fee rate as percentage of unit value */
+  deferredManagementFeeRate: number;
+  /** Average unit value in dollars */
   averageUnitValue: number;
+  /** Expected annual turnover in units */
   expectedAnnualTurnover: number;
+  /** Type of management rights */
   managementRightsType: 'lease' | 'freehold' | 'license';
-  remainingTerm: number; // Years remaining on management agreement
+  /** Years remaining on management agreement */
+  remainingTerm: number;
 }
 
+/**
+ * Results from deferred management fee calculations
+ * Contains comprehensive valuation analysis and performance metrics
+ */
 export interface DeferredManagementResults {
+  /** Total property valuation in dollars */
   totalValuation: number;
+  /** Present value of current assets in dollars */
   presentValueCurrentAssets: number;
+  /** Present value of future cash flows in dollars */
   presentValueFutureCashFlows: number;
+  /** Deferred management value in dollars */
   deferredManagementValue: number;
   
-  // Breakdown analysis
+  /** Detailed cash flow breakdown by year */
   cashFlowBreakdown: Array<{
+    /** Year number */
     year: number;
+    /** Expected cash flow for this year in dollars */
     expectedCashFlow: number;
+    /** Discounted present value in dollars */
     discountedValue: number;
+    /** Cumulative discounted value in dollars */
     cumulativeValue: number;
+    /** Expected turnover units for this year */
     turnoverUnits: number;
+    /** Deferred fee income for this year in dollars */
     deferredFeeIncome: number;
   }>;
   
-  // Performance metrics
+  /** Net present value in dollars */
   netPresentValue: number;
+  /** Internal rate of return as decimal */
   internalRateOfReturn: number;
+  /** Payback period in years */
   paybackPeriod: number;
+  /** Management yield as percentage */
   managementYield: number;
   
-  // Risk analysis
+  /** Sensitivity analysis results */
   sensitivityAnalysis: {
+    /** Turnover rate sensitivity variations */
     turnoverRateVariation: Array<{ rate: number; valuation: number }>;
+    /** Discount rate sensitivity variations */
     discountRateVariation: Array<{ rate: number; valuation: number }>;
+    /** Occupancy rate sensitivity variations */
     occupancyVariation: Array<{ occupancy: number; valuation: number }>;
   };
   
-  // Valuation summary
+  /** Valuation per unit in dollars */
   valuationPerUnit: number;
+  /** Management rights value in dollars */
   managementRightsValue: number;
+  /** Operating business value in dollars */
   operatingBusinessValue: number;
   
-  // Excel formulas for verification
+  /** Excel formulas for verification */
   excelFormulas: {
+    /** Deferred present value formula */
     deferredPV: string;
+    /** Total valuation formula */
     totalValuation: string;
+    /** Management yield formula */
     managementYield: string;
+    /** Sensitivity analysis formula */
     sensitivityFormula: string;
   };
 }
 
 /**
  * Calculate Deferred Management Fee for Retirement Villages
+ * @param inputs - Deferred management input parameters
+ * @returns DeferredManagementResults with comprehensive valuation analysis
+ * @example
+ * ```typescript
+ * const inputs: DeferredManagementInputs = {
+ *   propertyName: "Sunset Retirement Village",
+ *   currentValue: 5000000,
+ *   deferralPeriod: 5,
+ *   discountRate: 0.08,
+ *   futureCashFlows: [200000, 250000, 300000],
+ *   // ... other required fields
+ * };
+ * const results = calculateDeferredManagementValuation(inputs);
+ * console.log(results.totalValuation); // 4,250,000
+ * ```
  */
 export function calculateDeferredManagementValuation(inputs: DeferredManagementInputs): DeferredManagementResults {
   const {
@@ -193,6 +253,14 @@ export function calculateDeferredManagementValuation(inputs: DeferredManagementI
 
 /**
  * Calculate IRR using Newton-Raphson method
+ * @param cashFlows - Array of cash flows (negative initial investment, positive returns)
+ * @param maxIterations - Maximum number of iterations (default: 100)
+ * @returns Internal rate of return as decimal
+ * @example
+ * ```typescript
+ * const irr = calculateIRR([-1000000, 200000, 250000, 300000]);
+ * console.log(irr); // 0.085
+ * ```
  */
 function calculateIRR(cashFlows: number[], maxIterations: number = 100): number {
   let rate = 0.1; // Initial guess
@@ -219,9 +287,36 @@ function calculateIRR(cashFlows: number[], maxIterations: number = 100): number 
 }
 
 /**
- * Calculate payback period
+ * Cash flow breakdown item for deferred management analysis
+ * Represents a single year's cash flow data
  */
-function calculatePaybackPeriod(cashFlowBreakdown: any[], initialInvestment: number): number {
+interface CashFlowBreakdownItem {
+  /** Year number */
+  year: number;
+  /** Expected cash flow for this year in dollars */
+  expectedCashFlow: number;
+  /** Discounted present value in dollars */
+  discountedValue: number;
+  /** Cumulative discounted value in dollars */
+  cumulativeValue: number;
+  /** Expected turnover units for this year */
+  turnoverUnits: number;
+  /** Deferred fee income for this year in dollars */
+  deferredFeeIncome: number;
+}
+
+/**
+ * Calculate payback period for investment recovery
+ * @param cashFlowBreakdown - Array of cash flow breakdown items
+ * @param initialInvestment - Initial investment amount in dollars
+ * @returns Payback period in years
+ * @example
+ * ```typescript
+ * const paybackPeriod = calculatePaybackPeriod(cashFlowBreakdown, 1000000);
+ * console.log(paybackPeriod); // 3.5
+ * ```
+ */
+function calculatePaybackPeriod(cashFlowBreakdown: CashFlowBreakdownItem[], initialInvestment: number): number {
   for (let i = 0; i < cashFlowBreakdown.length; i++) {
     if (cashFlowBreakdown[i].cumulativeValue >= initialInvestment) {
       const previousCumulative = i > 0 ? cashFlowBreakdown[i - 1].cumulativeValue : 0;
@@ -235,6 +330,13 @@ function calculatePaybackPeriod(cashFlowBreakdown: any[], initialInvestment: num
 
 /**
  * Sensitivity analysis for turnover rate variations
+ * @param inputs - Deferred management input parameters
+ * @returns Array of turnover rate variations and corresponding valuations
+ * @example
+ * ```typescript
+ * const sensitivity = calculateTurnoverSensitivity(inputs);
+ * console.log(sensitivity); // [{ rate: 8, valuation: 4500000 }, ...]
+ * ```
  */
 function calculateTurnoverSensitivity(inputs: DeferredManagementInputs) {
   const variations = [-20, -10, 0, 10, 20]; // Percentage variations
@@ -250,6 +352,13 @@ function calculateTurnoverSensitivity(inputs: DeferredManagementInputs) {
 
 /**
  * Sensitivity analysis for discount rate variations
+ * @param inputs - Deferred management input parameters
+ * @returns Array of discount rate variations and corresponding valuations
+ * @example
+ * ```typescript
+ * const sensitivity = calculateDiscountRateSensitivity(inputs);
+ * console.log(sensitivity); // [{ rate: 6, valuation: 4800000 }, ...]
+ * ```
  */
 function calculateDiscountRateSensitivity(inputs: DeferredManagementInputs) {
   const variations = [-0.02, -0.01, 0, 0.01, 0.02]; // Absolute variations
@@ -265,6 +374,13 @@ function calculateDiscountRateSensitivity(inputs: DeferredManagementInputs) {
 
 /**
  * Sensitivity analysis for occupancy rate variations
+ * @param inputs - Deferred management input parameters
+ * @returns Array of occupancy rate variations and corresponding valuations
+ * @example
+ * ```typescript
+ * const sensitivity = calculateOccupancySensitivity(inputs);
+ * console.log(sensitivity); // [{ occupancy: 85, valuation: 4600000 }, ...]
+ * ```
  */
 function calculateOccupancySensitivity(inputs: DeferredManagementInputs) {
   const variations = [-10, -5, 0, 5, 10]; // Percentage point variations
@@ -280,6 +396,12 @@ function calculateOccupancySensitivity(inputs: DeferredManagementInputs) {
 
 /**
  * Export Excel formulas for deferred management calculations
+ * @returns Object containing Excel formulas for verification and implementation
+ * @example
+ * ```typescript
+ * const formulas = exportDeferredManagementExcelFormulas();
+ * console.log(formulas.deferredPresentValue); // "=SUM(CashFlows/(1+DiscountRate)^(ROW(CashFlows)+DeferralPeriod-1))"
+ * ```
  */
 export function exportDeferredManagementExcelFormulas() {
   return {

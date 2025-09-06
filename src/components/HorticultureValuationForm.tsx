@@ -42,7 +42,22 @@ const horticultureSchema = z.object({
 type HorticultureFormData = z.infer<typeof horticultureSchema>;
 
 export function HorticultureValuationForm() {
-  const [results, setResults] = useState<any>(null);
+  const [results, setResults] = useState<{
+    totalValue: number;
+    netIncome: number;
+    profitMargin: number;
+    costBreakdown: {
+      production: number;
+      labor: number;
+      equipment: number;
+      total: number;
+    };
+    revenueBreakdown: {
+      grossRevenue: number;
+      netRevenue: number;
+      valuePerAcre: number;
+    };
+  } | null>(null);
   const [isLoading, setIsLoading] = useState(false);
 
   const form = useForm<HorticultureFormData>({
@@ -85,7 +100,7 @@ export function HorticultureValuationForm() {
     "Shade House", "Outdoor - Natural", "Polytunnel", "Cold Frame"
   ];
 
-  const handleOCRData = (data: any) => {
+  const handleOCRData = (data: unknown) => {
     Object.entries(data).forEach(([key, value]) => {
       if (key in form.getValues() && value !== null && value !== undefined) {
         form.setValue(key as keyof HorticultureFormData, value as any);

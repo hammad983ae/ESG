@@ -73,7 +73,14 @@ const propertyTypeOptions = {
 const SpecializedAVMSection = () => {
   const [activeTab, setActiveTab] = useState("commercial");
   const [isProcessing, setIsProcessing] = useState(false);
-  const [avmResults, setAvmResults] = useState<any>(null);
+  const [avmResults, setAvmResults] = useState<{
+    propertyId: string;
+    estimatedValue: number;
+    confidence: number;
+    methodology: string;
+    comparableSales: number;
+    marketTrends: string;
+  } | null>(null);
   const [properties, setProperties] = useState<AVMData[]>([]);
   const [aggregatedResults, setAggregatedResults] = useState<AggregatedResult | null>(null);
 

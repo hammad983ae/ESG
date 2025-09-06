@@ -26,7 +26,7 @@ export const HospitalityValuationForm: React.FC<HospitalityValuationFormProps> =
     onSubmit(inputs);
   };
 
-  const handleOCRDataExtracted = (data: any) => {
+  const handleOCRDataExtracted = (data: unknown) => {
     const updatedInputs: Partial<HospitalityInputs> = { ...inputs };
     
     if (data.numberOfRooms !== undefined) updatedInputs.number_of_units = data.numberOfRooms;

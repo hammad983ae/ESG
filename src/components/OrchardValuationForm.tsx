@@ -48,11 +48,40 @@ const orchardSchema = z.object({
 type OrchardFormData = z.infer<typeof orchardSchema>;
 
 export function OrchardValuationForm() {
-  const [results, setResults] = useState<any>(null);
+  const [results, setResults] = useState<{
+    totalValue: number;
+    netIncome: number;
+    profitMargin: number;
+    costBreakdown: {
+      production: number;
+      labor: number;
+      equipment: number;
+      total: number;
+    };
+    revenueBreakdown: {
+      grossRevenue: number;
+      netRevenue: number;
+      valuePerAcre: number;
+    };
+  } | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [selectedVarieties, setSelectedVarieties] = useState<string[]>([]);
-  const [waterForecast, setWaterForecast] = useState<any>(null);
-  const [areaConversion, setAreaConversion] = useState<any>(null);
+  const [waterForecast, setWaterForecast] = useState<{
+    mlPerAcre: number;
+    mlPerHectare: number;
+    totalMlRequired: number;
+    irrigationSchedule: {
+      frequency: string;
+      applicationRate: string;
+      seasonalTotal: string;
+    };
+  } | null>(null);
+  const [areaConversion, setAreaConversion] = useState<{
+    acres: number;
+    hectares: number;
+    squareMeters: number;
+    squareFeet: number;
+  } | null>(null);
 
   const form = useForm<OrchardFormData>({
     resolver: zodResolver(orchardSchema),
@@ -101,7 +130,7 @@ export function OrchardValuationForm() {
     "Declining (25+ years)"
   ];
 
-  const handleOCRData = (data: any) => {
+  const handleOCRData = (data: unknown) => {
     Object.entries(data).forEach(([key, value]) => {
       if (key in form.getValues() && value !== null && value !== undefined) {
         form.setValue(key as keyof OrchardFormData, value as any);

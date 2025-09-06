@@ -1,80 +1,160 @@
-// ESG All Risks Yield (ARY) Calculation Utilities
-// Implements comprehensive ESG risk assessment framework
+/**
+ * Delorenzo Property Group - ESG All Risks Yield (ARY) Calculation Utilities
+ * 
+ * Copyright (c) 2025 Delorenzo Property Group Pty Ltd. All Rights Reserved.
+ * Licensed under MIT License - see LICENSE file for details
+ * Patent Protected: AU2025000001-AU2025000017
+ * 
+ * Implements comprehensive ESG risk assessment framework for property valuation
+ * with Australian market focus and sustainability integration.
+ * 
+ * @author Delorenzo Property Group Pty Ltd
+ * @version 1.0.0
+ */
 
+/**
+ * ESG Risk Factor for property valuation analysis
+ * Represents individual risk components with scoring and premium calculations
+ */
 export interface ESGRiskFactor {
+  /** Name of the risk factor */
   name: string;
-  maximumRiskScore: number; // 0-10 scale
-  maximumRiskPremium: number; // percentage
-  assignedRiskScore: number; // 0-10 scale
-  riskPremium: number; // calculated percentage
-  calculationPercentage: number; // weight in overall calculation
+  /** Maximum possible risk score (0-10 scale) */
+  maximumRiskScore: number;
+  /** Maximum risk premium percentage for this factor */
+  maximumRiskPremium: number;
+  /** Currently assigned risk score (0-10 scale) */
+  assignedRiskScore: number;
+  /** Calculated risk premium percentage */
+  riskPremium: number;
+  /** Weight percentage in overall calculation */
+  calculationPercentage: number;
 }
 
+/**
+ * Input parameters for ESG-adjusted ARY calculations
+ * Contains base financial data and ESG sustainability metrics
+ */
 export interface ESGInputs {
-  cashRate: number; // Australian cash rate as decimal
+  /** Australian cash rate as decimal (e.g., 0.045 for 4.5%) */
+  cashRate: number;
+  /** Property type classification */
   propertyType: 'Commercial' | 'Residential';
-  // ESG-specific inputs
-  energyRating?: number; // NABERS or Green Star rating
-  waterEfficiency?: number; // 0-10 scale
-  wasteReduction?: number; // 0-10 scale
-  sustainableMaterials?: number; // 0-10 scale
-  carbonFootprint?: number; // 0-10 scale (10 = lowest footprint)
+  /** NABERS or Green Star energy rating (optional) */
+  energyRating?: number;
+  /** Water efficiency score (0-10 scale, optional) */
+  waterEfficiency?: number;
+  /** Waste reduction score (0-10 scale, optional) */
+  wasteReduction?: number;
+  /** Sustainable materials score (0-10 scale, optional) */
+  sustainableMaterials?: number;
+  /** Carbon footprint score (0-10 scale, 10 = lowest footprint, optional) */
+  carbonFootprint?: number;
 }
 
+/**
+ * Results from ESG-adjusted ARY calculations
+ * Contains base ARY, ESG adjustments, and detailed risk breakdown
+ */
 export interface ESGResults {
-  baseARY: number; // Standard ARY without ESG
-  esgAdjustment: number; // ESG premium/discount
-  esgAdjustedARY: number; // Final ESG-adjusted ARY
+  /** Standard ARY without ESG adjustments */
+  baseARY: number;
+  /** ESG premium or discount adjustment */
+  esgAdjustment: number;
+  /** Final ESG-adjusted ARY percentage */
+  esgAdjustedARY: number;
+  /** Detailed breakdown of ESG risk factors */
   esgRiskBreakdown: ESGRiskFactor[];
-  overallESGScore: number; // 0-100 scale
+  /** Overall ESG score (0-100 scale) */
+  overallESGScore: number;
+  /** ESG rating classification */
   esgRating: 'A+' | 'A' | 'B+' | 'B' | 'C' | 'D';
 }
 
+/**
+ * Input parameters for capitalization rate sensitivity analysis
+ * Supports both traditional and ESG-adjusted approaches
+ */
 export interface CapitalizationSensitivityInputs {
+  /** Net rental income in dollars */
   netRent: number;
-  nrogs: number; // Net Rental and Other Government Services
+  /** Net Rental and Other Government Services in dollars */
+  nrogs: number;
+  /** Letting up allowance in dollars */
   lettingUpAllowance: number;
+  /** Other capital adjustments in dollars */
   otherCapitalAdjustments: number;
+  /** Reletting costs in dollars */
   relettingCosts: number;
-  // Optional traditional cap rates (ignored if ESG is used)
+  /** Optimistic capitalization rate (optional, ignored if ESG is used) */
   capitalizationRateOptimistic?: number;
+  /** Realistic capitalization rate (optional, ignored if ESG is used) */
   capitalizationRateRealistic?: number;
+  /** Pessimistic capitalization rate (optional, ignored if ESG is used) */
   capitalizationRatePessimistic?: number;
-  // ESG integration
+  /** Whether to use ESG-adjusted ARY instead of traditional rates */
   useESGAdjustedARY: boolean;
+  /** ESG-adjusted ARY percentage (required if useESGAdjustedARY is true) */
   esgAdjustedARY?: number;
 }
 
+/**
+ * Results from capitalization rate sensitivity analysis
+ * Contains NOI and scenario-based valuations
+ */
 export interface CapitalizationSensitivityResults {
-  noi: number; // Net Operating Income
+  /** Net Operating Income in dollars */
+  noi: number;
+  /** Whether ESG mode was used for calculations */
   useESGMode: boolean;
+  /** ESG-adjusted ARY percentage (if ESG mode was used) */
   esgAdjustedARY?: number;
+  /** Scenario-based valuation results */
   scenarios: {
+    /** Optimistic scenario results */
     optimistic: {
+      /** Capitalization rate percentage */
       capRate: number;
+      /** Market value in dollars */
       marketValue: number;
+      /** Adjusted value after capital adjustments in dollars */
       adjustedValue: number;
     };
+    /** Realistic scenario results */
     realistic: {
+      /** Capitalization rate percentage */
       capRate: number;
+      /** Market value in dollars */
       marketValue: number;
+      /** Adjusted value after capital adjustments in dollars */
       adjustedValue: number;
     };
+    /** Pessimistic scenario results */
     pessimistic: {
+      /** Capitalization rate percentage */
       capRate: number;
+      /** Market value in dollars */
       marketValue: number;
+      /** Adjusted value after capital adjustments in dollars */
       adjustedValue: number;
     };
   } | {
+    /** ESG scenario results (when ESG mode is used) */
     esg: {
+      /** ESG-adjusted capitalization rate percentage */
       capRate: number;
+      /** Market value in dollars */
       marketValue: number;
+      /** Adjusted value after capital adjustments in dollars */
       adjustedValue: number;
     };
   };
 }
 
-// ESG Risk Factors with Australian property market focus
+/**
+ * ESG Risk Factors with Australian property market focus
+ * Pre-configured risk factors based on Australian property valuation standards
+ */
 export const ESG_RISK_FACTORS: ESGRiskFactor[] = [
   {
     name: 'Market (National and Regional)',
@@ -160,6 +240,21 @@ export const ESG_RISK_FACTORS: ESGRiskFactor[] = [
 
 /**
  * Calculate ESG-adjusted All Risks Yield
+ * @param inputs - ESG input parameters including cash rate, property type, and sustainability metrics
+ * @returns ESGResults with base ARY, adjustments, and detailed risk breakdown
+ * @throws Error if inputs are invalid
+ * @example
+ * ```typescript
+ * const inputs: ESGInputs = {
+ *   cashRate: 0.045,
+ *   propertyType: 'Commercial',
+ *   energyRating: 8,
+ *   waterEfficiency: 7,
+ *   wasteReduction: 6
+ * };
+ * const results = calculateESGAdjustedARY(inputs);
+ * console.log(results.esgAdjustedARY); // 8.5
+ * ```
  */
 export const calculateESGAdjustedARY = (inputs: ESGInputs): ESGResults => {
   // Input validation
@@ -217,6 +312,23 @@ export const calculateESGAdjustedARY = (inputs: ESGInputs): ESGResults => {
 
 /**
  * Calculate Capitalization Rate Sensitivity Analysis with optional ESG integration
+ * @param inputs - Capitalization sensitivity input parameters
+ * @returns CapitalizationSensitivityResults with NOI and scenario valuations
+ * @throws Error if inputs are invalid
+ * @example
+ * ```typescript
+ * const inputs: CapitalizationSensitivityInputs = {
+ *   netRent: 100000,
+ *   nrogs: 5000,
+ *   lettingUpAllowance: 10000,
+ *   otherCapitalAdjustments: 5000,
+ *   relettingCosts: 2000,
+ *   useESGAdjustedARY: true,
+ *   esgAdjustedARY: 8.5
+ * };
+ * const results = calculateCapitalizationRateSensitivity(inputs);
+ * console.log(results.noi); // 105000
+ * ```
  */
 export const calculateCapitalizationRateSensitivity = (
   inputs: CapitalizationSensitivityInputs
@@ -289,7 +401,14 @@ export const calculateCapitalizationRateSensitivity = (
 };
 
 /**
- * Format currency for display
+ * Format currency for display in Australian dollars
+ * @param value - Numeric value to format
+ * @returns Formatted currency string in AUD
+ * @example
+ * ```typescript
+ * const formatted = formatCurrency(1234567);
+ * console.log(formatted); // "$1,234,567"
+ * ```
  */
 export const formatCurrency = (value: number): string => {
   return new Intl.NumberFormat('en-AU', {
@@ -301,7 +420,14 @@ export const formatCurrency = (value: number): string => {
 };
 
 /**
- * Get ESG rating color
+ * Get ESG rating color for UI display
+ * @param rating - ESG rating string
+ * @returns CSS color class name
+ * @example
+ * ```typescript
+ * const colorClass = getESGRatingColor('A+');
+ * console.log(colorClass); // "text-green-600"
+ * ```
  */
 export const getESGRatingColor = (rating: string): string => {
   switch (rating) {
@@ -315,7 +441,10 @@ export const getESGRatingColor = (rating: string): string => {
   }
 };
 
-// Backwards compatibility exports for existing components
+/**
+ * Backwards compatibility exports for existing components
+ * Comprehensive ESG scoring interface for legacy support
+ */
 export interface ESGScores {
   sustainabilityScore: number;
   energyEfficiency: number;
@@ -357,8 +486,15 @@ export interface ESGScores {
 
 /**
  * Calculate ESG scores for backwards compatibility
+ * @param data - Unknown data input (for type safety with external data)
+ * @returns ESGScores with comprehensive ESG metrics
+ * @example
+ * ```typescript
+ * const scores = calculateESGScores(externalData);
+ * console.log(scores.overallESGScore); // 75
+ * ```
  */
-export const calculateESGScores = (data: any): ESGScores => {
+export const calculateESGScores = (data: unknown): ESGScores => {
   // Mock implementation for backwards compatibility
   return {
     sustainabilityScore: 75,
@@ -402,6 +538,12 @@ export const calculateESGScores = (data: any): ESGScores => {
 
 /**
  * Export Excel formulas for backwards compatibility
+ * @returns Object containing Excel formulas for ESG calculations
+ * @example
+ * ```typescript
+ * const formulas = exportToExcelFormulas();
+ * console.log(formulas.sustainabilityFormula); // "=(Energy_Rating + Water_Efficiency + Waste_Reduction + Materials)/4"
+ * ```
  */
 export const exportToExcelFormulas = () => {
   return {

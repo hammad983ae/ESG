@@ -202,7 +202,7 @@ export const RentRevisionForm: React.FC<RentRevisionFormProps> = ({ onSubmit }) 
     }
   };
 
-  const handleOCRDataExtracted = (data: any) => {
+  const handleOCRDataExtracted = (data: unknown) => {
     const updatedInputs: Partial<RentRevisionInputs> = { ...inputs };
     
     if (data.currentRent !== undefined) updatedInputs.net_rent = data.currentRent;

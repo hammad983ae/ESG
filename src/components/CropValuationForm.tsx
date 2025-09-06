@@ -42,7 +42,22 @@ const cropSchema = z.object({
 type CropFormData = z.infer<typeof cropSchema>;
 
 export function CropValuationForm() {
-  const [results, setResults] = useState<any>(null);
+  const [results, setResults] = useState<{
+    totalValue: number;
+    netIncome: number;
+    profitMargin: number;
+    costBreakdown: {
+      production: number;
+      labor: number;
+      equipment: number;
+      total: number;
+    };
+    revenueBreakdown: {
+      grossRevenue: number;
+      netRevenue: number;
+      valuePerAcre: number;
+    };
+  } | null>(null);
   const [isLoading, setIsLoading] = useState(false);
 
   const form = useForm<CropFormData>({
@@ -81,7 +96,7 @@ export function CropValuationForm() {
     "Silty Clay Loam", "Loam", "Sandy Loam", "Silt Loam", "Sand", "Loamy Sand", "Silt"
   ];
 
-  const handleOCRData = (data: any) => {
+  const handleOCRData = (data: unknown) => {
     Object.entries(data).forEach(([key, value]) => {
       if (key in form.getValues() && value !== null && value !== undefined) {
         form.setValue(key as keyof CropFormData, value as any);

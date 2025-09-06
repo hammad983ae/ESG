@@ -59,7 +59,11 @@ interface SimulationResponse {
     commodities: string[];
   };
   results: SimulationResults;
-  metadata?: any;
+  metadata?: {
+    simulationId: string;
+    timestamp: string;
+    version: string;
+  };
 }
 
 interface MarketData {
@@ -153,7 +157,7 @@ const CropHarvestSimulation: React.FC = () => {
     const data = [];
     
     for (let season = 0; season < numSeasons[0]; season++) {
-      const seasonData: any = { season: season + 1 };
+      const seasonData: Record<string, number | string> = { season: season + 1 };
       
       selectedCommodities.forEach(commodity => {
         let harvestCount = 0;
@@ -177,7 +181,7 @@ const CropHarvestSimulation: React.FC = () => {
     const data = [];
     
     for (let farmer = 0; farmer < numFarmers[0]; farmer++) {
-      const farmerData: any = { farmer: `Farmer ${farmer + 1}` };
+      const farmerData: Record<string, number | string> = { farmer: `Farmer ${farmer + 1}` };
       
       selectedCommodities.forEach(commodity => {
         farmerData[commodity] = Math.round(rewards[commodity][farmer]);

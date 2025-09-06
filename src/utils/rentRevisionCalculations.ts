@@ -11,136 +11,278 @@
  * @version 1.0.0
  */
 
+/**
+ * Input parameters for rent revision calculations
+ * Contains property details, rent components, and market analysis data
+ */
 export interface RentRevisionInputs {
-  // Property and Tenant Details
+  /** Property type classification */
   property_type: string;
+  /** Lessor (landlord) name */
   lessor: string;
+  /** Lessee (tenant) name */
   lessee: string;
+  /** Lease commencement date (YYYY-MM-DD) */
   commencement_date: string;
+  /** Lease expiry date (YYYY-MM-DD) */
   expiring_date: string;
+  /** Options and further terms description */
   options_further_terms: string;
+  /** Next rent review date (YYYY-MM-DD) */
   review_date: string;
   
-  // Rent Components (NET BASIS)
+  /** Face rent per unit (NET BASIS) */
   face_rent: number;
+  /** Effective rent per unit after incentives (NET BASIS) */
   effective_rent: number;
+  /** Gross rent per unit including outgoings */
   gross_rent: number;
+  /** Net rent per unit (NET BASIS) */
   net_rent: number;
+  /** Incentives per unit */
   incentives: number;
+  /** Outgoings per unit */
   outgoings: number;
+  /** Land tax per unit */
   land_tax: number;
   
-  // Area and Rate Details
+  /** Lettable area in square meters or units */
   lettable_area: number;
+  /** Outgoings per square meter */
   outgoings_per_sqm: number;
+  /** Land area in square meters */
   land_area: number;
+  /** Improved rent rate per square meter */
   improved_rent_rate_per_sqm: number;
   
-  // Market Analysis
+  /** Market rent per unit */
   market_rent: number;
+  /** Market rent per square meter */
   market_rent_per_sqm: number;
+  /** Market land rate per square meter */
   market_land_rate: number;
+  /** Proposed rent per unit */
   proposed_rent: number;
+  /** Proposed improved land rate per square meter */
   proposed_improved_land_rate: number;
+  /** CPI fixed adjustments percentage */
   cpi_fixed_adjustments: number;
+  /** Revision effective date (YYYY-MM-DD) */
   revision_effective_date: string;
   
-  // Analysis Options
+  /** Whether to include rent analysis */
   include_rent_analysis: boolean;
+  /** Whether to include land analysis */
   include_land_analysis: boolean;
+  /** Whether to include ESG factors */
   include_esg_factors: boolean;
   
-  // Supporting Information
+  /** Comparable evidence description */
   comparable_evidence: string;
+  /** Market conditions description */
   market_conditions: string;
+  /** ESG considerations notes */
   esg_notes: string;
 }
 
+/**
+ * Property type configuration for rent revision analysis
+ * Contains property-specific terminology and market information
+ */
 export interface PropertyTypeConfig {
+  /** Property type name */
   name: string;
-  icon: any;
+  /** React icon component for UI display */
+  icon: React.ElementType;
+  /** Unit of measurement (e.g., "sqm", "hectares") */
   unit: string;
+  /** Property-specific terminology */
   terminology: string;
+  /** Property description */
   description: string;
+  /** Market rental range */
   marketRange: string;
+  /** Benchmark data sources */
   benchmarkSources: string;
 }
 
+/**
+ * Results from rent revision calculations
+ * Contains comprehensive rent analysis, land analysis, and market comparisons
+ */
 export interface RentRevisionResults {
+  /** Property type classification */
   property_type: string;
+  /** Lessor (landlord) name */
   lessor: string;
+  /** Lessee (tenant) name */
   lessee: string;
+  /** Lease commencement date (YYYY-MM-DD) */
   commencement_date: string;
+  /** Lease expiry date (YYYY-MM-DD) */
   expiring_date: string;
+  /** Options and further terms description */
   options_further_terms: string;
   
-  // Rent Analysis (NET BASIS)
+  /** Annual face rent (NET BASIS) */
   face_rent_annual: number;
+  /** Annual effective rent after incentives (NET BASIS) */
   effective_rent_annual: number;
+  /** Annual gross rent including outgoings */
   gross_rent_annual: number;
+  /** Annual net rent (NET BASIS) */
   net_rent_annual: number;
+  /** Current annual rent amount */
   current_annual_rent: number;
+  /** Proposed annual rent amount */
   proposed_annual_rent: number;
+  /** Market annual rent amount */
   market_annual_rent: number;
+  /** Rent increase amount in dollars */
   rent_increase_amount: number;
+  /** Rent increase percentage */
   rent_increase_percentage: number;
+  /** CPI-adjusted annual rent */
   cpi_adjusted_rent: number;
+  /** Market comparison variance percentage */
   market_comparison_variance: number;
   
-  // Date Information
+  /** Revision effective date (YYYY-MM-DD) */
   revision_effective_date: string;
+  /** Next review date (YYYY-MM-DD) */
   next_review_date: string;
   
-  // Supporting Information
+  /** Comparable evidence description */
   comparable_evidence: string;
+  /** Market conditions description */
   market_conditions: string;
+  /** ESG considerations notes */
   esg_considerations: string;
+  /** Professional recommendation */
   recommendation: string;
   
-  // Analysis Options
+  /** Whether rent analysis was included */
   include_rent_analysis: boolean;
+  /** Whether land analysis was included */
   include_land_analysis: boolean;
   
-  // Land Analysis
+  /** Land value analysis results */
   land_analysis: {
+    /** Land area in square meters */
     land_area: number;
+    /** Market annual land value */
     market_annual_land_value: number;
+    /** Current annual land value */
     current_annual_land_value: number;
+    /** Proposed annual land value */
     proposed_annual_land_value: number;
+    /** Land value increase amount in dollars */
     land_value_increase_amount: number;
+    /** Land value increase percentage */
     land_value_increase_percentage: number;
   };
   
-  // Supporting Analysis
+  /** Supporting analysis data */
   supporting_analysis: {
+    /** Lettable area in square meters or units */
     lettable_area: number;
+    /** Annual outgoings amount */
     outgoings_annual: number;
+    /** Annual land tax amount */
     land_tax_annual: number;
+    /** Annual incentives amount */
     incentives_annual: number;
+    /** Improved rent rate per square meter */
     improved_rent_rate_per_sqm: number;
+    /** Outgoings per square meter */
     outgoings_per_sqm: number;
+    /** Unit type description */
     unit_type: string;
   };
 }
 
-// Rent conversion utility functions
+/**
+ * Rent conversion utility functions
+ * Helper functions for converting between different rent types
+ */
+
+/**
+ * Convert gross rent to net rent after incentives
+ * @param grossRent - Gross rent amount
+ * @param incentiveRate - Incentive rate as decimal (e.g., 0.1 for 10%)
+ * @returns Net rent after incentives
+ * @example
+ * ```typescript
+ * const netRent = grossToNetRent(1000, 0.1);
+ * console.log(netRent); // 900
+ * ```
+ */
 export function grossToNetRent(grossRent: number, incentiveRate: number): number {
   return grossRent * (1 - incentiveRate);
 }
 
+/**
+ * Convert face rent to effective rent after incentives
+ * @param faceRent - Face rent amount
+ * @param incentiveRate - Incentive rate as decimal (e.g., 0.1 for 10%)
+ * @returns Effective rent after incentives
+ * @example
+ * ```typescript
+ * const effectiveRent = faceToEffectiveRent(1000, 0.1);
+ * console.log(effectiveRent); // 900
+ * ```
+ */
 export function faceToEffectiveRent(faceRent: number, incentiveRate: number): number {
   return faceRent * (1 - incentiveRate);
 }
 
+/**
+ * Convert effective rent to net rent after additional deductions
+ * @param effectiveRent - Effective rent amount
+ * @param additionalDeductions - Additional deductions amount (default: 0)
+ * @returns Net rent after additional deductions
+ * @example
+ * ```typescript
+ * const netRent = effectiveToNetRent(900, 50);
+ * console.log(netRent); // 850
+ * ```
+ */
 export function effectiveToNetRent(effectiveRent: number, additionalDeductions: number = 0): number {
   return effectiveRent - additionalDeductions;
 }
 
-// Calculate total deductions (outgoings + land tax)
+/**
+ * Calculate total deductions (outgoings + land tax)
+ * @param outgoings - Outgoings amount
+ * @param landTax - Land tax amount
+ * @returns Total deductions amount
+ * @example
+ * ```typescript
+ * const totalDeductions = calculateTotalDeductions(100, 20);
+ * console.log(totalDeductions); // 120
+ * ```
+ */
 export function calculateTotalDeductions(outgoings: number, landTax: number): number {
   return outgoings + landTax;
 }
 
+/**
+ * Calculate comprehensive rent revision analysis
+ * @param inputs - Rent revision input parameters
+ * @returns RentRevisionResults with detailed analysis and recommendations
+ * @example
+ * ```typescript
+ * const inputs: RentRevisionInputs = {
+ *   property_type: "office",
+ *   net_rent: 450,
+ *   proposed_rent: 480,
+ *   lettable_area: 1000,
+ *   // ... other required fields
+ * };
+ * const results = calculateRentRevision(inputs);
+ * console.log(results.rent_increase_percentage); // 6.67
+ * ```
+ */
 export function calculateRentRevision(inputs: RentRevisionInputs): RentRevisionResults {
   // Calculate annual rent values (NET BASIS)
   const face_rent_annual = inputs.face_rent * inputs.lettable_area;
@@ -248,6 +390,10 @@ export function calculateRentRevision(inputs: RentRevisionInputs): RentRevisionR
   };
 }
 
+/**
+ * Default rent revision inputs for form initialization
+ * Provides sensible defaults for all required fields
+ */
 export const defaultRentRevisionInputs: RentRevisionInputs = {
   property_type: "office",
   lessor: "",
@@ -282,7 +428,10 @@ export const defaultRentRevisionInputs: RentRevisionInputs = {
   esg_notes: ""
 };
 
-// Pre-populated sample data for different property types
+/**
+ * Pre-populated sample data for different property types
+ * Contains realistic sample data for testing and demonstration purposes
+ */
 export const sampleRentRevisionData: Record<string, RentRevisionInputs> = {
   office: {
     property_type: "office",

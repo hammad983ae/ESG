@@ -6,9 +6,10 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Calculator, Plus, X, TrendingUp } from "lucide-react";
 import { DCFData } from "@/utils/dcfCalculations";
+import { DCFInputs } from "@/types/valuationTypes";
 
 interface DCFCalculationFormProps {
-  onSubmit: (data: DCFData) => void;
+  onSubmit: (data: DCFInputs) => void;
 }
 
 export function DCFCalculationForm({ onSubmit }: DCFCalculationFormProps) {
@@ -24,10 +25,15 @@ export function DCFCalculationForm({ onSubmit }: DCFCalculationFormProps) {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    onSubmit(formData);
+    const dcfInputs: DCFInputs = {
+      initialInvestment: formData.initialInvestment,
+      discountRate: formData.discountRate,
+      cashFlows: formData.cashFlows
+    };
+    onSubmit(dcfInputs);
   };
 
-  const updateField = (field: string, value: any) => {
+  const updateField = (field: string, value: string | number) => {
     setFormData(prev => ({ ...prev, [field]: value }));
   };
 

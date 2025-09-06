@@ -14,7 +14,7 @@ interface SearchItem {
   keywords: string[];
   route: string;
   tab?: string;
-  icon: any;
+  icon: React.ElementType;
 }
 
 const searchItems: SearchItem[] = [
