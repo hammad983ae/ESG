@@ -36,7 +36,7 @@ import { calculateAdvancedRiskAssessment, AdvancedCalculationResults } from "@/u
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Building, Calculator, BarChart3, ArrowLeft, Target, TrendingUp, Shield, ArrowUpDown, Sprout, Building2, Activity, Leaf, Gamepad2 } from "lucide-react";
+import { Building, Calculator, BarChart3, ArrowLeft, Target, TrendingUp, Shield, ArrowUpDown, Sprout, Building2, Activity, Leaf, Gamepad2, FileText } from "lucide-react";
 
 const Index = () => {
   const navigate = useNavigate();
@@ -165,6 +165,12 @@ const Index = () => {
                   <Button variant="outline" size="lg" className="flex items-center gap-2 touch-manipulation min-h-[44px]">
                     <Leaf className="w-5 h-5" />
                     Carbon Credits
+                  </Button>
+                </Link>
+                <Link to="/aasb-financial-report">
+                  <Button variant="outline" size="lg" className="flex items-center gap-2 touch-manipulation min-h-[44px]">
+                    <FileText className="w-5 h-5" />
+                    AASB Financial Report
                   </Button>
                 </Link>
               </div>

@@ -25,6 +25,7 @@ import ClientPresentation from "./pages/ClientPresentation";
 import EconomicActivity from "./pages/EconomicActivity";
 import CropHarvestSimulation from "./pages/CropHarvestSimulation";
 import { CarbonCreditCalculator } from "@/components/CarbonCreditCalculator";
+import { AASBFinancialReport } from "@/components/AASBFinancialReport";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -45,6 +46,7 @@ const App = () => (
           <Route path="/economic-activity" element={<EconomicActivity />} />
           <Route path="/crop-harvest-simulation" element={<CropHarvestSimulation />} />
           <Route path="/carbon-credit-calculator" element={<CarbonCreditCalculator />} />
+          <Route path="/aasb-financial-report" element={<AASBFinancialReport />} />
           <Route path="/security" element={<Security />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
