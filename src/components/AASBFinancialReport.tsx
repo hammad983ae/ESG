@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -38,7 +39,8 @@ import {
   Leaf,
   UserCheck,
   Lock,
-  Gavel
+  Gavel,
+  ArrowLeft
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { supabase } from "@/integrations/supabase/client";
@@ -164,6 +166,7 @@ const REPORT_SECTIONS = [
 ];
 
 export const AASBFinancialReport = () => {
+  const navigate = useNavigate();
   const { toast } = useToast();
   const [activeSection, setActiveSection] = useState("business-overview");
   const [selectedIndustry, setSelectedIndustry] = useState("");
@@ -985,6 +988,16 @@ export const AASBFinancialReport = () => {
 
   return (
     <div className="space-y-6">
+      {/* Back to Dashboard Button */}
+      <Button 
+        variant="outline" 
+        onClick={() => navigate('/')}
+        className="flex items-center gap-2"
+      >
+        <ArrowLeft className="h-4 w-4" />
+        Back to Dashboard
+      </Button>
+      
       {/* Header */}
       <Card>
         <CardHeader>

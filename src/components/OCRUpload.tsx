@@ -1,7 +1,8 @@
 import { useState, useRef } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Upload, FileImage, Loader2, CheckCircle, AlertCircle } from 'lucide-react';
+import { Upload, FileImage, Loader2, CheckCircle, AlertCircle, ArrowLeft } from 'lucide-react';
 import { toast } from 'sonner';
 import { supabase } from '@/integrations/supabase/client';
 
@@ -12,6 +13,7 @@ interface OCRUploadProps {
 }
 
 export const OCRUpload = ({ formType, onDataExtracted, className = '' }: OCRUploadProps) => {
+  const navigate = useNavigate();
   const [isProcessing, setIsProcessing] = useState(false);
   const [uploadStatus, setUploadStatus] = useState<'idle' | 'success' | 'error'>('idle');
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -108,56 +110,67 @@ export const OCRUpload = ({ formType, onDataExtracted, className = '' }: OCRUplo
   };
 
   return (
-    <Card className={`border-dashed border-2 hover:border-primary/50 transition-colors ${className}`}>
-      <CardHeader>
-        <CardTitle className="flex items-center gap-2">
-          <Upload className="h-5 w-5" />
-          OCR Document Upload
-        </CardTitle>
-        <CardDescription>
-          Upload a property document, lease agreement, or valuation report to automatically populate form fields using AI-powered text extraction.
-        </CardDescription>
-      </CardHeader>
-      <CardContent>
-        <div className="flex flex-col items-center gap-4">
-          <div className="flex items-center gap-2 text-sm text-muted-foreground">
-            {getStatusIcon()}
-            {getStatusText()}
-          </div>
-          
-          <Button 
-            onClick={handleUploadClick}
-            disabled={isProcessing}
-            variant="outline"
-            className="flex items-center gap-2"
-          >
-            {isProcessing ? (
-              <>
-                <Loader2 className="h-4 w-4 animate-spin" />
-                Processing...
-              </>
-            ) : (
-              <>
-                <Upload className="h-4 w-4" />
-                Choose Document
-              </>
-            )}
-          </Button>
+    <div className="space-y-4">
+      <Button 
+        variant="outline" 
+        onClick={() => navigate('/')}
+        className="flex items-center gap-2"
+      >
+        <ArrowLeft className="h-4 w-4" />
+        Back to Dashboard
+      </Button>
+      
+      <Card className={`border-dashed border-2 hover:border-primary/50 transition-colors ${className}`}>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <Upload className="h-5 w-5" />
+            OCR Document Upload
+          </CardTitle>
+          <CardDescription>
+            Upload a property document, lease agreement, or valuation report to automatically populate form fields using AI-powered text extraction.
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div className="flex flex-col items-center gap-4">
+            <div className="flex items-center gap-2 text-sm text-muted-foreground">
+              {getStatusIcon()}
+              {getStatusText()}
+            </div>
+            
+            <Button 
+              onClick={handleUploadClick}
+              disabled={isProcessing}
+              variant="outline"
+              className="flex items-center gap-2"
+            >
+              {isProcessing ? (
+                <>
+                  <Loader2 className="h-4 w-4 animate-spin" />
+                  Processing...
+                </>
+              ) : (
+                <>
+                  <Upload className="h-4 w-4" />
+                  Choose Document
+                </>
+              )}
+            </Button>
 
-          <input
-            ref={fileInputRef}
-            type="file"
-            accept="image/*"
-            onChange={handleFileSelect}
-            className="hidden"
-          />
+            <input
+              ref={fileInputRef}
+              type="file"
+              accept="image/*"
+              onChange={handleFileSelect}
+              className="hidden"
+            />
 
-          <div className="text-xs text-muted-foreground text-center">
-            Supports: JPG, PNG, PDF, HEIC • Max size: 10MB<br />
-            Compatible with: Lease agreements, valuation reports, property documents
+            <div className="text-xs text-muted-foreground text-center">
+              Supports: JPG, PNG, PDF, HEIC • Max size: 10MB<br />
+              Compatible with: Lease agreements, valuation reports, property documents
+            </div>
           </div>
-        </div>
-      </CardContent>
-    </Card>
+        </CardContent>
+      </Card>
+    </div>
   );
 };
