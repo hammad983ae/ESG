@@ -36,7 +36,7 @@ import { calculateAdvancedRiskAssessment, AdvancedCalculationResults } from "@/u
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Building, Calculator, BarChart3, ArrowLeft, Target, TrendingUp, Shield, ArrowUpDown, Sprout, Building2, Activity } from "lucide-react";
+import { Building, Calculator, BarChart3, ArrowLeft, Target, TrendingUp, Shield, ArrowUpDown, Sprout, Building2, Activity, Leaf, Gamepad2 } from "lucide-react";
 
 const Index = () => {
   const navigate = useNavigate();
@@ -157,8 +157,14 @@ const Index = () => {
                 </Link>
                 <Link to="/crop-harvest-simulation">
                   <Button variant="outline" size="lg" className="flex items-center gap-2 touch-manipulation min-h-[44px]">
-                    <Sprout className="w-5 h-5" />
+                    <Gamepad2 className="w-5 h-5" />
                     Crop Game Theory
+                  </Button>
+                </Link>
+                <Link to="/carbon-credit-calculator">
+                  <Button variant="outline" size="lg" className="flex items-center gap-2 touch-manipulation min-h-[44px]">
+                    <Leaf className="w-5 h-5" />
+                    Carbon Credits
                   </Button>
                 </Link>
               </div>
