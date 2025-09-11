@@ -73,7 +73,21 @@ const limiter = rateLimit({
   legacyHeaders: false,
   handler: (req, res) => {
     // Ensure CORS headers are set even for rate limit responses
-    res.header('Access-Control-Allow-Origin', process.env.CORS_ORIGIN || 'http://localhost:8080');
+    const allowedOrigins = [
+      process.env.CORS_ORIGIN || 'http://localhost:8080',
+      'https://esgagri.netlify.app',
+      'https://esgagri.netlify.app/',
+      'http://localhost:3000',
+      'http://localhost:8080'
+    ];
+    
+    const origin = req.headers.origin;
+    if (allowedOrigins.includes(origin)) {
+      res.header('Access-Control-Allow-Origin', origin);
+    } else {
+      res.header('Access-Control-Allow-Origin', allowedOrigins[0]);
+    }
+    
     res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, PATCH, OPTIONS');
     res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Requested-With');
     res.header('Access-Control-Allow-Credentials', 'true');
@@ -89,7 +103,13 @@ app.use(limiter);
 
 // CORS configuration
 const corsOptions = {
-  origin: process.env.CORS_ORIGIN || 'http://localhost:8080',
+  origin: [
+    process.env.CORS_ORIGIN || 'http://localhost:8080',
+    'https://esgagri.netlify.app',
+    'https://esgagri.netlify.app/',
+    'http://localhost:3000',
+    'http://localhost:8080'
+  ],
   credentials: true,
   optionsSuccessStatus: 200,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
@@ -100,7 +120,21 @@ app.use(cors(corsOptions));
 
 // Additional CORS middleware to ensure headers are set for all responses
 app.use((req, res, next) => {
-  res.header('Access-Control-Allow-Origin', process.env.CORS_ORIGIN || 'http://localhost:8080');
+  const allowedOrigins = [
+    process.env.CORS_ORIGIN || 'http://localhost:8080',
+    'https://esgagri.netlify.app',
+    'https://esgagri.netlify.app/',
+    'http://localhost:3000',
+    'http://localhost:8080'
+  ];
+  
+  const origin = req.headers.origin;
+  if (allowedOrigins.includes(origin)) {
+    res.header('Access-Control-Allow-Origin', origin);
+  } else {
+    res.header('Access-Control-Allow-Origin', allowedOrigins[0]);
+  }
+  
   res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, PATCH, OPTIONS');
   res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Requested-With');
   res.header('Access-Control-Allow-Credentials', 'true');
