@@ -1,1 +1,1 @@
-web: cd server && npm start
+web: bash -c 'cd server && node server.js'
