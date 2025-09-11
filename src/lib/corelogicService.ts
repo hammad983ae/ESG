@@ -227,13 +227,15 @@ class CoreLogicService {
     originalAddress: string
   ): Promise<CoreLogicAddressMatch> {
     try {
+      console.log('Attempting Google Maps geocoding for:', addressMatch.address || originalAddress);
+      
       // Dynamically import Google Maps service to avoid circular dependencies
       const { geocodeAddress } = await import('./googleMapsService');
       
       const coordinates = await geocodeAddress(addressMatch.address || originalAddress);
       
       if (coordinates) {
-        console.log('Successfully obtained coordinates from Google Maps');
+        console.log('Successfully obtained coordinates from Google Maps:', coordinates);
         return {
           ...addressMatch,
           coordinates: {

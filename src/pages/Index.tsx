@@ -38,6 +38,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Building, Calculator, BarChart3, ArrowLeft, Target, TrendingUp, Shield, ArrowUpDown, Sprout, Building2, Activity, Leaf, Gamepad2, FileText, Cloud } from "lucide-react";
 import { EnhancedAddressFinder } from "@/components/EnhancedAddressFinder";
+import { geocodeAddress } from "@/lib/googleMapsService";
 
 const Index = () => {
   const navigate = useNavigate();
@@ -265,17 +266,49 @@ const Index = () => {
                     </p>
                   </CardHeader>
                   <CardContent>
-                    <EnhancedAddressFinder
-                      onAddressSelect={(data) => {
-                        console.log('Weather integration demo - Property selected:', data);
-                        console.log('Coordinates source:', data.coordinates?.source);
-                        console.log('Weather data available:', !!data.weather);
-                      }}
-                      showPropertyDetails={true}
-                      showWeatherData={true}
-                      enableWeatherIntegration={true}
-                      cropType="wheat"
-                    />
+                    <div className="space-y-4">
+                      <div className="flex gap-2">
+                        <Button 
+                          onClick={async () => {
+                            console.log('Testing Google Maps API...');
+                            const result = await geocodeAddress('123 Collins Street Melbourne VIC 3000');
+                            console.log('Google Maps test result:', result);
+                            if (result) {
+                              alert(`Google Maps API working! Coordinates: ${result.lat}, ${result.lng}`);
+                            } else {
+                              alert('Google Maps API failed - check console for details');
+                            }
+                          }}
+                          variant="outline"
+                          size="sm"
+                        >
+                          Test Google Maps API
+                        </Button>
+                        <Button 
+                          onClick={() => {
+                            console.log('Environment check:');
+                            console.log('VITE_GOOGLE_MAPS_API_KEY:', import.meta.env.VITE_GOOGLE_MAPS_API_KEY);
+                            console.log('All env vars:', import.meta.env);
+                          }}
+                          variant="outline"
+                          size="sm"
+                        >
+                          Check Environment
+                        </Button>
+                      </div>
+                      
+                      <EnhancedAddressFinder
+                        onAddressSelect={(data) => {
+                          console.log('Weather integration demo - Property selected:', data);
+                          console.log('Coordinates source:', data.coordinates?.source);
+                          console.log('Weather data available:', !!data.weather);
+                        }}
+                        showPropertyDetails={true}
+                        showWeatherData={true}
+                        enableWeatherIntegration={true}
+                        cropType="wheat"
+                      />
+                    </div>
                   </CardContent>
                 </Card>
               </TabsContent>
