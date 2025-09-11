@@ -6,8 +6,8 @@
  * @version 1.0.0
  */
 
-// Google Maps API Key - in production, this should be in environment variables
-const GOOGLE_MAPS_API_KEY = 'AIzaSyBNK_lTxRuQ3chhIMr1KrFtbsu2QVrKb80';
+// Google Maps API Key from environment variables
+const GOOGLE_MAPS_API_KEY = import.meta.env.VITE_GOOGLE_MAPS_API_KEY || 'AIzaSyBNK_lTxRuQ3chhIMr1KrFtbsu2QVrKb80';
 
 // OpenAI API Key for AI-powered property data enhancement
 const OPENAI_API_KEY = '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';
@@ -195,21 +195,34 @@ const convertToPropertyData = (place: GoogleMapsPlace): PropertyData => {
  */
 export const geocodeAddress = async (address: string): Promise<{ lat: number; lng: number } | null> => {
   try {
-    const response = await fetch(
-      `https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(address)}&key=${GOOGLE_MAPS_API_KEY}`
-    );
+    console.log('Google Maps geocoding request for:', address);
+    console.log('Using API key:', GOOGLE_MAPS_API_KEY ? 'Present' : 'Missing');
+    
+    const url = `https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(address)}&key=${GOOGLE_MAPS_API_KEY}`;
+    console.log('Geocoding URL:', url);
+
+    const response = await fetch(url);
 
     if (!response.ok) {
+      console.error('Google Maps API HTTP error:', response.status, response.statusText);
       throw new Error(`HTTP error! status: ${response.status}`);
     }
 
     const data = await response.json();
+    console.log('Google Maps API response:', data);
 
-    if (data.status !== 'OK' || !data.results || data.results.length === 0) {
+    if (data.status !== 'OK') {
+      console.error('Google Maps API error status:', data.status, data.error_message);
+      return null;
+    }
+
+    if (!data.results || data.results.length === 0) {
+      console.log('No results found for address:', address);
       return null;
     }
 
     const location = data.results[0].geometry.location;
+    console.log('Successfully geocoded address:', address, 'to coordinates:', location);
     return {
       lat: location.lat,
       lng: location.lng
