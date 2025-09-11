@@ -4,10 +4,12 @@
 The ESG Property Assessment Platform now integrates with OpenAI's API for advanced AI-powered features including OCR text extraction, financial analysis, and property data enhancement.
 
 ## API Key Configuration
-The OpenAI API key has been configured as:
+The OpenAI API key should be configured in your environment variables:
 ```
-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
+OPENAI_API_KEY=your-openai-api-key-here
 ```
+
+**Important**: Never commit API keys to version control. Use environment variables or secure secret management.
 
 ## Features Implemented
 
