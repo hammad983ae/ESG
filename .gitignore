@@ -43,3 +43,6 @@ credentials.json
 
 # Supabase
 .supabase
+
+.env
+.env.example
