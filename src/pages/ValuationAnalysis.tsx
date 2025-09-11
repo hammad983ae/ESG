@@ -21,9 +21,13 @@
  * @version 1.0.0
  */
 
-import { useState } from "react";
-import { ArrowLeft, Target, TrendingUp, Leaf, Calculator, Settings, Building2, Sliders, Baby, Fuel, Users } from "lucide-react";
+import { useState, useEffect } from "react";
+import { ArrowLeft, Target, TrendingUp, Leaf, Calculator, Settings, Building2, Sliders, Baby, Fuel, Users, List, Save, DollarSign } from "lucide-react";
 import { Link } from "react-router-dom";
+import { useValuation } from "@/contexts/ValuationContext";
+import { ValuationList } from "@/components/ValuationList";
+import { ValuationData } from "@/services/valuationApi";
+import { AddressFinder } from "@/components/AddressFinder";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
@@ -139,6 +143,13 @@ import {
 } from "@/types/valuationTypes";
 
 export default function ValuationAnalysis() {
+  // Valuation context
+  const { createValuation, state } = useValuation();
+  
+  // UI States
+  const [showValuationList, setShowValuationList] = useState(false);
+  const [selectedValuation, setSelectedValuation] = useState<ValuationData | null>(null);
+  
   // ARY States
   const [aryInputs, setARYInputs] = useState<ARYInputs | null>(null);
   const [aryResults, setARYResults] = useState<ARYResults | null>(null);
@@ -208,12 +219,32 @@ export default function ValuationAnalysis() {
   const [stadiumInputs, setStadiumInputs] = useState<StadiumInputs | null>(null);
   const [stadiumResults, setStadiumResults] = useState<StadiumResults | null>(null);
 
-  const handleARYSubmit = (inputs: ARYInputs) => {
+  const handleARYSubmit = async (inputs: ARYInputs) => {
     try {
       const calculatedResults = calculateAllRisksYield(inputs);
       setARYInputs(inputs);
       setARYResults(calculatedResults);
-      toast.success("ARY calculation completed successfully!");
+      
+      // Save to backend
+      const valuationData = {
+        propertyName: `ARY Analysis - ${new Date().toLocaleDateString()}`,
+        propertyLocation: "Property Location",
+        propertyType: "commercial",
+        valuationType: "ary",
+        results: calculatedResults,
+        inputs: inputs,
+        calculationMethod: "All Risks Yield Analysis",
+        esgIncluded: false,
+        esgFactor: 0,
+        status: "completed" as const
+      };
+      
+      const success = await createValuation(valuationData);
+      if (success) {
+        toast.success("ARY calculation completed and saved successfully!");
+      } else {
+        toast.success("ARY calculation completed successfully!");
+      }
     } catch (error) {
       toast.error(`Calculation error: ${error instanceof Error ? error.message : 'Unknown error'}`);
     }
@@ -505,9 +536,31 @@ export default function ValuationAnalysis() {
           </div>
         </div>
 
+        {/* Property Search Section */}
+        <Card className="mb-6">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <Building2 className="h-5 w-5" />
+              Property Search & Data
+            </CardTitle>
+            <CardDescription>
+              Search for a property to pre-populate valuation forms with CoreLogic data
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <AddressFinder
+              onAddressSelect={(data) => {
+                toast.success(`Property selected: ${data.address}`);
+                // You can add logic here to pre-populate forms with property data
+              }}
+              showPropertyDetails={true}
+            />
+          </CardContent>
+        </Card>
+
         {/* Main Content with Tabs */}
         <Tabs defaultValue="ary" className="w-full">
-          <TabsList className="grid w-full grid-cols-3 gap-2 h-auto p-2">
+          <TabsList className="grid w-full grid-cols-4 gap-2 h-auto p-2">
             <TabsTrigger value="ary" className="flex items-center gap-2 p-3">
               <Target className="w-4 h-4" />
               All Risks Yield
@@ -587,6 +640,10 @@ export default function ValuationAnalysis() {
             <TabsTrigger value="stadium" className="flex items-center gap-2 p-3">
               <Building2 className="w-4 h-4" />
               Sports Stadium
+            </TabsTrigger>
+            <TabsTrigger value="management" className="flex items-center gap-2 p-3">
+              <List className="w-4 h-4" />
+              My Valuations
             </TabsTrigger>
           </TabsList>
 
@@ -1346,6 +1403,166 @@ export default function ValuationAnalysis() {
               </div>
             ) : (
               <StadiumValuationResults results={stadiumResults} />
+            )}
+          </TabsContent>
+
+          {/* Valuation Management Tab */}
+          <TabsContent value="management" className="mt-6">
+            <div className="flex items-center justify-between mb-6">
+              <div>
+                <h2 className="text-2xl font-semibold">My Valuations</h2>
+                <p className="text-muted-foreground">
+                  Manage and view all your property valuations
+                </p>
+              </div>
+              <div className="flex items-center gap-2">
+                <Button
+                  variant="outline"
+                  onClick={() => setShowValuationList(!showValuationList)}
+                >
+                  <List className="h-4 w-4 mr-2" />
+                  {showValuationList ? 'Hide List' : 'Show List'}
+                </Button>
+              </div>
+            </div>
+
+            {showValuationList ? (
+              <ValuationList
+                onSelectValuation={(valuation) => {
+                  setSelectedValuation(valuation);
+                  // Load the valuation data into the appropriate form
+                  if (valuation.valuationType === 'ary') {
+                    setARYInputs(valuation.inputs as ARYInputs);
+                    setARYResults(valuation.results as ARYResults);
+                  }
+                  // Add other valuation type handling as needed
+                }}
+                onEditValuation={(valuation) => {
+                  setSelectedValuation(valuation);
+                  // Navigate to the appropriate form tab
+                  // This would require additional state management
+                }}
+                showActions={true}
+              />
+            ) : (
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {/* Quick Stats */}
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-2">
+                      <Target className="h-5 w-5" />
+                      Total Valuations
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="text-3xl font-bold">{state.valuations.length}</div>
+                    <p className="text-sm text-muted-foreground">
+                      {state.valuations.filter(v => v.status === 'completed').length} completed
+                    </p>
+                  </CardContent>
+                </Card>
+
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-2">
+                      <Leaf className="h-5 w-5" />
+                      ESG Valuations
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="text-3xl font-bold">
+                      {state.valuations.filter(v => v.esgIncluded).length}
+                    </div>
+                    <p className="text-sm text-muted-foreground">
+                      {state.valuations.length > 0 
+                        ? Math.round((state.valuations.filter(v => v.esgIncluded).length / state.valuations.length) * 100)
+                        : 0
+                      }% of total
+                    </p>
+                  </CardContent>
+                </Card>
+
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-2">
+                      <DollarSign className="h-5 w-5" />
+                      Total Value
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="text-3xl font-bold">
+                      ${state.valuations.reduce((sum, v) => sum + (v.results?.marketValue || 0), 0).toLocaleString()}
+                    </div>
+                    <p className="text-sm text-muted-foreground">
+                      Average: ${state.valuations.length > 0 
+                        ? Math.round(state.valuations.reduce((sum, v) => sum + (v.results?.marketValue || 0), 0) / state.valuations.length).toLocaleString()
+                        : 0
+                      }
+                    </p>
+                  </CardContent>
+                </Card>
+
+                {/* Recent Valuations */}
+                <Card className="md:col-span-2 lg:col-span-3">
+                  <CardHeader>
+                    <CardTitle>Recent Valuations</CardTitle>
+                    <CardDescription>
+                      Your latest property valuations
+                    </CardDescription>
+                  </CardHeader>
+                  <CardContent>
+                    {state.valuations.length === 0 ? (
+                      <div className="text-center py-8">
+                        <Building2 className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
+                        <h3 className="text-lg font-medium mb-2">No valuations yet</h3>
+                        <p className="text-muted-foreground mb-4">
+                          Create your first valuation to get started
+                        </p>
+                        <Button onClick={() => setShowValuationList(true)}>
+                          <List className="h-4 w-4 mr-2" />
+                          View All Valuations
+                        </Button>
+                      </div>
+                    ) : (
+                      <div className="space-y-4">
+                        {state.valuations.slice(0, 5).map((valuation) => (
+                          <div key={valuation._id} className="flex items-center justify-between p-4 border rounded-lg">
+                            <div className="flex items-center gap-4">
+                              <div className="text-2xl">
+                                {valuation.propertyType === 'commercial' ? '🏢' : 
+                                 valuation.propertyType === 'residential' ? '🏠' : 
+                                 valuation.propertyType === 'industrial' ? '🏭' : '🏗️'}
+                              </div>
+                              <div>
+                                <h4 className="font-medium">{valuation.propertyName}</h4>
+                                <p className="text-sm text-muted-foreground">
+                                  {valuation.propertyLocation} • {valuation.valuationType.replace('-', ' ').toUpperCase()}
+                                </p>
+                              </div>
+                            </div>
+                            <div className="text-right">
+                              <div className="font-semibold">
+                                ${valuation.results?.marketValue?.toLocaleString() || 'N/A'}
+                              </div>
+                              <div className="text-sm text-muted-foreground">
+                                {valuation.createdAt 
+                                  ? new Date(valuation.createdAt).toLocaleDateString()
+                                  : 'N/A'
+                                }
+                              </div>
+                            </div>
+                          </div>
+                        ))}
+                        <div className="text-center pt-4">
+                          <Button variant="outline" onClick={() => setShowValuationList(true)}>
+                            View All Valuations
+                          </Button>
+                        </div>
+                      </div>
+                    )}
+                  </CardContent>
+                </Card>
+              </div>
             )}
           </TabsContent>
         </Tabs>

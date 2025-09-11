@@ -6,7 +6,9 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { Progress } from '@/components/ui/progress';
 import { Upload, FileText, Loader2, CheckCircle, AlertCircle, ArrowLeft, FileImage, File, Eye, Merge } from 'lucide-react';
 import { toast } from 'sonner';
-import { supabase } from '@/integrations/supabase/client';
+import { PDFProcessor } from '@/lib/pdfConfig';
+import { OCRProcessingLoader } from '@/components/OCRProcessingLoader';
+// Removed Supabase import - now using Node.js server
 
 interface OCRUploadProps {
   formType: string;
@@ -44,6 +46,13 @@ export const OCRUpload = ({ formType, onDataExtracted, className = '' }: OCRUplo
   const [selectedPages, setSelectedPages] = useState<number[]>([]);
   const [showPageSelector, setShowPageSelector] = useState(false);
   const [processingProgress, setProcessingProgress] = useState(0);
+  
+  // Full-page loader state
+  const [showLoader, setShowLoader] = useState(false);
+  const [currentStep, setCurrentStep] = useState('');
+  const [totalPages, setTotalPages] = useState(0);
+  const [processedPages, setProcessedPages] = useState(0);
+  const [extractedTextLength, setExtractedTextLength] = useState(0);
 
   const handleFileSelect = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
@@ -67,73 +76,86 @@ export const OCRUpload = ({ formType, onDataExtracted, className = '' }: OCRUplo
     setMultiPageResults(null);
     setShowPageSelector(false);
     setSelectedPages([]);
+    setShowLoader(true);
+    setCurrentStep('Preparing document...');
+    setTotalPages(0);
+    setProcessedPages(0);
+    setExtractedTextLength(0);
 
     try {
-      // Convert file to base64
-      const base64 = await new Promise<string>((resolve, reject) => {
-        const reader = new FileReader();
-        reader.onload = () => {
-          const result = reader.result as string;
-          // Remove data:image/...;base64, prefix
-          const base64Data = result.split(',')[1];
-          resolve(base64Data);
-        };
-        reader.onerror = reject;
-        reader.readAsDataURL(file);
-      });
-
       console.log(`Processing ${file.name} for form type: ${formType}`);
 
-      // Prepare request body based on file type
-      const requestBody = file.type === 'application/pdf' 
-        ? {
-            fileBase64: base64,
-            fileType: 'application/pdf',
-            formType: formType
-          }
-        : {
-            imageBase64: base64,
-            formType: formType
-          };
+      let imagesToProcess: string[] = [];
 
-      console.log('Request body prepared:', { 
-        fileType: requestBody.fileType || 'image', 
-        formType: requestBody.formType,
-        hasBase64: !!(requestBody.fileBase64 || requestBody.imageBase64),
-        base64Length: (requestBody.fileBase64 || requestBody.imageBase64 || '').length
-      });
-
-      // Validate base64 data
-      const base64Data = requestBody.fileBase64 || requestBody.imageBase64;
-      if (!base64Data || base64Data.length === 0) {
-        throw new Error('Failed to encode file data. Please try again.');
-      }
-
-      // Call OCR extraction edge function
-      const { data, error } = await supabase.functions.invoke('ocr-extract', {
-        body: requestBody
-      });
-
-      if (error) {
-        console.error('Supabase function error:', error);
-        console.error('Error details:', {
-          message: error.message,
-          status: error.status,
-          statusText: error.statusText
-        });
+      if (file.type === 'application/pdf') {
+        // Convert PDF to images on client side
+        console.log('Converting PDF to images on client side...');
+        setCurrentStep('Converting PDF to images...');
+        setProcessingProgress(20);
         
-        // Provide more specific error messages based on status code
-        let errorMessage = 'Failed to process document';
-        if (error.status === 400) {
-          errorMessage = 'Invalid file format or missing required data. Please check your file and try again.';
-        } else if (error.status === 413) {
-          errorMessage = 'File too large. Please use a file smaller than 10MB.';
-        } else if (error.status === 500) {
-          errorMessage = 'Server error occurred while processing your document. Please try again.';
+        try {
+          // First load the PDF document
+          const pdfDoc = await PDFProcessor.loadDocument(file);
+          // Then convert all pages to images
+          const pdfImages = await PDFProcessor.convertPDFToImages(pdfDoc);
+          imagesToProcess = pdfImages.map(img => img.imageData.split(',')[1]); // Remove data:image/png;base64, prefix
+          
+          console.log(`PDF converted to ${pdfImages.length} images`);
+          setTotalPages(pdfImages.length);
+          setProcessingProgress(50);
+        } catch (pdfError) {
+          console.error('PDF conversion error:', pdfError);
+          throw new Error(`Failed to convert PDF to images: ${pdfError instanceof Error ? pdfError.message : 'Unknown error'}`);
         }
-        
-        throw new Error(errorMessage);
+      } else {
+        // Convert image to base64
+        setCurrentStep('Processing image...');
+        setProcessingProgress(20);
+        const base64 = await new Promise<string>((resolve, reject) => {
+          const reader = new FileReader();
+          reader.onload = () => {
+            const result = reader.result as string;
+            const base64Data = result.split(',')[1];
+            resolve(base64Data);
+          };
+          reader.onerror = reject;
+          reader.readAsDataURL(file);
+        });
+        imagesToProcess = [base64];
+        setTotalPages(1);
       }
+
+      // Validate that we have images to process
+      if (imagesToProcess.length === 0) {
+        throw new Error('No images to process. Please check your file and try again.');
+      }
+
+      // Send images to OCR server
+      console.log(`Sending ${imagesToProcess.length} images to OCR server...`);
+      setCurrentStep('Extracting text from all pages...');
+      setProcessingProgress(60);
+      
+      const requestBody = {
+        images: imagesToProcess,
+        formType: formType
+      };
+
+      const response = await fetch('http://localhost:3001/api/ocr/extract-base64', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(requestBody),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || `Server error: ${response.status}`);
+      }
+
+      const data = await response.json();
+      setCurrentStep('AI is analyzing and structuring the data...');
+      setProcessingProgress(80);
 
       if (!data.success) {
         throw new Error(data.error || 'OCR processing failed');
@@ -148,27 +170,93 @@ export const OCRUpload = ({ formType, onDataExtracted, className = '' }: OCRUplo
         if (data.pages.length === 0) {
           setUploadStatus('error');
           setShowPageSelector(false);
-          toast.error('No pages extracted from PDF.');
+          setShowLoader(false);
+          toast.error('No pages extracted from document.');
           return;
         }
         
         setMultiPageResults(data as MultiPageResponse);
         setSelectedPages(data.pages.map((page: PageData) => page.pageNumber));
-        setShowPageSelector(true);
-        setProcessingProgress(100);
-        toast.success(`PDF processed successfully! ${data.pages.length} pages extracted.`);
+        setProcessingProgress(90);
+        
+        // Automatically use all successful pages for form population
+        const successfulPages = data.pages.filter((page: PageData) => !page.error);
+        console.log('Successful pages for merging:', successfulPages.length);
+        console.log('Page data samples:', successfulPages.slice(0, 3).map(p => ({ 
+          pageNumber: p.pageNumber, 
+          hasData: !!p.parsedData, 
+          dataKeys: p.parsedData ? Object.keys(p.parsedData) : [] 
+        })));
+        
+        if (successfulPages.length > 0) {
+          setCurrentStep('Formatting data for form population...');
+          setProcessingProgress(95);
+          
+          const mergedData = mergePageData(successfulPages);
+          console.log('Merged data for form population:', mergedData);
+          
+          // Calculate total extracted text length
+          const totalTextLength = successfulPages.reduce((sum, page) => sum + (page.extractedText?.length || 0), 0);
+          setExtractedTextLength(totalTextLength);
+          setProcessedPages(successfulPages.length);
+          
+          setProcessingProgress(100);
+          setCurrentStep('Complete!');
+          
+          // Small delay to show completion
+          setTimeout(() => {
+            onDataExtracted(mergedData);
+            setUploadStatus('success');
+            setShowPageSelector(false);
+            setShowLoader(false);
+            toast.success(`Document processed successfully! Form populated with data from ${successfulPages.length} pages.`);
+          }, 1000);
+        } else {
+          setUploadStatus('error');
+          setShowPageSelector(false);
+          setShowLoader(false);
+          toast.error('No successful pages found for form population.');
+        }
       } else {
         // Single page response (backward compatibility)
         console.log('Single page OCR extraction successful:', data.parsedData);
-        onDataExtracted((data.parsedData as Record<string, unknown>) || {});
-        setUploadStatus('success');
-        toast.success('Document processed successfully! Form fields have been pre-populated.');
+        setCurrentStep('Formatting data for form population...');
+        setProcessingProgress(95);
+        
+        setProcessingProgress(100);
+        setCurrentStep('Complete!');
+        
+        // Small delay to show completion
+        setTimeout(() => {
+          onDataExtracted((data.parsedData as Record<string, unknown>) || {});
+          setUploadStatus('success');
+          setShowLoader(false);
+          toast.success('Document processed successfully! Form fields have been pre-populated.');
+        }, 1000);
       }
 
     } catch (error) {
       console.error('OCR processing error:', error);
       setUploadStatus('error');
-      toast.error(error instanceof Error ? error.message : 'Failed to process document');
+      setShowLoader(false);
+      
+      // Provide more specific error messages
+      let errorMessage = 'Failed to process document';
+      if (error instanceof Error) {
+        if (error.message.includes('Failed to fetch')) {
+          errorMessage = 'Cannot connect to OCR server. Please ensure the server is running on port 3001.';
+        } else if (error.message.includes('File too large')) {
+          errorMessage = 'File too large. Please use a file smaller than 10MB.';
+        } else if (error.message.includes('Invalid file type')) {
+          errorMessage = 'Invalid file type. Only image and PDF files are allowed.';
+        } else if (error.message.includes('PDF processing')) {
+          errorMessage = 'Failed to process PDF. Please try converting to images first.';
+        } else {
+          errorMessage = error.message;
+        }
+      }
+      
+      toast.error(errorMessage);
     } finally {
       setIsProcessing(false);
       // Reset file input
@@ -313,6 +401,16 @@ export const OCRUpload = ({ formType, onDataExtracted, className = '' }: OCRUplo
 
   return (
     <div className="space-y-4">
+      {/* Full-page loader */}
+      <OCRProcessingLoader
+        isVisible={showLoader}
+        progress={processingProgress}
+        currentStep={currentStep}
+        totalPages={totalPages}
+        processedPages={processedPages}
+        extractedTextLength={extractedTextLength}
+      />
+      
       <Button 
         variant="outline" 
         onClick={() => navigate('/')}

@@ -16,6 +16,8 @@ import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { MapPin, Plus, Trash2 } from "lucide-react";
 import { toast } from "sonner";
+import { AddressFinder } from "./AddressFinder";
+import { type CoreLogicAddressMatch } from "@/lib/corelogicService";
 
 const propertySchema = z.object({
   address: z.string().min(1, "Address is required"),
@@ -62,6 +64,13 @@ export function PropertyManager({ onPropertiesChange, initialProperties = [] }: 
     form.reset();
     setIsAddingProperty(false);
     toast.success(`Property "${data.property_name}" added successfully`);
+  };
+
+  const handleAddressSelect = (propertyData: CoreLogicAddressMatch) => {
+    form.setValue("address", propertyData.address);
+    if (propertyData.coordinates) {
+      form.setValue("coordinates", `${propertyData.coordinates.latitude}, ${propertyData.coordinates.longitude}`);
+    }
   };
 
   const removeProperty = (id: string) => {
@@ -163,19 +172,19 @@ export function PropertyManager({ onPropertiesChange, initialProperties = [] }: 
                 />
               </div>
 
-              <FormField
-                control={form.control}
-                name="address"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Property Address</FormLabel>
-                    <FormControl>
-                      <Input placeholder="Enter full property address" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+              <FormItem>
+                <FormLabel>Property Address</FormLabel>
+                <FormControl>
+                  <AddressFinder
+                    onAddressSelect={handleAddressSelect}
+                    placeholder="Search property address with CoreLogic..."
+                    clientName="Sustaino Pro - Property Management"
+                    minConfidence={0.7}
+                    showMatchDetails={true}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
 
               <FormField
                 control={form.control}

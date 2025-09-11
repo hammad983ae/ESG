@@ -25,6 +25,7 @@ import { Badge } from "@/components/ui/badge";
 import { TrendingUp, TrendingDown, DollarSign, Globe, BarChart3, AlertTriangle } from "lucide-react";
 import { CommodityForecastResults } from "./CommodityForecastResults";
 import { calculateCommodityForecast, type CommodityAnalysisInputs } from "@/utils/commodityAnalysis";
+import { OCRUpload } from "@/components/OCRUpload";
 
 const commoditySchema = z.object({
   commodity: z.string().min(1, "Commodity selection is required"),
@@ -53,6 +54,13 @@ export function CommodityMarketAnalysis() {
   } | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [activeTab, setActiveTab] = useState("forecast");
+
+  // OCR handler
+  const handleOCRData = (data: Record<string, unknown>) => {
+    // Handle OCR data extraction for commodity market analysis
+    console.log("OCR data extracted for commodity analysis:", data);
+    // You can implement specific data mapping here based on the form type
+  };
 
   const form = useForm<CommodityFormData>({
     resolver: zodResolver(commoditySchema),
@@ -128,6 +136,13 @@ export function CommodityMarketAnalysis() {
           </div>
         </div>
       </div>
+
+      {/* OCR Upload Section */}
+      <OCRUpload
+        onDataExtracted={handleOCRData}
+        formType="commodity-analysis"
+        className="mb-6"
+      />
 
       {/* Quick Market Overview */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">

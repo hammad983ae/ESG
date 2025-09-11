@@ -2,10 +2,7 @@ import * as pdfjsLib from 'pdfjs-dist';
 import { version } from 'pdfjs-dist/package.json';
 
 // Configure PDF.js worker
-pdfjsLib.GlobalWorkerOptions.workerSrc = new URL(
-  'pdfjs-dist/build/pdf.worker.min.js',
-  import.meta.url
-).toString();
+pdfjsLib.GlobalWorkerOptions.workerSrc = '/pdf.worker.min.mjs';
 
 // PDF processing configuration
 export const pdfConfig = {
@@ -234,3 +231,4 @@ export const handlePDFError = (error: unknown): PDFError => {
 // Export the main PDF.js library for direct access if needed
 export { pdfjsLib };
 export default PDFProcessor;
+

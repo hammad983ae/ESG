@@ -10,6 +10,7 @@ import { Badge } from "@/components/ui/badge";
 import { Baby, Building, DollarSign, BarChart3, Home, Trash2, Plus } from "lucide-react";
 import { ChildcareInputs, ComparisonProperty, defaultChildcareInputs } from "@/utils/childcareCalculations";
 import { OCRUpload } from "@/components/OCRUpload";
+import { AddressFinder } from "@/components/AddressFinder";
 
 interface ChildcareValuationFormProps {
   onSubmit: (inputs: ChildcareInputs) => void;
@@ -74,6 +75,34 @@ export const ChildcareValuationForm: React.FC<ChildcareValuationFormProps> = ({ 
 
   return (
     <div className="space-y-6">
+      {/* Property Search Section */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <Building className="h-5 w-5" />
+            Property Search & Data
+          </CardTitle>
+          <CardDescription>
+            Search for a childcare property to pre-populate this form with CoreLogic data
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <AddressFinder
+            onAddressSelect={(data) => {
+              // Pre-populate form with property data
+              if (data.propertyId) {
+                setInputs(prev => ({
+                  ...prev,
+                  property_address: data.address,
+                  // You can add more property-specific mappings here
+                }));
+              }
+            }}
+            showPropertyDetails={true}
+          />
+        </CardContent>
+      </Card>
+
       <OCRUpload
         formType="childcare"
         onDataExtracted={handleOCRDataExtracted}

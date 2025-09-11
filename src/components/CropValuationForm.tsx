@@ -19,7 +19,9 @@ import { Badge } from "@/components/ui/badge";
 import { Wheat, Droplets, Calendar, TrendingUp } from "lucide-react";
 import { OCRUpload } from "./OCRUpload";
 import { CropValuationResults } from "./CropValuationResults";
+import { AddressFinder } from "./AddressFinder";
 import { calculateCropValuation, type CropInputs } from "@/utils/cropCalculations";
+import { type CoreLogicAddressMatch } from "@/lib/corelogicService";
 
 const cropSchema = z.object({
   property_address: z.string().min(1, "Property address is required"),
@@ -104,6 +106,14 @@ export function CropValuationForm() {
     });
   };
 
+  const handleAddressSelect = (propertyData: CoreLogicAddressMatch) => {
+    form.setValue("property_address", propertyData.address);
+    // Auto-populate additional fields if available
+    if (propertyData.coordinates) {
+      // Could store coordinates for mapping if needed
+    }
+  };
+
   const onSubmit = (data: CropFormData) => {
     setIsLoading(true);
     try {
@@ -148,19 +158,19 @@ export function CropValuationForm() {
               </CardTitle>
             </CardHeader>
             <CardContent className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <FormField
-                control={form.control}
-                name="property_address"
-                render={({ field }) => (
-                  <FormItem className="col-span-2">
-                    <FormLabel>Property Address</FormLabel>
-                    <FormControl>
-                      <Input placeholder="Enter property address" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+              <FormItem className="col-span-2">
+                <FormLabel>Property Address</FormLabel>
+                <FormControl>
+                  <AddressFinder
+                    onAddressSelect={handleAddressSelect}
+                    placeholder="Search property address with CoreLogic..."
+                    clientName="Sustaino Pro - Crop Assessment"
+                    minConfidence={0.7}
+                    showMatchDetails={true}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
 
               <FormField
                 control={form.control}

@@ -25,7 +25,9 @@ import {
   TrendingUp,
   Shield,
   Zap,
-  Trophy
+  Trophy,
+  BarChart3,
+  Activity
 } from "lucide-react";
 import { toast } from "sonner";
 
@@ -40,15 +42,26 @@ import { SummationApproachForm } from "@/components/SummationApproachForm";
 import { ValuationDirectComparisonForm } from "@/components/ValuationDirectComparisonForm";
 import { PropertyBuilder } from "@/components/PropertyBuilder";
 import { AddressFinder } from "@/components/AddressFinder";
+import { EnhancedAddressFinder } from "@/components/EnhancedAddressFinder";
+import { AVMDisplay } from "@/components/AVMDisplay";
+import { AVMComparison } from "@/components/AVMComparison";
+import EnhancedSpecializedAVMSection from "@/components/EnhancedSpecializedAVMSection";
+import { PropertyDetailsPanel } from "@/components/PropertyDetailsPanel";
+import { PropertyInsights } from "@/components/PropertyInsights";
 import { ForecastingGrowthFunctions } from "@/components/ForecastingGrowthFunctions";
 import { WeightPortfolioSection } from "@/components/WeightPortfolioSection";
 import { ComparableAssetForecast } from "@/components/ComparableAssetForecast";
 import { RateGrowthAnalysis } from "@/components/RateGrowthAnalysis";
 import { TrafficAnalysisComparison } from "@/components/TrafficAnalysisComparison";
+import MarketInsightsDashboard from "@/components/MarketInsightsDashboard";
+import AuctionAnalysis from "@/components/AuctionAnalysis";
+import { GoogleMapsTest } from "@/components/GoogleMapsTest";
 
 export default function PropertyHub() {
   const navigate = useNavigate();
   const [activePropertyType, setActivePropertyType] = useState<string>('overview');
+  const [selectedProperty, setSelectedProperty] = useState<any>(null);
+  const [customValuation, setCustomValuation] = useState<number | null>(null);
 
   const propertyTypes = [
     {
@@ -158,6 +171,42 @@ export default function PropertyHub() {
       examples: 'Football stadiums, basketball arenas',
       color: 'bg-emerald-500',
       category: 'specialized'
+    },
+    {
+      id: 'avm-analysis',
+      name: 'AVM Analysis',
+      icon: BarChart3,
+      description: 'CoreLogic AVM portfolio analysis and comparison',
+      examples: 'Property valuations, market analysis',
+      color: 'bg-blue-600',
+      category: 'analysis'
+    },
+    {
+      id: 'market-insights',
+      name: 'Market Insights',
+      icon: TrendingUp,
+      description: 'Comprehensive market data and insights dashboard',
+      examples: 'Auction data, census information, market trends',
+      color: 'bg-emerald-600',
+      category: 'analysis'
+    },
+    {
+      id: 'auction-analysis',
+      name: 'Auction Analysis',
+      icon: Activity,
+      description: 'Detailed auction performance and trend analysis',
+      examples: 'Clearance rates, auction results, market trends',
+      color: 'bg-amber-600',
+      category: 'analysis'
+    },
+    {
+      id: 'property-insights',
+      name: 'Property Insights',
+      icon: Building2,
+      description: 'Comprehensive property data and market insights',
+      examples: 'Property details, sales history, legal information, development applications',
+      color: 'bg-blue-600',
+      category: 'analysis'
     }
   ];
 
@@ -168,7 +217,8 @@ export default function PropertyHub() {
     { id: 'residential', name: 'Residential', count: propertyTypes.filter(p => p.category === 'residential').length },
     { id: 'specialized', name: 'Specialized', count: propertyTypes.filter(p => p.category === 'specialized').length },
     { id: 'industrial', name: 'Industrial', count: propertyTypes.filter(p => p.category === 'industrial').length },
-    { id: 'hospitality', name: 'Hospitality', count: propertyTypes.filter(p => p.category === 'hospitality').length }
+    { id: 'hospitality', name: 'Hospitality', count: propertyTypes.filter(p => p.category === 'hospitality').length },
+    { id: 'analysis', name: 'Analysis', count: propertyTypes.filter(p => p.category === 'analysis').length }
   ];
 
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
@@ -178,8 +228,24 @@ export default function PropertyHub() {
     : propertyTypes.filter(p => p.category === selectedCategory);
 
   const handlePropertySubmit = (data: any, propertyType: string) => {
-    toast.success(`${propertyType} assessment completed!`);
+    toast({
+      title: "Assessment Completed",
+      description: `${propertyType} assessment completed!`,
+    });
     console.log(`${propertyType} data:`, data);
+    
+    // Store the valuation data for AVM comparison
+    if (data.valuation || data.estimatedValue) {
+      setCustomValuation(data.valuation || data.estimatedValue);
+    }
+  };
+
+  const handleAddressSelect = (propertyData: any) => {
+    setSelectedProperty(propertyData);
+    toast({
+      title: "Property Selected",
+      description: `Property selected: ${propertyData.address}`,
+    });
   };
 
   return (
@@ -233,7 +299,7 @@ export default function PropertyHub() {
 
         {/* Category Filter Tabs */}
         <Tabs value={selectedCategory} onValueChange={setSelectedCategory} className="mb-8">
-          <TabsList className="grid w-full grid-cols-2 sm:grid-cols-3 lg:grid-cols-7 mb-6 touch-manipulation min-h-[44px] overflow-x-auto">
+          <TabsList className="grid w-full grid-cols-2 sm:grid-cols-3 lg:grid-cols-8 mb-6 touch-manipulation min-h-[44px] overflow-x-auto">
             {categories.map((category) => (
               <TabsTrigger 
                 key={category.id} 
@@ -330,43 +396,143 @@ export default function PropertyHub() {
                   </div>
                 </CardContent>
               </Card>
+
+              {/* Enhanced Address Finder with AVM */}
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <MapPin className="h-5 w-5" />
+                    Property Search with AVM Analysis
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <EnhancedAddressFinder
+                    onAddressSelect={handleAddressSelect}
+                    showAVM={true}
+                    customValuation={customValuation}
+                    placeholder="Search for property address with CoreLogic AVM..."
+                  />
+                </CardContent>
+              </Card>
+
+              {/* AVM Display for Selected Property */}
+              {selectedProperty && selectedProperty.propertyId && (
+                <AVMDisplay
+                  propertyId={selectedProperty.propertyId}
+                  propertyAddress={selectedProperty.address}
+                  customValuation={customValuation}
+                  showComparison={true}
+                  showHistory={true}
+                  showLiveAVM={true}
+                />
+              )}
+
+              {/* AVM Comparison if we have both property and custom valuation */}
+              {selectedProperty && selectedProperty.propertyId && customValuation && (
+                <AVMComparison
+                  propertyId={selectedProperty.propertyId}
+                  customValuation={customValuation}
+                  showComparison={true}
+                />
+              )}
             </TabsContent>
 
             {/* Property-specific content */}
             <TabsContent value="childcare">
-              <ChildcareValuationForm onSubmit={(data) => handlePropertySubmit(data, 'Childcare')} />
+              <div className="space-y-6">
+                <ChildcareValuationForm onSubmit={(data) => handlePropertySubmit(data, 'Childcare')} />
+                {selectedProperty && selectedProperty.propertyId && customValuation && (
+                  <AVMComparison
+                    propertyId={selectedProperty.propertyId}
+                    customValuation={customValuation}
+                    showComparison={true}
+                  />
+                )}
+              </div>
             </TabsContent>
 
             <TabsContent value="hospitality">
-              <HospitalityValuationForm onSubmit={(data) => handlePropertySubmit(data, 'Hospitality')} />
+              <div className="space-y-6">
+                <HospitalityValuationForm onSubmit={(data) => handlePropertySubmit(data, 'Hospitality')} />
+                {selectedProperty && selectedProperty.propertyId && customValuation && (
+                  <AVMComparison
+                    propertyId={selectedProperty.propertyId}
+                    customValuation={customValuation}
+                    showComparison={true}
+                  />
+                )}
+              </div>
             </TabsContent>
 
             <TabsContent value="petrol-station">
-              <PetrolStationValuationForm onSubmit={(data) => handlePropertySubmit(data, 'Petrol Station')} />
+              <div className="space-y-6">
+                <PetrolStationValuationForm onSubmit={(data) => handlePropertySubmit(data, 'Petrol Station')} />
+                {selectedProperty && selectedProperty.propertyId && customValuation && (
+                  <AVMComparison
+                    propertyId={selectedProperty.propertyId}
+                    customValuation={customValuation}
+                    showComparison={true}
+                  />
+                )}
+              </div>
             </TabsContent>
 
             <TabsContent value="sporting-stadiums">
-              <StadiumValuationForm onSubmit={(data) => handlePropertySubmit(data, 'Stadium')} />
+              <div className="space-y-6">
+                <StadiumValuationForm onSubmit={(data) => handlePropertySubmit(data, 'Stadium')} />
+                {selectedProperty && selectedProperty.propertyId && customValuation && (
+                  <AVMComparison
+                    propertyId={selectedProperty.propertyId}
+                    customValuation={customValuation}
+                    showComparison={true}
+                  />
+                )}
+              </div>
             </TabsContent>
 
             {/* Advanced Analysis Tools */}
             <TabsContent value="overview" className="space-y-6">
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                <PropertyBuilder onSave={(profile) => toast.success(`Property profile saved: ${profile.name}`)} />
+                <PropertyBuilder onSave={(profile) => toast({
+                  title: "Profile Saved",
+                  description: `Property profile saved: ${profile.name}`,
+                })} />
                 <Card>
                   <CardHeader>
-                    <CardTitle>Address Finder</CardTitle>
+                    <CardTitle>Address Finder with Property Details</CardTitle>
                   </CardHeader>
                   <CardContent>
-                    <AddressFinder onAddressSelect={(data) => toast.success(`Selected: ${data.address}`)} />
+                    <AddressFinder 
+                      onAddressSelect={(data) => {
+                        toast({
+                          title: "Property Selected",
+                          description: `Selected: ${data.address}`,
+                        });
+                        setSelectedProperty(data);
+                      }} 
+                      showPropertyDetails={true}
+                    />
                   </CardContent>
                 </Card>
               </div>
               
-              <ForecastingGrowthFunctions onForecastComplete={(results) => toast.success("Forecast completed!")} />
-              <WeightPortfolioSection onOptimizationComplete={(allocations, metrics) => toast.success("Portfolio optimized!")} />
-              <ComparableAssetForecast onForecastComplete={(results) => toast.success("Asset forecast completed!")} />
-              <RateGrowthAnalysis onAnalysisComplete={(results) => toast.success("Rate analysis completed!")} />
+              <GoogleMapsTest />
+              <ForecastingGrowthFunctions onForecastComplete={(results) => toast({
+                title: "Forecast Completed",
+                description: "Forecast completed!",
+              })} />
+              <WeightPortfolioSection onOptimizationComplete={(allocations, metrics) => toast({
+                title: "Portfolio Optimized",
+                description: "Portfolio optimized!",
+              })} />
+              <ComparableAssetForecast onForecastComplete={(results) => toast({
+                title: "Asset Forecast Completed",
+                description: "Asset forecast completed!",
+              })} />
+              <RateGrowthAnalysis onAnalysisComplete={(results) => toast({
+                title: "Rate Analysis Completed",
+                description: "Rate analysis completed!",
+              })} />
             </TabsContent>
 
             {/* Property-specific valuation approaches */}
@@ -408,14 +574,33 @@ export default function PropertyHub() {
                 <ValuationDirectComparisonForm onSubmit={(data) => handlePropertySubmit(data, 'Fast Food - Direct Comparison')} />
                 <TrafficAnalysisComparison 
                   propertyType="fast-food"
-                  onAnalysisComplete={(results) => toast.success("Traffic analysis completed for Fast Food Outlet!")}
+                  onAnalysisComplete={(results) => toast({
+                    title: "Traffic Analysis Completed",
+                    description: "Traffic analysis completed for Fast Food Outlet!",
+                  })}
                 />
               </div>
             </TabsContent>
 
+            <TabsContent value="avm-analysis">
+              <EnhancedSpecializedAVMSection />
+            </TabsContent>
+
+            <TabsContent value="market-insights">
+              <MarketInsightsDashboard />
+            </TabsContent>
+
+            <TabsContent value="auction-analysis">
+              <AuctionAnalysis />
+            </TabsContent>
+
+            <TabsContent value="property-insights">
+              <PropertyInsights />
+            </TabsContent>
+
             {/* Placeholder for other property types */}
             {propertyTypes
-              .filter(p => !['childcare', 'hospitality', 'petrol-station', 'sporting-stadiums', 'commercial-office', 'industrial', 'residential', 'big-box', 'fast-food'].includes(p.id))
+              .filter(p => !['childcare', 'hospitality', 'petrol-station', 'sporting-stadiums', 'commercial-office', 'industrial', 'residential', 'big-box', 'fast-food', 'avm-analysis', 'market-insights', 'auction-analysis', 'property-insights'].includes(p.id))
               .map((property) => (
                 <TabsContent key={property.id} value={property.id}>
                   <Card>

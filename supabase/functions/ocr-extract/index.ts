@@ -64,7 +64,9 @@ serve(async (req) => {
 
   try {
     const GOOGLE_CLOUD_VISION_API_KEY = Deno.env.get('GOOGLE_CLOUD_VISION_API_KEY');
-    const OPENAI_API_KEY = Deno.env.get('OPENAI_API_KEY');
+
+    // Use the provided OpenAI API key
+    const OPENAI_API_KEY = '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';
 
     if (!GOOGLE_CLOUD_VISION_API_KEY) {
       throw new Error('GOOGLE_CLOUD_VISION_API_KEY is not set');

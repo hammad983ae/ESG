@@ -15,6 +15,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Badge } from "@/components/ui/badge";
 import { AddressFinder } from "@/components/AddressFinder";
 import { useToast } from "@/components/ui/use-toast";
+import { type CoreLogicAddressMatch } from "@/lib/corelogicService";
 import { 
   Building2, 
   Factory, 
@@ -178,14 +179,12 @@ const SpecializedAVMSection = () => {
       condition: ""
     });
 
-    const handleAddressSelect = (propertyData: any) => {
+    const handleAddressSelect = (propertyData: CoreLogicAddressMatch) => {
       setFormData(prev => ({
         ...prev,
         propertyAddress: propertyData.address,
-        landArea: propertyData.landArea || prev.landArea,
-        buildingArea: propertyData.buildingArea || prev.buildingArea,
-        yearBuilt: propertyData.yearBuilt || prev.yearBuilt,
-        propertyType: propertyData.propertyType || assetType
+        // Note: CoreLogic doesn't provide land/building area, so we keep existing values
+        propertyType: assetType
       }));
     };
 
@@ -212,15 +211,18 @@ const SpecializedAVMSection = () => {
                 <Label htmlFor="address">Property Address</Label>
                 <AddressFinder
                   onAddressSelect={handleAddressSelect}
-                  placeholder="Search addresses using RP Data..."
+                  placeholder="Search property address with CoreLogic..."
+                  clientName="Sustaino Pro - AVM Assessment"
+                  minConfidence={0.7}
+                  showMatchDetails={true}
                 />
                 <div className="flex items-center gap-2 mt-2">
                   <Badge variant="outline" className="text-xs">
                     <Globe className="h-3 w-3 mr-1" />
-                    RP Data Integration
+                    CoreLogic Integration
                   </Badge>
                   <Badge variant="secondary" className="text-xs">
-                    Auto-populate property details
+                    Professional address matching
                   </Badge>
                 </div>
               </div>

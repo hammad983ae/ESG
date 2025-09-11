@@ -202,37 +202,64 @@ export const RentRevisionForm: React.FC<RentRevisionFormProps> = ({ onSubmit }) 
     }
   };
 
-  const handleOCRDataExtracted = (data: unknown) => {
-    const updatedInputs: Partial<RentRevisionInputs> = { ...inputs };
+  const handleOCRDataExtracted = (data: any) => {
+    console.log('OCR data received in form:', data);
+    const updatedInputs: Partial<RentRevisionInputs> = {};
     
-    if (data.currentRent !== undefined) updatedInputs.net_rent = data.currentRent;
-    if (data.marketRent !== undefined) updatedInputs.market_rent = data.marketRent;
-    if (data.lettableArea !== undefined) updatedInputs.lettable_area = data.lettableArea;
-    if (data.landArea !== undefined) updatedInputs.land_area = data.landArea;
-    if (data.leaseStart) updatedInputs.commencement_date = data.leaseStart;
-    if (data.leaseEnd) updatedInputs.expiring_date = data.leaseEnd;
-    if (data.reviewDate) updatedInputs.review_date = data.reviewDate;
-    if (data.propertyAddress) updatedInputs.lessor = data.propertyAddress;
-    if (data.propertyType) {
+    // Map OCR data to form fields using the correct field names
+    if (data.property_type) {
       // Map OCR property types to our form types
       const typeMapping: Record<string, string> = {
         'commercial': 'office',
         'office': 'office',
         'retail': 'retail',
+        'retail premises': 'retail',
+        'medical clinic': 'office',
         'industrial': 'warehouse',
         'warehouse': 'warehouse',
         'residential': 'residential'
       };
-      const mappedType = typeMapping[data.propertyType.toLowerCase()] || 'office';
+      const mappedType = typeMapping[data.property_type.toLowerCase()] || 'office';
       updatedInputs.property_type = mappedType;
     }
-    if (data.buildingAge !== undefined) {
-      // Could be used for notes or additional context
-    }
-    if (data.carSpaces !== undefined) {
-      // Could be added to notes or additional features
-    }
     
+    if (data.lessor) updatedInputs.lessor = data.lessor;
+    if (data.lessee) updatedInputs.lessee = data.lessee;
+    if (data.commencement_date) updatedInputs.commencement_date = data.commencement_date;
+    if (data.expiring_date) updatedInputs.expiring_date = data.expiring_date;
+    if (data.options_further_terms) updatedInputs.options_further_terms = data.options_further_terms;
+    if (data.review_date) updatedInputs.review_date = data.review_date;
+    
+    // Rent fields
+    if (data.face_rent !== undefined) updatedInputs.face_rent = data.face_rent;
+    if (data.effective_rent !== undefined) updatedInputs.effective_rent = data.effective_rent;
+    if (data.gross_rent !== undefined) updatedInputs.gross_rent = data.gross_rent;
+    if (data.net_rent !== undefined) updatedInputs.net_rent = data.net_rent;
+    if (data.incentives !== undefined) updatedInputs.incentives = data.incentives;
+    if (data.outgoings !== undefined) updatedInputs.outgoings = data.outgoings;
+    if (data.land_tax !== undefined) updatedInputs.land_tax = data.land_tax;
+    
+    // Area fields
+    if (data.lettable_area !== undefined) updatedInputs.lettable_area = data.lettable_area;
+    if (data.outgoings_per_sqm !== undefined) updatedInputs.outgoings_per_sqm = data.outgoings_per_sqm;
+    if (data.land_area !== undefined) updatedInputs.land_area = data.land_area;
+    if (data.improved_rent_rate_per_sqm !== undefined) updatedInputs.improved_rent_rate_per_sqm = data.improved_rent_rate_per_sqm;
+    
+    // Market analysis fields
+    if (data.market_rent !== undefined) updatedInputs.market_rent = data.market_rent;
+    if (data.market_rent_per_sqm !== undefined) updatedInputs.market_rent_per_sqm = data.market_rent_per_sqm;
+    if (data.market_land_rate !== undefined) updatedInputs.market_land_rate = data.market_land_rate;
+    if (data.proposed_rent !== undefined) updatedInputs.proposed_rent = data.proposed_rent;
+    if (data.proposed_improved_land_rate !== undefined) updatedInputs.proposed_improved_land_rate = data.proposed_improved_land_rate;
+    if (data.cpi_fixed_adjustments !== undefined) updatedInputs.cpi_fixed_adjustments = data.cpi_fixed_adjustments;
+    if (data.revision_effective_date) updatedInputs.revision_effective_date = data.revision_effective_date;
+    
+    // Additional fields
+    if (data.comparable_evidence) updatedInputs.comparable_evidence = data.comparable_evidence;
+    if (data.market_conditions) updatedInputs.market_conditions = data.market_conditions;
+    if (data.esg_notes) updatedInputs.esg_notes = data.esg_notes;
+    
+    console.log('Updated inputs from OCR:', updatedInputs);
     setInputs(prev => ({ ...prev, ...updatedInputs }));
   };
 

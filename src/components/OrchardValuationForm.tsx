@@ -18,7 +18,9 @@ import { Textarea } from "@/components/ui/textarea";
 import { Apple, TreePine, Calendar, Droplets, Shield, Calculator } from "lucide-react";
 import { OCRUpload } from "./OCRUpload";
 import { OrchardValuationResults } from "./OrchardValuationResults";
+import { AddressFinder } from "./AddressFinder";
 import { calculateOrchardValuation, type OrchardInputs } from "@/utils/orchardCalculations";
+import { type CoreLogicAddressMatch } from "@/lib/corelogicService";
 import { VarietyManager } from "./VarietyManager";
 import { convertAcreage, calculateWaterForecast, formatAreaDisplay, formatWaterDisplay } from "@/utils/conversionUtils";
 
@@ -138,6 +140,14 @@ export function OrchardValuationForm() {
     });
   };
 
+  const handleAddressSelect = (propertyData: CoreLogicAddressMatch) => {
+    form.setValue("property_address", propertyData.address);
+    // Auto-populate additional fields if available
+    if (propertyData.coordinates) {
+      // Could store coordinates for mapping if needed
+    }
+  };
+
   const onSubmit = (data: OrchardFormData) => {
     setIsLoading(true);
     
@@ -244,19 +254,19 @@ export function OrchardValuationForm() {
               </CardTitle>
             </CardHeader>
             <CardContent className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <FormField
-                control={form.control}
-                name="property_address"
-                render={({ field }) => (
-                  <FormItem className="col-span-2">
-                    <FormLabel>Property Address</FormLabel>
-                    <FormControl>
-                      <Input placeholder="Enter property address" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+              <FormItem className="col-span-2">
+                <FormLabel>Property Address</FormLabel>
+                <FormControl>
+                  <AddressFinder
+                    onAddressSelect={handleAddressSelect}
+                    placeholder="Search property address with CoreLogic..."
+                    clientName="Sustaino Pro - Orchard Assessment"
+                    minConfidence={0.7}
+                    showMatchDetails={true}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
 
               <FormField
                 control={form.control}

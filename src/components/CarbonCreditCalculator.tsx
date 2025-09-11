@@ -6,6 +6,7 @@ import { Label } from '@/components/ui/label';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { TrendingUp, Calculator, DollarSign, Leaf } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
+import { OCRUpload } from '@/components/OCRUpload';
 
 interface SwapResult {
   swapValue: number;
@@ -21,6 +22,13 @@ interface TaxSavingsResult {
 
 export const CarbonCreditCalculator = () => {
   const { toast } = useToast();
+  
+  // OCR handler
+  const handleOCRData = (data: Record<string, unknown>) => {
+    // Handle OCR data extraction for carbon credit calculations
+    console.log("OCR data extracted for carbon credits:", data);
+    // You can implement specific data mapping here based on the form type
+  };
   
   // Swap calculation states
   const [swapInputs, setSwapInputs] = useState({
@@ -116,6 +124,13 @@ export const CarbonCreditCalculator = () => {
           Calculate carbon credit swap values and tax savings with real-time analytics
         </p>
       </div>
+
+      {/* OCR Upload Section */}
+      <OCRUpload
+        onDataExtracted={handleOCRData}
+        formType="carbon-credits"
+        className="mb-6"
+      />
 
       <Tabs defaultValue="swaps" className="w-full">
         <TabsList className="grid w-full grid-cols-2">

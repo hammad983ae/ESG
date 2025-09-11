@@ -26,6 +26,7 @@ import { MixedFarmForm } from "@/components/MixedFarmForm";
 import { ManagementDiary } from "@/components/ManagementDiary";
 import { YieldExpectationDisplay } from "@/components/YieldExpectationDisplay";
 import { CarbonCreditCalculator } from "@/components/CarbonCreditCalculator";
+import { AddressFinder } from "@/components/AddressFinder";
 import { useNavigate } from "react-router-dom";
 
 const AgriculturalHub = () => {
@@ -139,6 +140,28 @@ const AgriculturalHub = () => {
             <Badge variant="outline">Copyright Protected</Badge>
           </div>
         </div>
+
+        {/* Property Search Section */}
+        <Card className="mb-6">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <Tractor className="h-5 w-5" />
+              Property Search & Data
+            </CardTitle>
+            <p className="text-muted-foreground">
+              Search for agricultural properties to pre-populate valuation forms with CoreLogic data
+            </p>
+          </CardHeader>
+          <CardContent>
+            <AddressFinder
+              onAddressSelect={(data) => {
+                // You can add logic here to pre-populate agricultural forms
+                console.log('Agricultural property selected:', data);
+              }}
+              showPropertyDetails={true}
+            />
+          </CardContent>
+        </Card>
 
         {/* Property Type Selection */}
         <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-8 gap-4 mb-8">

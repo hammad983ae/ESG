@@ -20,6 +20,7 @@ import { PastureValuationForm } from "./PastureValuationForm";
 import { HorticultureValuationForm } from "./HorticultureValuationForm";
 import { IrrigationManager } from "@/components/IrrigationManager";
 import { SoilTypeManager } from "@/components/SoilTypeManager";
+import { OCRUpload } from "@/components/OCRUpload";
 import { toast } from "sonner";
 
 interface MixedFarmProperty {
@@ -45,6 +46,13 @@ export function MixedFarmForm() {
   const [cropBlocks, setCropBlocks] = useState<CropBlock[]>([]);
   const [activeBlock, setActiveBlock] = useState<string | null>(null);
   const [addingBlockType, setAddingBlockType] = useState<string | null>(null);
+
+  // OCR handler
+  const handleOCRData = (data: Record<string, unknown>) => {
+    // Handle OCR data extraction for mixed farm operations
+    console.log("OCR data extracted for mixed farm:", data);
+    // You can implement specific data mapping here based on the form type
+  };
 
   const blockTypes = [
     { id: 'crop', name: 'Annual Crops', icon: '🌾', form: CropValuationForm },
@@ -94,6 +102,13 @@ export function MixedFarmForm() {
           <p className="text-muted-foreground">Manage multiple crop types across various properties</p>
         </div>
       </div>
+
+      {/* OCR Upload Section */}
+      <OCRUpload
+        onDataExtracted={handleOCRData}
+        formType="mixed-farm"
+        className="mb-6"
+      />
 
       {/* Property Management */}
       <PropertyManager

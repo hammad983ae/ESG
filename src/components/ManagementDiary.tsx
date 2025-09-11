@@ -14,9 +14,16 @@ import { SprayProgramTracker } from "@/components/SprayProgramTracker";
 import { YieldTracker } from "@/components/YieldTracker";
 import { LaborCalculator } from "@/components/LaborCalculator";
 import { ExpenseCalculator } from "@/components/ExpenseCalculator";
+import { OCRUpload } from "@/components/OCRUpload";
 
 export const ManagementDiary = () => {
   const [activeTab, setActiveTab] = useState("spray-programs");
+
+  const handleOCRData = (data: Record<string, unknown>) => {
+    // Handle OCR data extraction for management diary
+    console.log("OCR data extracted for management diary:", data);
+    // You can implement specific data mapping here based on the form type
+  };
 
   const diaryTabs = [
     {
@@ -63,6 +70,13 @@ export const ManagementDiary = () => {
           <Badge variant="outline">Labor Optimization</Badge>
         </div>
       </div>
+
+      {/* OCR Upload Section */}
+      <OCRUpload
+        onDataExtracted={handleOCRData}
+        formType="management-diary"
+        className="mb-6"
+      />
 
       {/* Management Diary Tabs */}
       <Card className="shadow-lg">

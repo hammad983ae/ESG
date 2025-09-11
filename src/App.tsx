@@ -26,6 +26,7 @@ import EconomicActivity from "./pages/EconomicActivity";
 import CropHarvestSimulation from "./pages/CropHarvestSimulation";
 import { CarbonCreditCalculator } from "@/components/CarbonCreditCalculator";
 import { AASBFinancialReport } from "@/components/AASBFinancialReport";
+import { ValuationProvider } from "@/contexts/ValuationContext";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -33,25 +34,27 @@ const queryClient = new QueryClient();
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <TooltipProvider>
-      <Toaster />
-      <Sonner />
-      <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<Index />} />
-          <Route path="/valuation" element={<ValuationAnalysis />} />
-          <Route path="/rent-revision" element={<RentRevision />} />
-          <Route path="/agricultural-hub" element={<AgriculturalHub />} />
-          <Route path="/property-hub" element={<PropertyHub />} />
-          <Route path="/client-presentation" element={<ClientPresentation />} />
-          <Route path="/economic-activity" element={<EconomicActivity />} />
-          <Route path="/crop-harvest-simulation" element={<CropHarvestSimulation />} />
-          <Route path="/carbon-credit-calculator" element={<CarbonCreditCalculator />} />
-          <Route path="/aasb-financial-report" element={<AASBFinancialReport />} />
-          <Route path="/security" element={<Security />} />
-          {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-          <Route path="*" element={<NotFound />} />
-        </Routes>
-      </BrowserRouter>
+      <ValuationProvider>
+        <Toaster />
+        <Sonner />
+        <BrowserRouter>
+          <Routes>
+            <Route path="/" element={<Index />} />
+            <Route path="/valuation" element={<ValuationAnalysis />} />
+            <Route path="/rent-revision" element={<RentRevision />} />
+            <Route path="/agricultural-hub" element={<AgriculturalHub />} />
+            <Route path="/property-hub" element={<PropertyHub />} />
+            <Route path="/client-presentation" element={<ClientPresentation />} />
+            <Route path="/economic-activity" element={<EconomicActivity />} />
+            <Route path="/crop-harvest-simulation" element={<CropHarvestSimulation />} />
+            <Route path="/carbon-credit-calculator" element={<CarbonCreditCalculator />} />
+            <Route path="/aasb-financial-report" element={<AASBFinancialReport />} />
+            <Route path="/security" element={<Security />} />
+            {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+            <Route path="*" element={<NotFound />} />
+          </Routes>
+        </BrowserRouter>
+      </ValuationProvider>
     </TooltipProvider>
   </QueryClientProvider>
 );
