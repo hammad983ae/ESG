@@ -20,7 +20,9 @@
     "server:seed": "cd server && npm run db:seed",
     "server:test": "cd server && npm test",
     "dev:full": "node start-dev.js",
-    "setup:ocr": "node setup-ocr.js"
+    "setup:ocr": "node setup-ocr.js",
+    "start": "cd server && npm start",
+    "postinstall": "cd server && npm install"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.10.0",
