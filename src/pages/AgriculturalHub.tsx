@@ -26,7 +26,7 @@ import { MixedFarmForm } from "@/components/MixedFarmForm";
 import { ManagementDiary } from "@/components/ManagementDiary";
 import { YieldExpectationDisplay } from "@/components/YieldExpectationDisplay";
 import { CarbonCreditCalculator } from "@/components/CarbonCreditCalculator";
-import { AddressFinder } from "@/components/AddressFinder";
+import { EnhancedAddressFinder } from "@/components/EnhancedAddressFinder";
 import { useNavigate } from "react-router-dom";
 
 const AgriculturalHub = () => {
@@ -146,19 +146,24 @@ const AgriculturalHub = () => {
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <Tractor className="h-5 w-5" />
-              Property Search & Data
+              Property Search & Weather Data
             </CardTitle>
             <p className="text-muted-foreground">
-              Search for agricultural properties to pre-populate valuation forms with CoreLogic data
+              Search for agricultural properties with integrated weather data for enhanced crop planning and risk assessment
             </p>
           </CardHeader>
           <CardContent>
-            <AddressFinder
+            <EnhancedAddressFinder
               onAddressSelect={(data) => {
-                // You can add logic here to pre-populate agricultural forms
+                // Enhanced data includes CoreLogic + coordinates + weather
                 console.log('Agricultural property selected:', data);
+                console.log('Coordinates source:', data.coordinates?.source);
+                console.log('Weather data available:', !!data.weather);
               }}
               showPropertyDetails={true}
+              showWeatherData={true}
+              enableWeatherIntegration={true}
+              cropType="wheat" // Default crop type, can be made dynamic
             />
           </CardContent>
         </Card>

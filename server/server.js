@@ -181,13 +181,14 @@ app.get('/health', (req, res) => {
     timestamp: new Date().toISOString(),
     service: 'Sustaino Pro Unified Server',
     version: '1.0.0',
-    features: ['OCR Processing', 'Valuation Management', 'MongoDB Integration', 'CoreLogic AVM', 'Market Insights'],
+    features: ['OCR Processing', 'Valuation Management', 'MongoDB Integration', 'CoreLogic AVM', 'Market Insights', 'Weather Data'],
     endpoints: {
       ocr: '/api/ocr/extract',
       valuation: '/api/valuations',
       corelogic: '/api/corelogic',
       avm: '/api/avm',
       marketInsights: '/api/market-insights',
+      weather: '/api/weather',
       health: '/health'
     }
   });
@@ -222,6 +223,10 @@ app.get('/api/status', (req, res) => {
         marketInsights: {
           enabled: true,
           endpoints: ['/api/market-insights/auction/summaries', '/api/market-insights/auction/results', '/api/market-insights/auction/details', '/api/market-insights/census/statistics', '/api/market-insights/census/summary', '/api/market-insights/statistics/timeseries', '/api/market-insights/charts/census', '/api/market-insights/charts/timeseries', '/api/market-insights/stats']
+        },
+        weather: {
+          enabled: true,
+          endpoints: ['/api/weather/image', '/api/weather/agricultural/:lat/:lon', '/api/weather/meteogram/:lat/:lon', '/api/weather/weekly/:lat/:lon', '/api/weather/solar/:lat/:lon', '/api/weather/sounding/:lat/:lon', '/api/weather/agricultural-data/:lat/:lon', '/api/weather/stats', '/api/weather/health']
         },
         database: {
           type: 'MongoDB',
@@ -602,6 +607,9 @@ app.use('/api/avm', require('./routes/avmRoutes'));
 // Market Insights API Routes
 app.use('/api/market-insights', require('./routes/marketInsightsRoutes'));
 
+// Weather API Routes
+app.use('/api/weather', require('./routes/weatherRoutes'));
+
 // Error handling middleware
 app.use((error, req, res, next) => {
   console.error('Unhandled error:', error);
@@ -640,6 +648,10 @@ app.listen(PORT, () => {
   console.log(`   - CRUD: http://localhost:${PORT}/api/valuations`);
   console.log(`   - Search: http://localhost:${PORT}/api/valuations/search`);
   console.log(`   - Stats: http://localhost:${PORT}/api/valuations/stats`);
+  console.log(`🌤️  Weather endpoints:`);
+  console.log(`   - Images: http://localhost:${PORT}/api/weather/image`);
+  console.log(`   - Agricultural: http://localhost:${PORT}/api/weather/agricultural/:lat/:lon`);
+  console.log(`   - Meteogram: http://localhost:${PORT}/api/weather/meteogram/:lat/:lon`);
   console.log(`📈 API Status: http://localhost:${PORT}/api/status`);
 });
 

@@ -36,7 +36,8 @@ import { calculateAdvancedRiskAssessment, AdvancedCalculationResults } from "@/u
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Building, Calculator, BarChart3, ArrowLeft, Target, TrendingUp, Shield, ArrowUpDown, Sprout, Building2, Activity, Leaf, Gamepad2, FileText } from "lucide-react";
+import { Building, Calculator, BarChart3, ArrowLeft, Target, TrendingUp, Shield, ArrowUpDown, Sprout, Building2, Activity, Leaf, Gamepad2, FileText, Cloud } from "lucide-react";
+import { EnhancedAddressFinder } from "@/components/EnhancedAddressFinder";
 
 const Index = () => {
   const navigate = useNavigate();
@@ -251,6 +252,32 @@ const Index = () => {
                 </div>
 
                 <PropertyAssessmentForm onSubmit={handleBasicFormSubmit} />
+                
+                {/* Weather Integration Demo */}
+                <Card className="mt-8">
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-2">
+                      <Cloud className="h-5 w-5" />
+                      Weather Integration Demo
+                    </CardTitle>
+                    <p className="text-muted-foreground">
+                      Enhanced address search with integrated weather data for climate risk assessment
+                    </p>
+                  </CardHeader>
+                  <CardContent>
+                    <EnhancedAddressFinder
+                      onAddressSelect={(data) => {
+                        console.log('Weather integration demo - Property selected:', data);
+                        console.log('Coordinates source:', data.coordinates?.source);
+                        console.log('Weather data available:', !!data.weather);
+                      }}
+                      showPropertyDetails={true}
+                      showWeatherData={true}
+                      enableWeatherIntegration={true}
+                      cropType="wheat"
+                    />
+                  </CardContent>
+                </Card>
               </TabsContent>
 
               <TabsContent value="before-after" className="space-y-6">

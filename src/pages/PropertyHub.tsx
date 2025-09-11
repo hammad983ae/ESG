@@ -408,9 +408,9 @@ export default function PropertyHub() {
                 <CardContent>
                   <EnhancedAddressFinder
                     onAddressSelect={handleAddressSelect}
-                    showAVM={true}
-                    customValuation={customValuation}
-                    placeholder="Search for property address with CoreLogic AVM..."
+                    showPropertyDetails={true}
+                    showWeatherData={false}
+                    enableWeatherIntegration={false}
                   />
                 </CardContent>
               </Card>
@@ -511,6 +511,37 @@ export default function PropertyHub() {
                         setSelectedProperty(data);
                       }} 
                       showPropertyDetails={true}
+                    />
+                  </CardContent>
+                </Card>
+
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-2">
+                      <Shield className="h-5 w-5" />
+                      Climate Risk Assessment with Weather Data
+                    </CardTitle>
+                    <p className="text-muted-foreground">
+                      Enhanced property search with weather integration for climate risk analysis
+                    </p>
+                  </CardHeader>
+                  <CardContent>
+                    <EnhancedAddressFinder
+                      onAddressSelect={(data) => {
+                        toast({
+                          title: "Property Selected with Weather Data",
+                          description: `Selected: ${data.corelogic.address} with ${data.coordinates?.source || 'no'} coordinates`,
+                        });
+                        setSelectedProperty(data.corelogic);
+                        
+                        // Log weather data for climate risk assessment
+                        if (data.weather) {
+                          console.log('Weather data for climate risk:', data.weather);
+                        }
+                      }}
+                      showPropertyDetails={true}
+                      showWeatherData={true}
+                      enableWeatherIntegration={true}
                     />
                   </CardContent>
                 </Card>

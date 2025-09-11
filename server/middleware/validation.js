@@ -356,6 +356,112 @@ const validateDCFInputs = [
   handleValidationErrors
 ];
 
+/**
+ * Validate weather request parameters
+ */
+const validateWeatherRequest = [
+  query('lat')
+    .notEmpty()
+    .withMessage('Latitude is required')
+    .isFloat({ min: -90, max: 90 })
+    .withMessage('Latitude must be between -90 and 90'),
+  
+  query('lon')
+    .notEmpty()
+    .withMessage('Longitude is required')
+    .isFloat({ min: -180, max: 180 })
+    .withMessage('Longitude must be between -180 and 180'),
+  
+  query('asl')
+    .optional()
+    .isFloat({ min: -500, max: 9000 })
+    .withMessage('Altitude above sea level must be between -500 and 9000 meters'),
+  
+  query('city')
+    .optional()
+    .isString()
+    .withMessage('City must be a string')
+    .isLength({ max: 100 })
+    .withMessage('City name must not exceed 100 characters'),
+  
+  query('tz')
+    .optional()
+    .isString()
+    .withMessage('Timezone must be a string'),
+  
+  query('imageType')
+    .optional()
+    .isIn([
+      'meteogram', 'meteogram_verify', 'meteogram_solar', 'meteogram_solar_season',
+      'agronomy', 'aviation', 'picto_1d', 'picto_3d', 'picto_7d', 'picto_14d',
+      'sounding', 'cross_section'
+    ])
+    .withMessage('Invalid image type'),
+  
+  query('forecastDays')
+    .optional()
+    .isInt({ min: 1, max: 14 })
+    .withMessage('Forecast days must be between 1 and 14'),
+  
+  query('historyDays')
+    .optional()
+    .isInt({ min: 0, max: 7 })
+    .withMessage('History days must be between 0 and 7'),
+  
+  query('look')
+    .optional()
+    .isIn([
+      'CELSIUS_MILLIMETER_METER_PER_SECOND',
+      'FAHRENHEIT_INCH_MILE_PER_HOUR',
+      'CELSIUS_MILLIMETER_KILOMETER_PER_HOUR',
+      'CELSIUS_MILLIMETER_KNOT',
+      'CELSIUS_MILLIMETER_BEAUFORT',
+      'FAHRENHEIT_INCH_KILOMETER_PER_HOUR',
+      'FAHRENHEIT_INCH_KNOT',
+      'FAHRENHEIT_INCH_BEAUFORT'
+    ])
+    .withMessage('Invalid units format'),
+  
+  query('lang')
+    .optional()
+    .isIn([
+      'en', 'de', 'fr', 'it', 'es', 'pt', 'ro', 'ru', 'nl', 'tr', 'hu', 'bg',
+      'ar', 'cs', 'el', 'ka', 'pl', 'sk', 'sr'
+    ])
+    .withMessage('Invalid language code'),
+  
+  query('dpi')
+    .optional()
+    .isInt({ min: 50, max: 300 })
+    .withMessage('DPI must be between 50 and 300'),
+  
+  query('noLogo')
+    .optional()
+    .isBoolean()
+    .withMessage('No logo must be a boolean'),
+  
+  handleValidationErrors
+];
+
+/**
+ * Validate weather location parameters
+ */
+const validateWeatherLocation = [
+  param('lat')
+    .notEmpty()
+    .withMessage('Latitude is required')
+    .isFloat({ min: -90, max: 90 })
+    .withMessage('Latitude must be between -90 and 90'),
+  
+  param('lon')
+    .notEmpty()
+    .withMessage('Longitude is required')
+    .isFloat({ min: -180, max: 180 })
+    .withMessage('Longitude must be between -180 and 180'),
+  
+  handleValidationErrors
+];
+
 module.exports = {
   validateValuationData,
   validateValuationId,
@@ -365,5 +471,7 @@ module.exports = {
   validateShareRequest,
   validateARYInputs,
   validateDCFInputs,
+  validateWeatherRequest,
+  validateWeatherLocation,
   handleValidationErrors
 };

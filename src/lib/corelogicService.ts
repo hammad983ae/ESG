@@ -1,15 +1,16 @@
 /**
- * CoreLogic Address Matcher API Service
+ * CoreLogic Address Matcher API Service with Google Maps Integration
  * 
  * Copyright (c) 2025 Delorenzo Property Group Pty Ltd. All Rights Reserved.
  * Licensed under MIT License - see LICENSE file for details
  * Patent Protected: AU2025000001-AU2025000017
  * 
  * Integrates with CoreLogic Address Matcher API for property address validation
- * and matching using AddressRight algorithm.
+ * and matching using AddressRight algorithm. Automatically enhances results with
+ * Google Maps geocoding for latitude/longitude coordinates when not provided by CoreLogic.
  * 
  * @author Delorenzo Property Group Pty Ltd
- * @version 1.0.0
+ * @version 1.1.0
  */
 
 export interface CoreLogicAddressMatch {
@@ -24,6 +25,7 @@ export interface CoreLogicAddressMatch {
   coordinates?: {
     latitude: number;
     longitude: number;
+    source: 'corelogic' | 'google_maps'; // Track coordinate source
   };
   suburb?: string;
   state?: string;
@@ -46,13 +48,16 @@ class CoreLogicService {
     : 'https://esg-production.up.railway.app/api/corelogic';
   private readonly maxRetries = 3;
   private readonly retryDelay = 1000;
+  private readonly enableGoogleMapsFallback = true;
 
   /**
    * Search for a property address using CoreLogic Address Matcher API
+   * with Google Maps geocoding fallback for coordinates
    */
   async searchAddress(
     address: string, 
-    clientName?: string
+    clientName?: string,
+    enableCoordinatesFallback: boolean = true
   ): Promise<CoreLogicApiResponse> {
     if (!address || address.trim().length === 0) {
       return {
@@ -74,7 +79,24 @@ class CoreLogicService {
 
     try {
       const response = await this.makeRequest(trimmedAddress, clientName);
-      return this.parseResponse(response);
+      const parsedResponse = this.parseResponse(response);
+      
+      // If CoreLogic search was successful but no coordinates, try Google Maps
+      if (parsedResponse.success && 
+          parsedResponse.data && 
+          !parsedResponse.data.coordinates && 
+          enableCoordinatesFallback && 
+          this.enableGoogleMapsFallback) {
+        
+        console.log('CoreLogic found address but no coordinates, trying Google Maps...');
+        const enhancedData = await this.enhanceWithGoogleMapsCoordinates(parsedResponse.data, trimmedAddress);
+        return {
+          ...parsedResponse,
+          data: enhancedData
+        };
+      }
+      
+      return parsedResponse;
     } catch (error) {
       console.error('CoreLogic API Error:', error);
       return {
@@ -170,7 +192,8 @@ class CoreLogicService {
         confidence: this.calculateConfidence(matchType, matchRule),
         coordinates: responseData.coordinates ? {
           latitude: parseFloat(responseData.coordinates.latitude) || 0,
-          longitude: parseFloat(responseData.coordinates.longitude) || 0
+          longitude: parseFloat(responseData.coordinates.longitude) || 0,
+          source: 'corelogic' as const
         } : undefined,
         suburb: responseData.suburb || responseData.locality,
         state: responseData.state,
@@ -193,6 +216,39 @@ class CoreLogicService {
         error: 'Failed to parse response',
         matchQuality: 'no-match'
       };
+    }
+  }
+
+  /**
+   * Enhance CoreLogic address match with Google Maps coordinates
+   */
+  private async enhanceWithGoogleMapsCoordinates(
+    addressMatch: CoreLogicAddressMatch, 
+    originalAddress: string
+  ): Promise<CoreLogicAddressMatch> {
+    try {
+      // Dynamically import Google Maps service to avoid circular dependencies
+      const { geocodeAddress } = await import('./googleMapsService');
+      
+      const coordinates = await geocodeAddress(addressMatch.address || originalAddress);
+      
+      if (coordinates) {
+        console.log('Successfully obtained coordinates from Google Maps');
+        return {
+          ...addressMatch,
+          coordinates: {
+            latitude: coordinates.lat,
+            longitude: coordinates.lng,
+            source: 'google_maps' as const
+          }
+        };
+      } else {
+        console.log('Google Maps geocoding failed, returning address without coordinates');
+        return addressMatch;
+      }
+    } catch (error) {
+      console.error('Google Maps geocoding error:', error);
+      return addressMatch; // Return original data if Google Maps fails
     }
   }
 
@@ -280,6 +336,60 @@ class CoreLogicService {
     if (match.confidence < minConfidence) return false;
     
     return true;
+  }
+
+  /**
+   * Search for address with weather data integration
+   * Returns both CoreLogic data and weather information if coordinates are available
+   */
+  async searchAddressWithWeather(
+    address: string,
+    clientName?: string,
+    weatherOptions?: {
+      includeWeatherData?: boolean;
+      cropType?: string;
+      forecastDays?: number;
+    }
+  ): Promise<{
+    corelogic: CoreLogicApiResponse;
+    weather?: any; // Weather data if coordinates available
+  }> {
+    // First get CoreLogic data with coordinates
+    const corelogicResult = await this.searchAddress(address, clientName, true);
+    
+    const result: {
+      corelogic: CoreLogicApiResponse;
+      weather?: any;
+    } = {
+      corelogic: corelogicResult
+    };
+
+    // If we have coordinates and weather is requested, get weather data
+    if (corelogicResult.success && 
+        corelogicResult.data?.coordinates && 
+        weatherOptions?.includeWeatherData) {
+      
+      try {
+        // Dynamically import weather service to avoid circular dependencies
+        const { weatherService } = await import('./weatherService');
+        
+        const weatherData = await weatherService.getAgriculturalInsights(
+          {
+            lat: corelogicResult.data.coordinates.latitude,
+            lon: corelogicResult.data.coordinates.longitude,
+            city: corelogicResult.data.suburb || corelogicResult.data.address
+          },
+          weatherOptions.cropType
+        );
+        
+        result.weather = weatherData;
+      } catch (error) {
+        console.error('Weather data fetch error:', error);
+        // Weather data is optional, so we don't fail the whole request
+      }
+    }
+
+    return result;
   }
 
   // ========================================

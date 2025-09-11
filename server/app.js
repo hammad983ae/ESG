@@ -24,6 +24,7 @@ const databaseConfig = require('./config/database');
 const valuationRoutes = require('./routes/valuationRoutes');
 const corelogicRoutes = require('./routes/corelogicRoutes');
 const avmRoutes = require('./routes/avmRoutes');
+const weatherRoutes = require('./routes/weatherRoutes');
 
 class ValuationApp {
   constructor() {
@@ -174,7 +175,17 @@ class ValuationApp {
           'POST /api/avm/live/consumer/band/:propertyId': 'Get live consumer band AVM',
           'GET /api/avm/report/consumer/:propertyId': 'Get AVM consumer report',
           'GET /api/avm/report/origination/:propertyId': 'Get AVM origination report',
-          'GET /api/avm/stats': 'Get AVM service statistics'
+          'GET /api/avm/stats': 'Get AVM service statistics',
+          'GET /api/weather/image': 'Get weather image URL',
+          'GET /api/weather/agricultural/:lat/:lon': 'Get agricultural weather chart',
+          'GET /api/weather/meteogram/:lat/:lon': 'Get standard meteogram',
+          'GET /api/weather/weekly/:lat/:lon': 'Get weekly forecast',
+          'GET /api/weather/solar/:lat/:lon': 'Get solar meteogram',
+          'GET /api/weather/sounding/:lat/:lon': 'Get atmospheric sounding',
+          'GET /api/weather/agricultural-data/:lat/:lon': 'Get comprehensive agricultural weather data',
+          'GET /api/weather/stats': 'Get weather service statistics',
+          'POST /api/weather/clear-cache': 'Clear weather cache',
+          'GET /api/weather/health': 'Weather service health check'
         },
         supportedValuationTypes: [
           'ary', 'esg-ary', 'capitalization-sensitivity', 'net-income',
@@ -199,6 +210,9 @@ class ValuationApp {
     
     // Mount AVM routes
     this.app.use('/api/avm', avmRoutes);
+    
+    // Mount Weather routes
+    this.app.use('/api/weather', weatherRoutes);
 
     // 404 handler
     this.app.use('*', (req, res) => {
