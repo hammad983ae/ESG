@@ -181,9 +181,9 @@ export interface ChartData {
 // ========================================
 
 class MarketInsightsService {
-  private readonly baseUrl = process.env.NODE_ENV === 'production'
-    ? 'https://your-production-domain.com/api/market-insights'
-    : 'http://localhost:3001/api/market-insights';
+  private readonly baseUrl = import.meta.env.VITE_API_URL 
+    ? `${import.meta.env.VITE_API_URL}/market-insights`
+    : 'https://esg-production.up.railway.app/api/market-insights';
   private readonly maxRetries = 3;
   private readonly retryDelay = 1000;
 

@@ -10,7 +10,7 @@
  * @version 1.0.0
  */
 
-const API_BASE_URL = 'http://localhost:3001/api';
+import { API_BASE_URL } from '../config/api';
 
 export interface ValuationData {
   _id?: string;

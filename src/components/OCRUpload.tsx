@@ -140,7 +140,7 @@ export const OCRUpload = ({ formType, onDataExtracted, className = '' }: OCRUplo
         formType: formType
       };
 
-      const response = await fetch('http://localhost:3001/api/ocr/extract-base64', {
+      const response = await fetch(`${import.meta.env.VITE_API_URL || 'https://esg-production.up.railway.app/api'}/ocr/extract-base64`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

@@ -104,9 +104,9 @@ export interface AVMServiceStats {
 // ============================================================================
 
 class AVMService {
-  private readonly baseUrl = process.env.NODE_ENV === 'production' 
-    ? 'https://your-production-domain.com/api/avm'
-    : 'http://localhost:3001/api/avm';
+  private readonly baseUrl = import.meta.env.VITE_API_URL 
+    ? `${import.meta.env.VITE_API_URL}/avm`
+    : 'https://esg-production.up.railway.app/api/avm';
   private readonly maxRetries = 3;
   private readonly retryDelay = 1000;
 

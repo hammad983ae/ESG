@@ -41,9 +41,9 @@ export interface CoreLogicApiResponse {
 }
 
 class CoreLogicService {
-  private readonly baseUrl = process.env.NODE_ENV === 'production' 
-    ? 'https://your-production-domain.com/api/corelogic'
-    : 'http://localhost:3001/api/corelogic';
+  private readonly baseUrl = import.meta.env.VITE_API_URL 
+    ? `${import.meta.env.VITE_API_URL}/corelogic`
+    : 'https://esg-production.up.railway.app/api/corelogic';
   private readonly maxRetries = 3;
   private readonly retryDelay = 1000;
 
